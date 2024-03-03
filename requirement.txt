@@ -1,0 +1,5 @@
+pytube
+time
+re
+youtube-search-python
+spotipy
