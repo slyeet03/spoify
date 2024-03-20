@@ -1,5 +1,5 @@
 [package]
-name = "spotify-rust-api"
+name = "spoify-tui"
 version = "0.1.0"
 edition = "2021"
 src = ["src/**/*.rs"]

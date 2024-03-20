@@ -12,6 +12,9 @@ pub enum Menu {
     Library,
     Playlists,
     Search,
+    Main,
+    Default,
+    Selected(usize),
 }
 
 impl From<Menu> for usize {
@@ -20,6 +23,9 @@ impl From<Menu> for usize {
             Menu::Library => 0,
             Menu::Playlists => 1,
             Menu::Search => 2,
+            Menu::Main => 3,
+            Menu::Default => 4,
+            Menu::Selected(i) => 5,
         }
     }
 }

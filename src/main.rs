@@ -21,7 +21,7 @@ impl Default for App {
         Self {
             exit: false,
             selected_library: Library::MadeFY,
-            selected_menu: Menu::Library,
+            selected_menu: Menu::Default,
         } // Set initial selection
     }
 }
@@ -30,7 +30,8 @@ impl App {
     /// runs the application's main loop until the user quits
     pub fn run(&mut self, terminal: &mut tui::Tui) -> io::Result<()> {
         while !self.exit {
-            terminal.draw(|frame| render_frame(frame, self.selected_library))?;
+            terminal
+                .draw(|frame| render_frame(frame, self.selected_library, self.selected_menu))?;
             key_event_handler::handle_events(self)?;
         }
         Ok(())
