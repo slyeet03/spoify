@@ -3,7 +3,7 @@ use std::io;
 
 use crate::enums::Library; // Import Library from enums.rs
 use crate::enums::Menu;
-use crate::ui::render_frame; // Import Menu from enums.rs
+use crate::ui::render_frame;
 
 mod enums;
 mod key_event_handler;
