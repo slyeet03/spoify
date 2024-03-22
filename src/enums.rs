@@ -14,7 +14,6 @@ pub enum Menu {
     Search,
     Main,
     Default,
-    Selected(usize),
 }
 
 impl From<Menu> for usize {
@@ -25,7 +24,6 @@ impl From<Menu> for usize {
             Menu::Search => 2,
             Menu::Main => 3,
             Menu::Default => 4,
-            Menu::Selected(i) => 5,
         }
     }
 }

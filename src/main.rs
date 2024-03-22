@@ -14,6 +14,7 @@ pub struct App {
     pub exit: bool,
     pub selected_library: Library,
     pub selected_menu: Menu,
+    pub selected_index: usize,
 }
 
 impl Default for App {
@@ -22,6 +23,7 @@ impl Default for App {
             exit: false,
             selected_library: Library::MadeFY,
             selected_menu: Menu::Default,
+            selected_index: 0,
         } // Set initial selection
     }
 }
@@ -30,9 +32,15 @@ impl App {
     /// runs the application's main loop until the user quits
     pub fn run(&mut self, terminal: &mut tui::Tui) -> io::Result<()> {
         while !self.exit {
-            terminal
-                .draw(|frame| render_frame(frame, self.selected_library, self.selected_menu))?;
-            key_event_handler::handle_events(self)?;
+            terminal.draw(|frame| {
+                render_frame(
+                    frame,
+                    self.selected_library,
+                    self.selected_menu,
+                    self.selected_index,
+                )
+            })?;
+            self.selected_index = key_event_handler::handle_events(self, self.selected_index)?;
         }
         Ok(())
     }

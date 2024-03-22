@@ -1,10 +1,17 @@
 use ratatui::prelude::*;
+use ratatui::style::{Color, Modifier, Style};
+
 use ratatui::widgets::{block::*, *};
 
 use crate::enums::Library; // Import Library from enums.rs
 use crate::enums::Menu;
 
-pub fn render_frame(f: &mut Frame, selected_library: Library, selected_menu: Menu) {
+pub fn render_frame(
+    f: &mut Frame,
+    selected_library: Library,
+    selected_menu: Menu,
+    selected_index: usize,
+) {
     let library_items = vec![
         "Made For You",
         "Recently Played",
@@ -79,17 +86,21 @@ pub fn render_frame(f: &mut Frame, selected_library: Library, selected_menu: Men
                 .borders(Borders::ALL)
                 .title(Title::from("Library"))
                 .border_style(Style::new().fg(Color::Yellow));
-            let library_list = List::new(library_items.clone()).block(library_block.clone());
-            f.render_widget(library_list, content_sub_chunk[0]);
 
-            match selected_library {
-                Library::MadeFY => {}
-                Library::RecentlyPlayed => {}
-                Library::LikedSongs => {}
-                Library::Albums => {}
-                Library::Artists => {}
-                Library::Podcasts => {}
-            }
+            let library_list_with_highlight = List::new(library_items.clone())
+                .block(library_block.clone())
+                .highlight_symbol(">")
+                .highlight_style(Style::default().fg(Color::Yellow));
+
+            f.render_widget(
+                library_list_with_highlight.items(
+                    library_items
+                        .iter()
+                        .map(|library_items| ListItem::new(library_items.clone()))
+                        .collect::<Vec<_>>(),
+                ),
+                content_sub_chunk[0],
+            );
         }
         Menu::Playlists => {
             // Render playlists with highlight
@@ -106,10 +117,6 @@ pub fn render_frame(f: &mut Frame, selected_library: Library, selected_menu: Men
                 .title(Title::from("Search"))
                 .border_style(Style::new().fg(Color::Yellow));
             f.render_widget(search_block, header_chunk[0]);
-        }
-        Menu::Selected(_) => {
-            // Handle rendering of the selected item within a menu
-            todo!();
         }
     }
 
