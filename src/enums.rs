@@ -7,13 +7,12 @@ pub enum Library {
     Artists,
     Podcasts,
 }
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub enum Menu {
     Library,
     Playlists,
     Search,
     Main,
-    Default,
 }
 
 impl From<Menu> for usize {
@@ -23,7 +22,6 @@ impl From<Menu> for usize {
             Menu::Playlists => 1,
             Menu::Search => 2,
             Menu::Main => 3,
-            Menu::Default => 4,
         }
     }
 }

@@ -2,9 +2,10 @@ use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
 use ratatui::widgets::{block::*, *};
 
+use crate::app::App;
 use crate::enums::Menu;
 
-pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize) {
+pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize, app: &mut App) {
     let library_items = vec![
         String::from("Made For You"),
         String::from("Recently Played"),
@@ -30,7 +31,6 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize) {
         .title(Title::from("Welcome!"));
 
     let mut library_list = List::new(library_items.clone()).block(library_block);
-
     let size = f.size();
     // main display
     let chunks = Layout::default()
@@ -57,14 +57,13 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize) {
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
         .split(content_chunk[0]);
 
+    f.render_widget(search_block, header_chunk[0]);
+    f.render_widget(&library_list, content_sub_chunk[0]);
+    f.render_widget(playlist_block, content_sub_chunk[1]);
+    f.render_widget(player_block, chunks[2]);
+    f.render_widget(content_block, content_chunk[1]);
+
     match selected_menu {
-        Menu::Default => {
-            f.render_widget(search_block.clone(), header_chunk[0]);
-            f.render_widget(&library_list, content_sub_chunk[0]);
-            f.render_widget(playlist_block.clone(), content_sub_chunk[1]);
-            f.render_widget(player_block.clone(), chunks[2]);
-            f.render_widget(content_block.clone(), content_chunk[1]);
-        }
         Menu::Main => {
             let content_block = Block::default()
                 .borders(Borders::ALL)
@@ -79,9 +78,25 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize) {
                 .title(Title::from("Library"))
                 .border_style(Style::new().fg(Color::Yellow));
 
-            let library_list = List::new(library_items).block(library_block);
+            let library_items = vec![
+                String::from("Made For You"),
+                String::from("Recently Played"),
+                String::from("Liked Songs"),
+                String::from("Albums"),
+                String::from("Artists"),
+                String::from("Podcasts"),
+            ];
 
-            f.render_widget(library_list, content_sub_chunk[0]);
+            let library_list = List::new(library_items)
+                .block(library_block)
+                .highlight_style(Style::default().fg(Color::Yellow))
+                .highlight_symbol("> ");
+
+            f.render_stateful_widget(
+                library_list.highlight_symbol(">>"),
+                content_sub_chunk[0],
+                &mut app.library_state,
+            );
         }
         Menu::Playlists => {
             // Render playlists with highlight
@@ -100,10 +115,4 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize) {
             f.render_widget(search_block, header_chunk[0]);
         }
     }
-
-    f.render_widget(search_block, header_chunk[0]);
-    f.render_widget(&library_list, content_sub_chunk[0]);
-    f.render_widget(playlist_block, content_sub_chunk[1]);
-    f.render_widget(player_block, chunks[2]);
-    f.render_widget(content_block, content_chunk[1]);
 }
