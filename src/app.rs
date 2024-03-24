@@ -8,7 +8,7 @@ use ratatui::widgets::ListState;
 use std::io;
 
 pub struct App {
-    pub exit: bool,
+    pub exit: bool, //to control app's exit
     pub selected_library: Library,
     pub selected_menu: Menu,
     pub library_index: usize,
@@ -19,7 +19,9 @@ impl App {
     /// runs the application's main loop until the user quits
     pub fn run(&mut self, terminal: &mut tui::Tui) -> io::Result<()> {
         while !self.exit {
+            // drawing the ui
             terminal.draw(|frame| render_frame(frame, self.selected_menu, self))?;
+            //handling user inputs
             handle_events(self)?;
         }
         Ok(())
@@ -38,6 +40,6 @@ impl Default for App {
             selected_menu: Menu::Main,
             library_index: 0,
             library_state: ListState::default(),
-        } // Set initial selection
+        }
     }
 }

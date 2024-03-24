@@ -9,8 +9,11 @@ mod handlers;
 mod ui;
 
 fn main() -> io::Result<()> {
+    //initialise the tui
     let mut terminal = tui::init()?;
+    //new instance for app
     let mut app = App::default();
+    //running app's main loop
     let app_result = app.run(&mut terminal);
     tui::restore()?;
     app_result

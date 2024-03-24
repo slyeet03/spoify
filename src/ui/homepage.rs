@@ -6,6 +6,7 @@ use crate::app::App;
 use crate::enums::Menu;
 
 pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
+    //define library items
     let library_items = vec![
         String::from("Made For You"),
         String::from("Recently Played"),
@@ -14,6 +15,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         String::from("Artists"),
         String::from("Podcasts"),
     ];
+    //creating all the ui blocks
     let search_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Search"));
@@ -30,9 +32,10 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"));
 
+    //list widget for library items
     let library_list = List::new(library_items.clone()).block(library_block);
     let size = f.size();
-    // main display
+    // main display layout
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -41,28 +44,30 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             Constraint::Percentage(20),
         ])
         .split(size);
-    // search and help display
+    // search layout
     let header_chunk = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(100)])
         .split(chunks[0]);
-    // library, playlist and main content display
+    // library, playlist and main content display layout
     let content_chunk = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(20), Constraint::Percentage(80)])
         .split(chunks[1]);
-    // library and playlist
+    // library and playlist layout
     let content_sub_chunk = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
         .split(content_chunk[0]);
 
+    //rendering the default ui
     f.render_widget(search_block, header_chunk[0]);
     f.render_widget(&library_list, content_sub_chunk[0]);
     f.render_widget(playlist_block, content_sub_chunk[1]);
     f.render_widget(player_block, chunks[2]);
     f.render_widget(content_block, content_chunk[1]);
 
+    //rendering different sections based on the selected menu
     match selected_menu {
         Menu::Main => {
             let content_block = Block::default()
@@ -72,7 +77,6 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             f.render_widget(content_block, content_chunk[1]);
         }
         Menu::Library => {
-            // Render library with highlight
             let library_block = Block::default()
                 .borders(Borders::ALL)
                 .title(Title::from("Library"))
@@ -86,7 +90,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 String::from("Artists"),
                 String::from("Podcasts"),
             ];
-
+            //rendering currently selected menu
             let library_list = List::new(library_items)
                 .block(library_block)
                 .highlight_style(Style::default().fg(Color::Yellow))
@@ -99,7 +103,6 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             );
         }
         Menu::Playlists => {
-            // Render playlists with highlight
             let playlist_block = Block::default()
                 .borders(Borders::ALL)
                 .title(Title::from("Playlist"))
@@ -107,7 +110,6 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             f.render_widget(playlist_block, content_sub_chunk[1]);
         }
         Menu::Search => {
-            // Render search with highlight
             let search_block = Block::default()
                 .borders(Borders::ALL)
                 .title(Title::from("Search"))
