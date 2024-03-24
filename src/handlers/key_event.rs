@@ -1,8 +1,6 @@
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
-
-use crate::enums::Library; // Import Library from enums.rs
+use crate::app::App;
 use crate::enums::Menu;
-use crate::App; // Import Menu from enums.rs
+use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 use std::io;
 
@@ -15,6 +13,7 @@ pub fn handle_events(app: &mut App, selected_index: usize) -> io::Result<(usize)
         }
         _ => {}
     };
+
     Ok(selected_index)
 }
 
@@ -26,26 +25,8 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent, selected_index: &mut usi
         KeyCode::Char('s') => app.selected_menu = Menu::Search,
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
         KeyCode::Char('d') => app.selected_menu = Menu::Default,
-        KeyCode::Down => {
-            match app.selected_menu {
-                Menu::Library => {
-                    if *selected_index < (Library::Podcasts as usize) {
-                        *selected_index += 1;
-                    }
-                }
-                _ => {} // Handle down arrow key for other menus
-            }
-        }
-        KeyCode::Up => {
-            match app.selected_menu {
-                Menu::Library => {
-                    if *selected_index > 0 {
-                        *selected_index -= 1;
-                    }
-                }
-                _ => {} // Handle up arrow key for other menus
-            }
-        }
+        KeyCode::Down => {}
+        KeyCode::Up => {}
         _ => {}
     }
 }

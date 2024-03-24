@@ -1,26 +1,18 @@
 use ratatui::prelude::*;
-use ratatui::style::{Color, Modifier, Style};
-
+use ratatui::style::{Color, Style};
 use ratatui::widgets::{block::*, *};
 
-use crate::enums::Library; // Import Library from enums.rs
 use crate::enums::Menu;
 
-pub fn render_frame(
-    f: &mut Frame,
-    selected_library: Library,
-    selected_menu: Menu,
-    selected_index: usize,
-) {
+pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize) {
     let library_items = vec![
-        "Made For You",
-        "Recently Played",
-        "Liked Songs",
-        "Albums",
-        "Artists",
-        "Podcasts",
+        String::from("Made For You"),
+        String::from("Recently Played"),
+        String::from("Liked Songs"),
+        String::from("Albums"),
+        String::from("Artists"),
+        String::from("Podcasts"),
     ];
-
     let search_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Search"));
@@ -37,7 +29,7 @@ pub fn render_frame(
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"));
 
-    let library_list = List::new(library_items.clone()).block(library_block.clone());
+    let mut library_list = List::new(library_items.clone()).block(library_block);
 
     let size = f.size();
     // main display
@@ -68,7 +60,7 @@ pub fn render_frame(
     match selected_menu {
         Menu::Default => {
             f.render_widget(search_block.clone(), header_chunk[0]);
-            f.render_widget(library_list.clone(), content_sub_chunk[0]);
+            f.render_widget(&library_list, content_sub_chunk[0]);
             f.render_widget(playlist_block.clone(), content_sub_chunk[1]);
             f.render_widget(player_block.clone(), chunks[2]);
             f.render_widget(content_block.clone(), content_chunk[1]);
@@ -87,20 +79,9 @@ pub fn render_frame(
                 .title(Title::from("Library"))
                 .border_style(Style::new().fg(Color::Yellow));
 
-            let library_list_with_highlight = List::new(library_items.clone())
-                .block(library_block.clone())
-                .highlight_symbol(">")
-                .highlight_style(Style::default().fg(Color::Yellow));
+            let library_list = List::new(library_items).block(library_block);
 
-            f.render_widget(
-                library_list_with_highlight.items(
-                    library_items
-                        .iter()
-                        .map(|library_items| ListItem::new(library_items.clone()))
-                        .collect::<Vec<_>>(),
-                ),
-                content_sub_chunk[0],
-            );
+            f.render_widget(library_list, content_sub_chunk[0]);
         }
         Menu::Playlists => {
             // Render playlists with highlight
@@ -121,7 +102,7 @@ pub fn render_frame(
     }
 
     f.render_widget(search_block, header_chunk[0]);
-    f.render_widget(library_list, content_sub_chunk[0]);
+    f.render_widget(&library_list, content_sub_chunk[0]);
     f.render_widget(playlist_block, content_sub_chunk[1]);
     f.render_widget(player_block, chunks[2]);
     f.render_widget(content_block, content_chunk[1]);

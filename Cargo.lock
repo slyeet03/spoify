@@ -342,6 +342,7 @@ dependencies = [
  "crossterm 0.27.0",
  "ratatui",
  "tui",
+ "tui-widget-list",
 ]
 
 [[package]]
@@ -415,6 +416,15 @@ dependencies = [
  "crossterm 0.25.0",
  "unicode-segmentation",
  "unicode-width",
+]
+
+[[package]]
+name = "tui-widget-list"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93664061847aafb22d1a619484c4ff01ece46f4446d7c3caac95b61001c6f6e8"
+dependencies = [
+ "ratatui",
 ]
 
 [[package]]
