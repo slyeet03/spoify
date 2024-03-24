@@ -5,7 +5,7 @@ use ratatui::widgets::{block::*, *};
 use crate::app::App;
 use crate::enums::Menu;
 
-pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize, app: &mut App) {
+pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let library_items = vec![
         String::from("Made For You"),
         String::from("Recently Played"),
@@ -30,7 +30,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, selected_index: usize, a
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"));
 
-    let mut library_list = List::new(library_items.clone()).block(library_block);
+    let library_list = List::new(library_items.clone()).block(library_block);
     let size = f.size();
     // main display
     let chunks = Layout::default()
