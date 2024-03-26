@@ -18,6 +18,7 @@ pub enum Menu {
 pub enum InputMode {
     Normal,
     Editing,
+    SearchResults,
 }
 
 impl From<Menu> for usize {

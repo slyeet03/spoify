@@ -18,6 +18,12 @@ pub struct App {
     pub input: String,
     pub cursor_position: usize,
     pub input_mode: InputMode,
+    pub album_names: Vec<String>,
+    pub album_links: Vec<String>,
+    pub track_names: Vec<String>,
+    pub track_links: Vec<String>,
+    pub playlist_names: Vec<String>,
+    pub playlist_links: Vec<String>,
 }
 
 impl App {
@@ -57,6 +63,12 @@ impl Default for App {
             input: String::new(),
             input_mode: InputMode::Normal,
             cursor_position: 0,
+            album_names: Vec::new(),
+            album_links: Vec::new(),
+            track_names: Vec::new(),
+            track_links: Vec::new(),
+            playlist_names: Vec::new(),
+            playlist_links: Vec::new(),
         }
     }
 }

@@ -4,6 +4,8 @@ use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 use std::io;
 
+use crate::spotify::query_storage::query_storage;
+
 pub fn handle_events(app: &mut App) -> io::Result<()> {
     match event::read()? {
         //handling key press events
@@ -50,6 +52,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
 }
 
 pub fn search_input(app: &mut App) -> io::Result<()> {
+    let data_dir = std::path::Path::new("./data");
     if let Event::Key(key) = event::read()? {
         match app.input_mode {
             InputMode::Normal => match key.code {
@@ -65,7 +68,7 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
                 KeyCode::Enter => {
                     app.search_query = app.input.clone();
                     app.input.clear();
-                    app.input_mode = InputMode::Normal;
+                    app.input_mode = InputMode::SearchResults;
                     //submit_message(app);
                 }
                 KeyCode::Char(to_insert) => {
@@ -86,10 +89,25 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
                 _ => {}
             },
             InputMode::Editing => {}
+            _ => {}
         }
     } else {
         return Ok(());
     }
+
+    if app.input_mode == InputMode::SearchResults {
+        let query = app.search_query.as_str();
+        let (album_names, album_links, track_names, track_links, playlist_names, playlist_links) =
+            query_storage(query, data_dir).unwrap_or_default();
+
+        app.album_names = album_names;
+        app.album_links = album_links;
+        app.track_names = track_names;
+        app.track_links = track_links;
+        app.playlist_names = playlist_names;
+        app.playlist_links = playlist_links;
+    }
+
     Ok(())
 }
 

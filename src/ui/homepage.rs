@@ -1,7 +1,9 @@
+use ratatui::layout::Corner;
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
+use ratatui::widgets::ListItem;
 use ratatui::widgets::{block::*, *};
-use ratatui::widgets::{Block, Borders, Paragraph};
+use ratatui::widgets::{Block, Borders, List, Paragraph};
 
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
@@ -37,6 +39,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .style(match app.input_mode {
             InputMode::Normal => Style::default(),
             InputMode::Editing => Style::default().fg(Color::Yellow),
+            InputMode::SearchResults => Style::default(),
         })
         .block(Block::default().borders(Borders::ALL).title("Search"));
 
@@ -134,7 +137,46 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                         header_chunk[0].y + 1,
                     );
                 }
+                InputMode::SearchResults => {
+                    let search_results = create_search_results_list(
+                        &app.album_names,
+                        &app.track_names,
+                        &app.playlist_names,
+                    );
+                    let content_block = Block::default()
+                        .borders(Borders::ALL)
+                        .title(Title::from("Search Result"))
+                        .border_style(Style::new().fg(Color::Yellow));
+
+                    let search_results_list = List::new(search_results)
+                        .block(content_block.clone())
+                        .start_corner(Corner::TopLeft);
+
+                    f.render_widget(search_results_list, content_chunk[1]);
+                }
             }
         }
     }
+}
+
+fn create_search_results_list<'a>(
+    album_names: &'a [String],
+    track_names: &'a [String],
+    playlist_names: &'a [String],
+) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
+    for name in album_names {
+        search_results.push(ListItem::new(format!("Album: {}", name)));
+    }
+
+    for name in track_names {
+        search_results.push(ListItem::new(format!("Track: {}", name)));
+    }
+
+    for name in playlist_names {
+        search_results.push(ListItem::new(format!("Playlist: {}", name)));
+    }
+
+    search_results
 }
