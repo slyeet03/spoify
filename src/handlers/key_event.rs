@@ -1,5 +1,5 @@
 use crate::app::App;
-use crate::enums::Menu;
+use crate::enums::{InputMode, Menu};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 use std::io;
@@ -9,6 +9,7 @@ pub fn handle_events(app: &mut App) -> io::Result<()> {
         //handling key press events
         Event::Key(key_event) if key_event.kind == KeyEventKind::Press => {
             handle_key_event(app, key_event);
+            search_input(app).unwrap();
         }
         _ => {}
     };
@@ -25,7 +26,10 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.library_state.select(Some(0)); //reseting the library state
         }
         KeyCode::Char('p') => app.selected_menu = Menu::Playlists,
-        KeyCode::Char('s') => app.selected_menu = Menu::Search,
+        KeyCode::Char('s') => {
+            app.selected_menu = Menu::Search;
+        }
+
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
         KeyCode::Down if app.selected_menu == Menu::Library => {
             //move down in the library list
@@ -43,4 +47,90 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
         }
         _ => {}
     }
+}
+
+pub fn search_input(app: &mut App) -> io::Result<()> {
+    if let Event::Key(key) = event::read()? {
+        match app.input_mode {
+            InputMode::Normal => match key.code {
+                KeyCode::Char('s') => {
+                    app.input_mode = InputMode::Editing;
+                }
+                KeyCode::Char('q') => {
+                    return Ok(());
+                }
+                _ => {}
+            },
+            InputMode::Editing if key.kind == KeyEventKind::Press => match key.code {
+                KeyCode::Enter => {
+                    app.search_query = app.input.clone();
+                    app.input.clear();
+                    app.input_mode = InputMode::Normal;
+                    //submit_message(app);
+                }
+                KeyCode::Char(to_insert) => {
+                    enter_char(app, to_insert);
+                }
+                KeyCode::Backspace => {
+                    delete_char(app);
+                }
+                KeyCode::Left => {
+                    move_cursor_left(app);
+                }
+                KeyCode::Right => {
+                    move_cursor_right(app);
+                }
+                KeyCode::Esc => {
+                    app.input_mode = InputMode::Normal;
+                }
+                _ => {}
+            },
+            InputMode::Editing => {}
+        }
+    } else {
+        return Ok(());
+    }
+    Ok(())
+}
+
+fn move_cursor_left(app: &mut App) {
+    let cursor_moved_left = app.cursor_position.saturating_sub(1);
+    app.cursor_position = clamp_cursor(app, cursor_moved_left);
+}
+
+fn move_cursor_right(app: &mut App) {
+    let cursor_moved_right = app.cursor_position.saturating_add(1);
+    app.cursor_position = clamp_cursor(app, cursor_moved_right);
+}
+
+fn enter_char(app: &mut App, new_char: char) {
+    app.input.insert(app.cursor_position, new_char);
+
+    move_cursor_right(app);
+}
+
+fn delete_char(app: &mut App) {
+    let is_not_cursor_leftmost = app.cursor_position != 0;
+    if is_not_cursor_leftmost {
+        // Method "remove" is not used on the saved text for deleting the selected char.
+        // Reason: Using remove on String works on bytes instead of the chars.
+        // Using remove would require special care because of char boundaries.
+
+        let current_index = app.cursor_position;
+        let from_left_to_current_index = current_index - 1;
+
+        // Getting all characters before the selected character.
+        let before_char_to_delete = app.input.chars().take(from_left_to_current_index);
+        // Getting all characters after selected character.
+        let after_char_to_delete = app.input.chars().skip(current_index);
+
+        // Put all characters together except the selected one.
+        // By leaving the selected one out, it is forgotten and therefore deleted.
+        app.input = before_char_to_delete.chain(after_char_to_delete).collect();
+        move_cursor_left(app);
+    }
+}
+
+fn clamp_cursor(app: &mut App, new_cursor_pos: usize) -> usize {
+    new_cursor_pos.clamp(0, app.input.len())
 }

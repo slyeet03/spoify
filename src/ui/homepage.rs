@@ -1,9 +1,10 @@
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
 use ratatui::widgets::{block::*, *};
+use ratatui::widgets::{Block, Borders, Paragraph};
 
 use crate::app::App;
-use crate::enums::Menu;
+use crate::enums::{InputMode, Menu};
 
 pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     //define library items
@@ -32,6 +33,13 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"));
 
+    let search_input = Paragraph::new(app.input.as_str())
+        .style(match app.input_mode {
+            InputMode::Normal => Style::default(),
+            InputMode::Editing => Style::default().fg(Color::Yellow),
+        })
+        .block(Block::default().borders(Borders::ALL).title("Search"));
+
     //list widget for library items
     let library_list = List::new(library_items.clone()).block(library_block);
     let size = f.size();
@@ -39,8 +47,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(10),
-            Constraint::Percentage(70),
+            Constraint::Percentage(8),
+            Constraint::Percentage(72),
             Constraint::Percentage(20),
         ])
         .split(size);
@@ -114,7 +122,19 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 .borders(Borders::ALL)
                 .title(Title::from("Search"))
                 .border_style(Style::new().fg(Color::Yellow));
+
             f.render_widget(search_block, header_chunk[0]);
+
+            match app.input_mode {
+                InputMode::Normal => {}
+                InputMode::Editing => {
+                    f.render_widget(search_input, header_chunk[0]);
+                    f.set_cursor(
+                        header_chunk[0].x + app.cursor_position as u16 + 1,
+                        header_chunk[0].y + 1,
+                    );
+                }
+            }
         }
     }
 }

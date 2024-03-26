@@ -14,6 +14,11 @@ pub enum Menu {
     Search,
     Main,
 }
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum InputMode {
+    Normal,
+    Editing,
+}
 
 impl From<Menu> for usize {
     fn from(input: Menu) -> usize {
