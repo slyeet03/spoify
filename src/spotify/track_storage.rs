@@ -43,19 +43,19 @@ struct Image {
     width: u32,
 }
 
-pub fn track_storage() -> Result<(), std::io::Error> {
+pub fn track_storage() -> Result<(Vec<String>, Vec<String>), std::io::Error> {
     let json_dir = Path::new("./data");
     let json_file_path = json_dir.join("tracks_search_results.json");
 
     if !json_file_path.exists() {
         println!("tracks_search_results.json file does not exist");
-        return Ok(());
+        return Ok((Vec::new(), Vec::new()));
     }
 
     let metadata = fs::metadata(&json_file_path)?;
     if metadata.len() == 0 {
         println!("tracks_search_results.json file is empty");
-        return Ok(());
+        return Ok((Vec::new(), Vec::new()));
     }
 
     let data = fs::read_to_string(json_file_path)?;
@@ -77,15 +77,5 @@ pub fn track_storage() -> Result<(), std::io::Error> {
         track_links.push(track.external_urls.spotify.clone());
     }
 
-    println!("Track names:");
-    for name in &track_names {
-        println!("{}", name);
-    }
-
-    println!("Track links:");
-    for link in &track_links {
-        println!("{}", link);
-    }
-
-    Ok(())
+    Ok((track_names, track_links))
 }

@@ -115,47 +115,6 @@ pub async fn search(user_query: &str, data_dir: &Path) -> Result<(), std::io::Er
         }
         Err(err) => println!("Search error! {err:?}"),
     }
-    /*
-        let show_query = user_query;
-        let result = spotify
-            .search(show_query, SearchType::Show, None, None, Some(10), None)
-            .await;
-        match result {
-            Ok(shows) => {
-                // Convert artists to JSON
-                let json_data = serde_json::to_string(&shows).unwrap();
-
-                // Write JSON data to file
-                let mut file = File::create(data_dir.join("shows_search_results.json")).unwrap();
-                write!(file, "{}", json_data).unwrap();
-
-                println!("shows search results saved to shows_search_results.json");
-            }
-            Err(err) => println!("Search error! {err:?}"),
-        }
-    */
-    let episode_query = user_query;
-    let result = spotify
-        .search(
-            episode_query,
-            SearchType::Episode,
-            None,
-            None,
-            Some(10),
-            None,
-        )
-        .await;
-    match result {
-        Ok(episodes) => {
-            // Convert artists to JSON
-            let json_data = serde_json::to_string(&episodes).unwrap();
-
-            // Write JSON data to file
-            let mut file = File::create(data_dir.join("episode_search_results.json")).unwrap();
-            write!(file, "{}", json_data).unwrap();
-        }
-        Err(err) => println!("Search error! {err:?}"),
-    }
 
     Ok(())
 }

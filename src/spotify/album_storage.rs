@@ -47,19 +47,19 @@ struct Image {
     width: u32,
 }
 
-pub fn album_storage() -> Result<(), std::io::Error> {
+pub fn album_storage() -> Result<(Vec<String>, Vec<String>), std::io::Error> {
     let json_dir = Path::new("./data");
     let json_file_path = json_dir.join("album_search_results.json");
 
     if !json_file_path.exists() {
         println!("album_search_results.json file does not exist");
-        return Ok(());
+        return Ok((Vec::new(), Vec::new()));
     }
 
     let metadata = fs::metadata(&json_file_path)?;
     if metadata.len() == 0 {
         println!("album_search_results.json file is empty");
-        return Ok(());
+        return Ok((Vec::new(), Vec::new()));
     }
 
     let data = fs::read_to_string(json_file_path)?;
@@ -81,15 +81,10 @@ pub fn album_storage() -> Result<(), std::io::Error> {
         album_links.push(album.external_urls.spotify.clone());
     }
 
-    println!("Album names:");
-    for name in &album_names {
-        println!("{}", name);
+    for album in albums {
+        album_names.push(album.name.clone());
+        album_links.push(album.external_urls.spotify.clone());
     }
 
-    println!("Album links:");
-    for link in &album_links {
-        println!("{}", link);
-    }
-
-    Ok(())
+    Ok((album_names, album_links))
 }
