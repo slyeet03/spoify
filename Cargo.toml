@@ -7,6 +7,12 @@ edition = "2021"
 
 [dependencies]
 crossterm = "0.27.0"
+dotenv = "0.15.0"
 ratatui = "0.26.1"
+reqwest = "0.12.2"
+tokio = {version = "1.36.0", features = ["full"]}
 tui = "0.19.0"
 tui-widget-list = "0.8.2"
+rspotify = { version = "0.13.0", features = ["cli"] }
+serde_json = "1.0.114"
+serde = "1.0.197"
