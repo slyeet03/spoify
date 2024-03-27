@@ -39,11 +39,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.selected_menu = Menu::Search;
             app.input_mode = InputMode::Normal;
         }
-        KeyCode::Char('d') => {
-            app.selected_menu = Menu::Default;
-            app.search_results_rendered = false;
-            app.input_mode = InputMode::Normal;
-        }
+
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
         KeyCode::Down if app.selected_menu == Menu::Library => {
             //move down in the library list

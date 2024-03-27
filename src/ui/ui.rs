@@ -127,14 +127,9 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             //rendering currently selected menu
             let library_list = List::new(library_items)
                 .block(library_block)
-                .highlight_style(Style::default().fg(Color::Yellow))
-                .highlight_symbol("> ");
+                .highlight_style(Style::default().fg(Color::Yellow));
 
-            f.render_stateful_widget(
-                library_list.highlight_symbol(">>"),
-                content_sub_chunk[0],
-                &mut app.library_state,
-            );
+            f.render_stateful_widget(library_list, content_sub_chunk[0], &mut app.library_state);
         }
         Menu::Playlists => {
             let playlist_block_user = Block::default()
