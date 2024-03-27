@@ -28,18 +28,21 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.selected_menu = Menu::Library;
             app.library_state.select(Some(0)); //reseting the library state
             app.search_results_rendered = false;
+            app.input_mode = InputMode::Normal;
         }
         KeyCode::Char('p') => {
             app.selected_menu = Menu::Playlists;
             app.search_results_rendered = false;
+            app.input_mode = InputMode::Normal;
         }
         KeyCode::Char('s') => {
             app.selected_menu = Menu::Search;
-            app.search_results_rendered = false;
+            app.input_mode = InputMode::Normal;
         }
         KeyCode::Char('d') => {
             app.selected_menu = Menu::Default;
             app.search_results_rendered = false;
+            app.input_mode = InputMode::Normal;
         }
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
         KeyCode::Down if app.selected_menu == Menu::Library => {
@@ -77,9 +80,7 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
             },
             InputMode::Editing if key.kind == KeyEventKind::Press => match key.code {
                 KeyCode::Enter => {
-                    app.search_query = app.input.clone();
-                    app.input.clear();
-                    app.input_mode = InputMode::SearchResults;
+                    submit_message(app);
                 }
                 KeyCode::Char(to_insert) => {
                     enter_char(app, to_insert);
@@ -95,6 +96,7 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
                 }
                 KeyCode::Esc => {
                     app.input_mode = InputMode::Normal;
+                    app.search_results_rendered = false;
                 }
                 _ => {}
             },
@@ -152,10 +154,6 @@ fn enter_char(app: &mut App, new_char: char) {
 fn delete_char(app: &mut App) {
     let is_not_cursor_leftmost = app.cursor_position != 0;
     if is_not_cursor_leftmost {
-        // Method "remove" is not used on the saved text for deleting the selected char.
-        // Reason: Using remove on String works on bytes instead of the chars.
-        // Using remove would require special care because of char boundaries.
-
         let current_index = app.cursor_position;
         let from_left_to_current_index = current_index - 1;
 
@@ -173,4 +171,14 @@ fn delete_char(app: &mut App) {
 
 fn clamp_cursor(app: &mut App, new_cursor_pos: usize) -> usize {
     new_cursor_pos.clamp(0, app.input.len())
+}
+fn reset_cursor(app: &mut App) {
+    app.cursor_position = 0;
+}
+
+fn submit_message(app: &mut App) {
+    app.search_query = app.input.clone();
+    app.input.clear();
+    reset_cursor(app);
+    app.input_mode = InputMode::SearchResults;
 }

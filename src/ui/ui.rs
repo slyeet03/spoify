@@ -107,11 +107,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     match selected_menu {
         Menu::Default => {}
         Menu::Main => {
-            let content_block = Block::default()
-                .borders(Borders::ALL)
-                .title(Title::from("Welcome!"))
-                .border_style(Style::new().fg(Color::Yellow));
-            f.render_widget(content_block, content_chunk[1]);
+            // add tabbing fn thru artist,album,songs,playlists
+            //add menu nav inside those blocks
         }
         Menu::Library => {
             let library_block = Block::default()
