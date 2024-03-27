@@ -1,2 +1,2 @@
-pub mod homepage;
 pub mod tui;
+pub mod ui;

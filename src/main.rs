@@ -4,9 +4,7 @@ use crate::app::App;
 
 use crate::ui::tui;
 
-use std::fs::{self, File};
-use std::io::Write;
-use std::path::Path;
+use std::fs::{self};
 
 mod app;
 mod enums;

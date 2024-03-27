@@ -1,8 +1,7 @@
-use ratatui::layout::Corner;
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
+use ratatui::widgets::block::*;
 use ratatui::widgets::ListItem;
-use ratatui::widgets::{block::*, *};
 use ratatui::widgets::{Block, Borders, List, Paragraph};
 
 use crate::app::App;
@@ -104,13 +103,6 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     f.render_widget(playlist_block_user, content_sub_chunk[1]);
     f.render_widget(player_block, chunks[2]);
     f.render_widget(content_block, content_chunk[1]);
-    /*
-    f.render_widget(song_block, main_chunk_upper[0]);
-    f.render_widget(artist_block, main_chunk_upper[1]);
-    f.render_widget(album_block, main_chunk_lower[0]);
-    f.render_widget(playlist_block, main_chunk_lower[1]);
-    */
-
     //rendering different sections based on the selected menu
     match selected_menu {
         Menu::Default => {}
@@ -171,24 +163,27 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                         header_chunk[0].y + 1,
                     );
                 }
-                InputMode::SearchResults => {
+                InputMode::SearchResults if app.search_results_rendered => {
                     let album_search_results = search_results_album(&app.album_names);
                     let artist_search_results = search_results_artist(&app.artist_names);
                     let song_search_results = search_results_songs(&app.track_names);
                     let playlist_search_results = search_results_playlist(&app.playlist_names);
 
                     let album_list = List::new(album_search_results).block(album_block.clone());
+
                     let song_list = List::new(song_search_results).block(song_block.clone());
+
                     let playlist_list =
                         List::new(playlist_search_results).block(playlist_block.clone());
+
                     let artist_list = List::new(artist_search_results).block(artist_block.clone());
 
-                    //f.render_widget(search_results_list, content_chunk[1]);
                     f.render_widget(song_list, main_chunk_upper[0]);
                     f.render_widget(artist_list, main_chunk_upper[1]);
                     f.render_widget(album_list, main_chunk_lower[0]);
                     f.render_widget(playlist_list, main_chunk_lower[1]);
                 }
+                _ => {}
             }
         }
     }

@@ -1,7 +1,7 @@
-use crate::spotify::album_storage::album_storage;
-use crate::spotify::artist_storage::artist_storage;
-use crate::spotify::playlist_storage::playlist_storage;
-use crate::spotify::track_storage::track_storage;
+use crate::spotify::query_find::album_storage;
+use crate::spotify::query_find::artist_storage;
+use crate::spotify::query_find::playlist_storage;
+use crate::spotify::query_find::track_storage;
 
 use crate::spotify::search::search;
 

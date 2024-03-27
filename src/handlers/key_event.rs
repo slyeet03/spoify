@@ -3,8 +3,9 @@ use crate::enums::{InputMode, Menu};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 use std::io;
+use std::thread;
 
-use crate::spotify::query_storage::query_storage;
+use crate::spotify::search::perform_search;
 
 pub fn handle_events(app: &mut App) -> io::Result<()> {
     match event::read()? {
@@ -26,17 +27,26 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
         KeyCode::Char('l') => {
             app.selected_menu = Menu::Library;
             app.library_state.select(Some(0)); //reseting the library state
+            app.search_results_rendered = false;
         }
-        KeyCode::Char('p') => app.selected_menu = Menu::Playlists,
+        KeyCode::Char('p') => {
+            app.selected_menu = Menu::Playlists;
+            app.search_results_rendered = false;
+        }
         KeyCode::Char('s') => {
             app.selected_menu = Menu::Search;
+            app.search_results_rendered = false;
         }
-        KeyCode::Char('d') => app.selected_menu = Menu::Default,
+        KeyCode::Char('d') => {
+            app.selected_menu = Menu::Default;
+            app.search_results_rendered = false;
+        }
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
         KeyCode::Down if app.selected_menu == Menu::Library => {
             //move down in the library list
             let next_index = app.library_state.selected().unwrap_or(0) + 1;
             app.library_state.select(Some(next_index % 6)); //wrapping around the last option
+            app.search_results_rendered = false;
         }
         KeyCode::Up if app.selected_menu == Menu::Library => {
             //move up in the library list
@@ -46,18 +56,19 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.library_state.selected().unwrap_or(0) - 1
             };
             app.library_state.select(Some(prev_index));
+            app.search_results_rendered = false;
         }
         _ => {}
     }
 }
 
 pub fn search_input(app: &mut App) -> io::Result<()> {
-    let data_dir = std::path::Path::new("./data");
     if let Event::Key(key) = event::read()? {
         match app.input_mode {
             InputMode::Normal => match key.code {
                 KeyCode::Char('s') => {
                     app.input_mode = InputMode::Editing;
+                    app.search_results_rendered = false;
                 }
                 KeyCode::Char('q') => {
                     return Ok(());
@@ -69,7 +80,6 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
                     app.search_query = app.input.clone();
                     app.input.clear();
                     app.input_mode = InputMode::SearchResults;
-                    //submit_message(app);
                 }
                 KeyCode::Char(to_insert) => {
                     enter_char(app, to_insert);
@@ -96,26 +106,28 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
     }
 
     if app.input_mode == InputMode::SearchResults {
-        let query = app.search_query.as_str();
-        let (
-            album_names,
-            album_links,
-            track_names,
-            track_links,
-            playlist_names,
-            playlist_links,
-            artist_names,
-            artist_links,
-        ) = query_storage(query, data_dir).unwrap_or_default();
+        let (tx, rx) = std::sync::mpsc::channel();
+        let query = app.search_query.clone();
+        let data_dir = std::path::Path::new("./data");
 
-        app.album_names = album_names;
-        app.album_links = album_links;
-        app.track_names = track_names;
-        app.track_links = track_links;
-        app.playlist_names = playlist_names;
-        app.playlist_links = playlist_links;
-        app.artist_names = artist_names;
-        app.artist_links = artist_links;
+        let join_handle = thread::spawn(move || {
+            let search_results = perform_search(&query, &data_dir);
+            tx.send(search_results).unwrap();
+        });
+
+        if let Ok(search_results) = rx.recv() {
+            app.album_names = search_results.album_names;
+            app.album_links = search_results.album_links;
+            app.track_names = search_results.track_names;
+            app.track_links = search_results.track_links;
+            app.playlist_names = search_results.playlist_names;
+            app.playlist_links = search_results.playlist_links;
+            app.artist_names = search_results.artist_names;
+            app.artist_links = search_results.artist_links;
+            app.search_results_rendered = true;
+        }
+
+        join_handle.join().unwrap();
     }
 
     Ok(())

@@ -1,8 +1,8 @@
 use crate::enums::{InputMode, Library, Menu};
 use crate::handlers::key_event::handle_events;
 use crate::handlers::key_event::search_input;
-use crate::ui::homepage::render_frame;
 use crate::ui::tui;
+use crate::ui::ui::render_frame;
 
 use ratatui::widgets::ListState;
 
@@ -26,6 +26,7 @@ pub struct App {
     pub playlist_links: Vec<String>,
     pub artist_names: Vec<String>,
     pub artist_links: Vec<String>,
+    pub search_results_rendered: bool,
 }
 
 impl App {
@@ -73,6 +74,7 @@ impl Default for App {
             playlist_links: Vec::new(),
             artist_names: Vec::new(),
             artist_links: Vec::new(),
+            search_results_rendered: false,
         }
     }
 }

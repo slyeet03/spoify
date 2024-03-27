@@ -13,6 +13,8 @@ use rspotify::{
     ClientCredsSpotify, Credentials,
 };
 
+use crate::spotify::query_storage::query_storage;
+
 #[tokio::main]
 pub async fn search(user_query: &str, data_dir: &Path) -> Result<(), std::io::Error> {
     dotenv().ok();
@@ -117,4 +119,39 @@ pub async fn search(user_query: &str, data_dir: &Path) -> Result<(), std::io::Er
     }
 
     Ok(())
+}
+
+pub struct SearchResults {
+    pub album_names: Vec<String>,
+    pub album_links: Vec<String>,
+    pub track_names: Vec<String>,
+    pub track_links: Vec<String>,
+    pub playlist_names: Vec<String>,
+    pub playlist_links: Vec<String>,
+    pub artist_names: Vec<String>,
+    pub artist_links: Vec<String>,
+}
+
+pub fn perform_search(query: &str, data_dir: &Path) -> SearchResults {
+    let (
+        album_names,
+        album_links,
+        track_names,
+        track_links,
+        playlist_names,
+        playlist_links,
+        artist_names,
+        artist_links,
+    ) = query_storage(query, data_dir).unwrap_or_default();
+
+    SearchResults {
+        album_names,
+        album_links,
+        track_names,
+        track_links,
+        playlist_names,
+        playlist_links,
+        artist_names,
+        artist_links,
+    }
 }
