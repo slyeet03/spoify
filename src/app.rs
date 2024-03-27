@@ -24,6 +24,8 @@ pub struct App {
     pub track_links: Vec<String>,
     pub playlist_names: Vec<String>,
     pub playlist_links: Vec<String>,
+    pub artist_names: Vec<String>,
+    pub artist_links: Vec<String>,
 }
 
 impl App {
@@ -56,7 +58,7 @@ impl Default for App {
         Self {
             exit: false,
             selected_library: Library::MadeFY,
-            selected_menu: Menu::Main,
+            selected_menu: Menu::Default,
             library_index: 0,
             library_state: ListState::default(),
             search_query: "".to_string(),
@@ -69,6 +71,8 @@ impl Default for App {
             track_links: Vec::new(),
             playlist_names: Vec::new(),
             playlist_links: Vec::new(),
+            artist_names: Vec::new(),
+            artist_links: Vec::new(),
         }
     }
 }

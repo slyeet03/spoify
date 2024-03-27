@@ -25,7 +25,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let library_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Library"));
-    let playlist_block = Block::default()
+    let playlist_block_user = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlist"));
     let player_block = Block::default()
@@ -34,6 +34,19 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let content_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"));
+
+    let album_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Albums"));
+    let artist_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Artists"));
+    let song_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Songs"));
+    let playlist_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Playlists"));
 
     let search_input = Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
@@ -71,15 +84,36 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
         .split(content_chunk[0]);
 
+    let main_chunk = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(content_chunk[1]);
+
+    let main_chunk_upper = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(main_chunk[0]);
+    let main_chunk_lower = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(main_chunk[1]);
+
     //rendering the default ui
     f.render_widget(search_block, header_chunk[0]);
     f.render_widget(&library_list, content_sub_chunk[0]);
-    f.render_widget(playlist_block, content_sub_chunk[1]);
+    f.render_widget(playlist_block_user, content_sub_chunk[1]);
     f.render_widget(player_block, chunks[2]);
     f.render_widget(content_block, content_chunk[1]);
+    /*
+    f.render_widget(song_block, main_chunk_upper[0]);
+    f.render_widget(artist_block, main_chunk_upper[1]);
+    f.render_widget(album_block, main_chunk_lower[0]);
+    f.render_widget(playlist_block, main_chunk_lower[1]);
+    */
 
     //rendering different sections based on the selected menu
     match selected_menu {
+        Menu::Default => {}
         Menu::Main => {
             let content_block = Block::default()
                 .borders(Borders::ALL)
@@ -114,11 +148,11 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             );
         }
         Menu::Playlists => {
-            let playlist_block = Block::default()
+            let playlist_block_user = Block::default()
                 .borders(Borders::ALL)
                 .title(Title::from("Playlist"))
                 .border_style(Style::new().fg(Color::Yellow));
-            f.render_widget(playlist_block, content_sub_chunk[1]);
+            f.render_widget(playlist_block_user, content_sub_chunk[1]);
         }
         Menu::Search => {
             let search_block = Block::default()
@@ -138,44 +172,59 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                     );
                 }
                 InputMode::SearchResults => {
-                    let search_results = create_search_results_list(
-                        &app.album_names,
-                        &app.track_names,
-                        &app.playlist_names,
-                    );
-                    let content_block = Block::default()
-                        .borders(Borders::ALL)
-                        .title(Title::from("Search Result"))
-                        .border_style(Style::new().fg(Color::Yellow));
+                    let album_search_results = search_results_album(&app.album_names);
+                    let artist_search_results = search_results_artist(&app.artist_names);
+                    let song_search_results = search_results_songs(&app.track_names);
+                    let playlist_search_results = search_results_playlist(&app.playlist_names);
 
-                    let search_results_list = List::new(search_results)
-                        .block(content_block.clone())
-                        .start_corner(Corner::TopLeft);
+                    let album_list = List::new(album_search_results).block(album_block.clone());
+                    let song_list = List::new(song_search_results).block(song_block.clone());
+                    let playlist_list =
+                        List::new(playlist_search_results).block(playlist_block.clone());
+                    let artist_list = List::new(artist_search_results).block(artist_block.clone());
 
-                    f.render_widget(search_results_list, content_chunk[1]);
+                    //f.render_widget(search_results_list, content_chunk[1]);
+                    f.render_widget(song_list, main_chunk_upper[0]);
+                    f.render_widget(artist_list, main_chunk_upper[1]);
+                    f.render_widget(album_list, main_chunk_lower[0]);
+                    f.render_widget(playlist_list, main_chunk_lower[1]);
                 }
             }
         }
     }
 }
 
-fn create_search_results_list<'a>(
-    album_names: &'a [String],
-    track_names: &'a [String],
-    playlist_names: &'a [String],
-) -> Vec<ListItem<'a>> {
+fn search_results_album<'a>(album_names: &'a [String]) -> Vec<ListItem<'a>> {
     let mut search_results = Vec::new();
 
     for name in album_names {
-        search_results.push(ListItem::new(format!("Album: {}", name)));
+        search_results.push(ListItem::new(format!("{}", name)));
     }
+    search_results
+}
+fn search_results_songs<'a>(track_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
 
     for name in track_names {
-        search_results.push(ListItem::new(format!("Track: {}", name)));
+        search_results.push(ListItem::new(format!("{}", name)));
     }
 
+    search_results
+}
+fn search_results_playlist<'a>(playlist_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
     for name in playlist_names {
-        search_results.push(ListItem::new(format!("Playlist: {}", name)));
+        search_results.push(ListItem::new(format!("{}", name)));
+    }
+
+    search_results
+}
+fn search_results_artist<'a>(artist_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
+    for name in artist_names {
+        search_results.push(ListItem::new(format!("{}", name)));
     }
 
     search_results

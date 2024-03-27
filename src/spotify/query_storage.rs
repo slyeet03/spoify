@@ -18,6 +18,8 @@ pub fn query_storage(
         Vec<String>,
         Vec<String>,
         Vec<String>,
+        Vec<String>,
+        Vec<String>,
     ),
     io::Error,
 > {
@@ -58,6 +60,8 @@ pub fn query_storage(
             track_links,
             playlist_names,
             playlist_links,
+            artist_names,
+            artist_links,
         ));
     }
     Err(io::Error::new(io::ErrorKind::Other, "Search failed"))

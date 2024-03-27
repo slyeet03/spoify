@@ -31,7 +31,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
         KeyCode::Char('s') => {
             app.selected_menu = Menu::Search;
         }
-
+        KeyCode::Char('d') => app.selected_menu = Menu::Default,
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
         KeyCode::Down if app.selected_menu == Menu::Library => {
             //move down in the library list
@@ -97,8 +97,16 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
 
     if app.input_mode == InputMode::SearchResults {
         let query = app.search_query.as_str();
-        let (album_names, album_links, track_names, track_links, playlist_names, playlist_links) =
-            query_storage(query, data_dir).unwrap_or_default();
+        let (
+            album_names,
+            album_links,
+            track_names,
+            track_links,
+            playlist_names,
+            playlist_links,
+            artist_names,
+            artist_links,
+        ) = query_storage(query, data_dir).unwrap_or_default();
 
         app.album_names = album_names;
         app.album_links = album_links;
@@ -106,6 +114,8 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
         app.track_links = track_links;
         app.playlist_names = playlist_names;
         app.playlist_links = playlist_links;
+        app.artist_names = artist_names;
+        app.artist_links = artist_links;
     }
 
     Ok(())
