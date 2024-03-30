@@ -27,6 +27,8 @@ pub struct App {
     pub artist_names: Vec<String>,
     pub artist_links: Vec<String>,
     pub search_results_rendered: bool,
+    pub user_playlist_names: Vec<String>,
+    pub user_playlist_links: Vec<String>,
 }
 
 impl App {
@@ -75,6 +77,8 @@ impl Default for App {
             artist_names: Vec::new(),
             artist_links: Vec::new(),
             search_results_rendered: false,
+            user_playlist_names: Vec::new(),
+            user_playlist_links: Vec::new(),
         }
     }
 }
