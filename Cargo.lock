@@ -1853,6 +1853,7 @@ dependencies = [
  "tokio",
  "tui",
  "tui-widget-list",
+ "url",
  "web-view",
  "webbrowser",
  "webview",
