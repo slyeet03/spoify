@@ -1,5 +1,9 @@
+use chrono::{DateTime, Utc};
 use dotenv::dotenv;
+use log::info;
+use rspotify::clients::BaseClient;
 use rspotify::{scopes, AuthCodeSpotify, ClientError, Credentials, OAuth, Token};
+use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs::{File, OpenOptions};
 use std::io::{stdin, Read, Write};
@@ -11,11 +15,12 @@ extern crate rspotify;
 
 use rspotify::prelude::OAuthClient;
 
-const TOKEN_FILE: &str = "token.txt";
+use std::path::Path;
 
-#[derive(Debug)]
+const CLIENT_FILE: &str = "spotify_cache/client.json";
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct SpotifyClient {
-    pub spotify: AuthCodeSpotify,
     pub token: Option<Token>,
 }
 
@@ -52,14 +57,25 @@ pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
 
     let creds = Credentials::new(&client_id, &client_secret_id);
     let config = rspotify::Config::default();
-    let spotify = AuthCodeSpotify::with_config(creds, oauth, config);
+    let mut spotify = AuthCodeSpotify::with_config(creds, oauth, config);
 
-    let token = read_token_from_file().await;
+    let mut spotify_client = SpotifyClient { token: None };
 
-    let mut spotify_client = SpotifyClient { spotify, token };
+    let client_from_file = read_client_from_file().await;
 
-    if spotify_client.token.is_none() {
-        let auth_url = spotify_client.spotify.get_authorize_url(true).unwrap();
+    if let Some(mut client) = client_from_file {
+        let now = Utc::now();
+        if let Some(expires_at) = client.token.as_ref().and_then(|t| t.expires_at) {
+            if expires_at < now {
+                // Token is expired, refresh it
+                spotify.refresh_token().await?;
+                client.token = spotify.token.lock().await.unwrap().clone();
+                write_client_to_file(&client).await;
+            }
+        }
+        spotify_client = client;
+    } else {
+        let auth_url = spotify.get_authorize_url(true).unwrap();
 
         if webbrowser::open(&auth_url).is_err() {
             println!(
@@ -86,42 +102,46 @@ pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
             }
         }
 
-        spotify_client.spotify.request_token(&code.trim()).await?;
-        spotify_client.token = spotify_client.spotify.token.lock().await.unwrap().clone();
-        if let Some(t) = &spotify_client.token {
-            write_token_to_file(t).await;
-        }
-    } else {
-        let token = read_token_from_file().await;
-        spotify_client.token = token;
+        spotify.request_token(&code.trim()).await?;
+        spotify_client.token = spotify.token.lock().await.unwrap().clone();
+        write_client_to_file(&spotify_client).await;
     }
 
     Ok(spotify_client)
 }
 
-async fn read_token_from_file() -> Option<Token> {
-    let path = PathBuf::from(TOKEN_FILE);
+async fn read_client_from_file() -> Option<SpotifyClient> {
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push("spoify-tui");
+    path.push("spotify_cache");
+    path.push("client.json");
+
     if path.exists() {
-        let mut file = File::open(path).expect("Failed to open token file");
-        let mut contents = String::new();
-        file.read_to_string(&mut contents)
-            .expect("Failed to read token file");
-        let token: Token = serde_json::from_str(&contents).unwrap();
-        Some(token)
+        let mut file = File::open(path).expect("Failed to open client file");
+        let mut contents = Vec::new();
+        file.read_to_end(&mut contents)
+            .expect("Failed to read client file");
+        let client: SpotifyClient = serde_json::from_slice(&contents).unwrap();
+        Some(client)
     } else {
         None
     }
 }
 
-async fn write_token_to_file(token: &Token) {
-    let path = PathBuf::from(TOKEN_FILE);
-    let mut file = OpenOptions::new()
-        .create(true)
-        .write(true)
-        .truncate(true)
-        .open(path)
-        .expect("Failed to open token file");
-    let json = serde_json::to_string(token).unwrap();
-    file.write_all(json.as_bytes())
-        .expect("Failed to write token to file");
+async fn write_client_to_file(client: &SpotifyClient) {
+    let json_data = serde_json::to_vec_pretty(client).unwrap();
+
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push("spoify-tui");
+    path.push("spotify_cache");
+
+    std::fs::create_dir_all(&path).unwrap();
+    path.push("client.json");
+
+    let mut file = File::create(&path).unwrap();
+    file.write_all(&json_data).unwrap();
+
+    info!("Client saved to {}", path.display());
 }
