@@ -32,5 +32,6 @@ hyper = "1.2.0"
 
 tiny_http = "0.12.0"
 url = "2.5.0"
+dotenvy = "0.15.7"
 
 

@@ -16,6 +16,7 @@ pub async fn fetch_user_playlists(
     spotify_client: &SpotifyClient,
 ) -> Result<Vec<SimplifiedPlaylist>, ClientError> {
     dotenv().ok();
+
     let spotify = match &spotify_client.token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),
         None => return Err(ClientError::InvalidToken),

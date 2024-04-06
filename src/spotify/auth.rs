@@ -1,10 +1,11 @@
 use chrono::{DateTime, Utc};
-use dotenv::dotenv;
+use dotenvy::dotenv;
 use log::info;
 use rspotify::clients::BaseClient;
 use rspotify::{scopes, AuthCodeSpotify, ClientError, Credentials, OAuth, Token};
 use serde::{Deserialize, Serialize};
 use std::env;
+
 use std::fs::{File, OpenOptions};
 use std::io::{stdin, Read, Write};
 use std::path::PathBuf;
@@ -25,7 +26,7 @@ pub struct SpotifyClient {
 }
 
 pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
-    dotenv().ok();
+    dotenv().expect(".env file not found");
     let client_id = env::var("CLIENT_ID").expect("You've not set the CLIENT_ID");
     let client_secret_id =
         env::var("CLIENT_SECRET_ID").expect("You've not set the CLIENT_SECRET_ID");
@@ -67,48 +68,62 @@ pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
         let now = Utc::now();
         if let Some(expires_at) = client.token.as_ref().and_then(|t| t.expires_at) {
             if expires_at < now {
-                // Token is expired, refresh it
-                if let Err(e) = spotify.refresh_token().await {
-                    info!("Token refresh failed: {}", e);
-                } else {
-                    client.token = spotify.token.lock().await.unwrap().clone();
-                    write_client_to_file(&client).await;
+                // Token is expired, try to refresh it
+                match spotify.refresh_token().await {
+                    Ok(_) => {
+                        client.token = spotify.token.lock().await.unwrap().clone();
+                        write_client_to_file(&client).await;
+                    }
+                    Err(_) => {
+                        // Token refresh failed, enter the authorization flow
+                        spotify_client = handle_authorization_flow(&mut spotify).await?;
+                    }
                 }
             }
         }
         spotify_client = client;
     } else {
-        let auth_url = spotify.get_authorize_url(true).unwrap();
-
-        if webbrowser::open(&auth_url).is_err() {
-            println!(
-                "Failed to open the authorization URL. Please visit the URL manually: {}",
-                auth_url
-            );
-        }
-
-        println!("Enter redirected url:");
-        let mut url_input = String::new();
-        stdin().read_line(&mut url_input).unwrap();
-        let url_string = &url_input.as_str();
-
-        let url = Url::parse(url_string).expect("Failed to parse URL");
-        let query_pairs = url.query_pairs();
-
-        let mut code = String::new();
-        let mut state = String::new();
-        for (key, value) in query_pairs {
-            if key == "code" {
-                code = value.to_string();
-            } else if key == "state" {
-                state = value.to_string();
-            }
-        }
-
-        spotify.request_token(&code.trim()).await?;
-        spotify_client.token = spotify.token.lock().await.unwrap().clone();
-        write_client_to_file(&spotify_client).await;
+        // No cached token found, enter the authorization flow
+        spotify_client = handle_authorization_flow(&mut spotify).await?;
     }
+
+    Ok(spotify_client)
+}
+
+async fn handle_authorization_flow(
+    spotify: &mut AuthCodeSpotify,
+) -> Result<SpotifyClient, ClientError> {
+    let auth_url = spotify.get_authorize_url(true).unwrap();
+
+    if webbrowser::open(&auth_url).is_err() {
+        println!(
+            "Failed to open the authorization URL. Please visit the URL manually: {}",
+            auth_url
+        );
+    }
+
+    println!("Enter redirected url:");
+    let mut url_input = String::new();
+    stdin().read_line(&mut url_input).unwrap();
+    let url_string = &url_input.as_str();
+
+    let url = Url::parse(url_string).expect("Failed to parse URL");
+    let query_pairs = url.query_pairs();
+
+    let mut code = String::new();
+    let mut state = String::new();
+    for (key, value) in query_pairs {
+        if key == "code" {
+            code = value.to_string();
+        } else if key == "state" {
+            state = value.to_string();
+        }
+    }
+
+    spotify.request_token(&code.trim()).await?;
+    let token = spotify.token.lock().await.unwrap().clone();
+    let spotify_client = SpotifyClient { token: token };
+    write_client_to_file(&spotify_client).await;
 
     Ok(spotify_client)
 }

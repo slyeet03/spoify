@@ -1,7 +1,8 @@
 extern crate rspotify;
 extern crate serde_json;
 
-use dotenv::dotenv;
+use dotenvy::dotenv;
+
 use std::env;
 use std::fs::File;
 use std::io::Write;
@@ -15,7 +16,7 @@ use rspotify::{
 
 #[tokio::main]
 pub async fn search(user_query: &str) -> Result<(), std::io::Error> {
-    dotenv().ok();
+    dotenv().expect(".env file not found");
 
     let client_id = env::var("CLIENT_ID").expect("You've not set the CLIENT_ID");
     let client_secret_id =
