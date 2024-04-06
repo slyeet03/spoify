@@ -2,6 +2,7 @@ extern crate rspotify;
 extern crate serde_json;
 
 use dotenvy::dotenv;
+use ratatui::widgets::ListItem;
 
 use std::env;
 use std::fs::File;
@@ -142,4 +143,49 @@ pub fn perform_search(query: &str) -> SearchResults {
         artist_names,
         artist_links,
     }
+}
+
+pub fn search_results_album<'a>(album_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
+    for name in album_names {
+        search_results.push(ListItem::new(format!("{}", name)));
+    }
+    search_results
+}
+pub fn search_results_songs<'a>(track_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
+    for name in track_names {
+        search_results.push(ListItem::new(format!("{}", name)));
+    }
+
+    search_results
+}
+pub fn search_results_playlist<'a>(playlist_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
+    for name in playlist_names {
+        search_results.push(ListItem::new(format!("{}", name)));
+    }
+
+    search_results
+}
+pub fn search_results_artist<'a>(artist_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
+    for name in artist_names {
+        search_results.push(ListItem::new(format!("{}", name)));
+    }
+
+    search_results
+}
+pub fn user_playlist<'a>(user_playlist_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
+    for name in user_playlist_names {
+        search_results.push(ListItem::new(format!("{}", name)));
+    }
+
+    search_results
 }

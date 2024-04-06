@@ -7,6 +7,11 @@ use ratatui::widgets::{Block, Borders, List, Paragraph};
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
 
+use crate::spotify::search::{
+    search_results_album, search_results_artist, search_results_playlist, search_results_songs,
+    user_playlist,
+};
+
 pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     //define library items
     let library_items = vec![
@@ -192,49 +197,4 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             }
         }
     }
-}
-
-fn search_results_album<'a>(album_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in album_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-    search_results
-}
-fn search_results_songs<'a>(track_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in track_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-
-    search_results
-}
-fn search_results_playlist<'a>(playlist_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in playlist_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-
-    search_results
-}
-fn search_results_artist<'a>(artist_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in artist_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-
-    search_results
-}
-fn user_playlist<'a>(user_playlist_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in user_playlist_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-
-    search_results
 }
