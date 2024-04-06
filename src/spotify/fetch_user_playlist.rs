@@ -51,7 +51,7 @@ fn save_playlists_to_json(playlists: &[SimplifiedPlaylist]) {
 }
 
 #[tokio::main]
-pub async fn spo() {
+pub async fn get_playlists() {
     init_logger().unwrap();
     let spotify_client = get_spotify_client().await.unwrap();
     match fetch_user_playlists(&spotify_client).await {
