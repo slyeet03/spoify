@@ -1,3 +1,4 @@
+use log::info;
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fs;
@@ -32,20 +33,20 @@ pub fn track_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Stri
     let json_file_path = spotify_cache_path.join("tracks_search_results.json");
 
     if !json_file_path.exists() {
-        println!("tracks_search_results.json file does not exist");
+        info!("tracks_search_results.json file does not exist");
         return Ok((Vec::new(), Vec::new()));
     }
 
     let metadata = fs::metadata(&json_file_path)?;
     if metadata.len() == 0 {
-        println!("tracks_search_results.json file is empty");
+        info!("tracks_search_results.json file is empty");
         return Ok((Vec::new(), Vec::new()));
     }
 
     let data = fs::read_to_string(json_file_path)?;
 
     let track_response: TrackResponse = serde_json::from_str(&data).map_err(|e| {
-        println!("Deserialization error: {}", e);
+        info!("Deserialization error: {}", e);
         e
     })?;
 
@@ -91,20 +92,20 @@ pub fn playlist_storage(
     let json_file_path = spotify_cache_path.join("playlist_search_results.json");
 
     if !json_file_path.exists() {
-        println!("playlist_search_results.json file does not exist");
+        info!("playlist_search_results.json file does not exist");
         return Ok((Vec::new(), Vec::new()));
     }
 
     let metadata = fs::metadata(&json_file_path)?;
     if metadata.len() == 0 {
-        println!("playlist_search_results.json file is empty");
+        info!("playlist_search_results.json file is empty");
         return Ok((Vec::new(), Vec::new()));
     }
 
     let data = fs::read_to_string(json_file_path)?;
 
     let playlist_response: PlaylistResponse = serde_json::from_str(&data).map_err(|e| {
-        println!("Deserialization error: {}", e);
+        info!("Deserialization error: {}", e);
         e
     })?;
 
@@ -148,20 +149,20 @@ pub fn artist_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Str
     let json_file_path = spotify_cache_path.join("artist_search_results.json");
 
     if !json_file_path.exists() {
-        println!("artist_search_results.json file does not exist");
+        info!("artist_search_results.json file does not exist");
         return Ok((Vec::new(), Vec::new()));
     }
 
     let metadata = fs::metadata(&json_file_path)?;
     if metadata.len() == 0 {
-        println!("artist_search_results.json file is empty");
+        info!("artist_search_results.json file is empty");
         return Ok((Vec::new(), Vec::new()));
     }
 
     let data = fs::read_to_string(json_file_path)?;
 
     let artist_response: ArtistResponse = serde_json::from_str(&data).map_err(|e| {
-        println!("Deserialization error: {}", e);
+        info!("Deserialization error: {}", e);
         e
     })?;
 
@@ -209,20 +210,20 @@ pub fn album_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Stri
     let json_file_path = spotify_cache_path.join("album_search_results.json");
 
     if !json_file_path.exists() {
-        println!("album_search_results.json file does not exist");
+        info!("album_search_results.json file does not exist");
         return Ok((Vec::new(), Vec::new()));
     }
 
     let metadata = fs::metadata(&json_file_path)?;
     if metadata.len() == 0 {
-        println!("album_search_results.json file is empty");
+        info!("album_search_results.json file is empty");
         return Ok((Vec::new(), Vec::new()));
     }
 
     let data = fs::read_to_string(json_file_path)?;
 
     let album_response: AlbumResponse = serde_json::from_str(&data).map_err(|e| {
-        println!("Deserialization error: {}", e);
+        info!("Deserialization error: {}", e);
         e
     })?;
 

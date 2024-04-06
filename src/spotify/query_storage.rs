@@ -1,3 +1,5 @@
+use log::info;
+
 use crate::spotify::query_find::album_storage;
 use crate::spotify::query_find::artist_storage;
 use crate::spotify::query_find::playlist_storage;
@@ -30,7 +32,7 @@ pub fn query_storage(
         let (album_names, album_links) = match album_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
-                println!("Error reading album data: {}", err);
+                info!("Error reading album data: {}", err);
                 return Err(err);
             }
         };
@@ -38,7 +40,7 @@ pub fn query_storage(
         let (track_names, track_links) = match track_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
-                println!("Error reading track data: {}", err);
+                info!("Error reading track data: {}", err);
                 return Err(err);
             }
         };
@@ -46,7 +48,7 @@ pub fn query_storage(
         let (artist_names, artist_links) = match artist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
-                println!("Error reading artist data: {}", err);
+                info!("Error reading artist data: {}", err);
                 return Err(err);
             }
         };
@@ -54,7 +56,7 @@ pub fn query_storage(
         let (playlist_names, playlist_links) = match playlist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
-                println!("Error reading playlist data: {}", err);
+                info!("Error reading playlist data: {}", err);
                 return Err(err);
             }
         };
