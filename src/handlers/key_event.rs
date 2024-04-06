@@ -106,10 +106,9 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
     if app.input_mode == InputMode::SearchResults {
         let (tx, rx) = std::sync::mpsc::channel();
         let query = app.search_query.clone();
-        let data_dir = std::path::Path::new("./data");
 
         let join_handle = thread::spawn(move || {
-            let search_results = perform_search(&query, &data_dir);
+            let search_results = perform_search(&query);
             tx.send(search_results).unwrap();
         });
 

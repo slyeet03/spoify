@@ -5,4 +5,5 @@ all.txt
 .env
 /data
 /.vscode
-token.txt
+spotify_cache
+spotify.log
