@@ -68,9 +68,12 @@ pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
         if let Some(expires_at) = client.token.as_ref().and_then(|t| t.expires_at) {
             if expires_at < now {
                 // Token is expired, refresh it
-                spotify.refresh_token().await?;
-                client.token = spotify.token.lock().await.unwrap().clone();
-                write_client_to_file(&client).await;
+                if let Err(e) = spotify.refresh_token().await {
+                    info!("Token refresh failed: {}", e);
+                } else {
+                    client.token = spotify.token.lock().await.unwrap().clone();
+                    write_client_to_file(&client).await;
+                }
             }
         }
         spotify_client = client;

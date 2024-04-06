@@ -57,6 +57,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
 
     //list widget for library items
     let library_list = List::new(library_items.clone()).block(library_block);
+    let user_playlist_names = user_playlist(&app.user_playlist_names);
+    let user_playlist_list = List::new(user_playlist_names).block(playlist_block_user.clone());
     let size = f.size();
     // main display layout
     let chunks = Layout::default()
@@ -103,6 +105,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     f.render_widget(playlist_block_user, content_sub_chunk[1]);
     f.render_widget(player_block, chunks[2]);
     f.render_widget(content_block, content_chunk[1]);
+    f.render_widget(user_playlist_list, content_sub_chunk[1]);
     //rendering different sections based on the selected menu
     match selected_menu {
         Menu::Default => {}
@@ -136,7 +139,12 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 .borders(Borders::ALL)
                 .title(Title::from("Playlist"))
                 .border_style(Style::new().fg(Color::Yellow));
-            f.render_widget(playlist_block_user, content_sub_chunk[1]);
+
+            let user_playlist_names = user_playlist(&app.user_playlist_names);
+            let user_playlist_list =
+                List::new(user_playlist_names).block(playlist_block_user.clone());
+
+            f.render_widget(user_playlist_list, content_sub_chunk[1]);
         }
         Menu::Search => {
             let search_block = Block::default()
@@ -211,6 +219,15 @@ fn search_results_artist<'a>(artist_names: &'a [String]) -> Vec<ListItem<'a>> {
     let mut search_results = Vec::new();
 
     for name in artist_names {
+        search_results.push(ListItem::new(format!("{}", name)));
+    }
+
+    search_results
+}
+fn user_playlist<'a>(user_playlist_names: &'a [String]) -> Vec<ListItem<'a>> {
+    let mut search_results = Vec::new();
+
+    for name in user_playlist_names {
         search_results.push(ListItem::new(format!("{}", name)));
     }
 

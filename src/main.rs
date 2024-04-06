@@ -7,6 +7,7 @@ use crate::spotify::user_playlist::user_playlist;
 use crate::ui::tui;
 
 use log::{error, info, warn};
+use spotify::fetch_user_playlist::get_playlists;
 use std::fs::OpenOptions;
 use std::fs::{self};
 
@@ -19,10 +20,12 @@ mod spotify;
 mod ui;
 
 fn main() -> io::Result<()> {
-    //initialise the tui
-    let mut terminal = tui::init()?;
     //new instance for app
     let mut app = App::default();
+    startup(&mut app);
+
+    //initialise the tui
+    let mut terminal = tui::init()?;
     //running app's main loop
     let app_result = app.run(&mut terminal);
     tui::restore()?;
@@ -54,4 +57,9 @@ pub fn init_logger() -> std::io::Result<()> {
         .init();
 
     Ok(())
+}
+
+fn startup(app: &mut App) {
+    get_playlists();
+    user_playlist(app);
 }
