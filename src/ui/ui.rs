@@ -141,10 +141,15 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 .border_style(Style::new().fg(Color::Yellow));
 
             let user_playlist_names = user_playlist(&app.user_playlist_names);
-            let user_playlist_list =
-                List::new(user_playlist_names).block(playlist_block_user.clone());
+            let user_playlist_list = List::new(user_playlist_names)
+                .block(playlist_block_user.clone())
+                .highlight_style(Style::default().fg(Color::Yellow));
 
-            f.render_widget(user_playlist_list, content_sub_chunk[1]);
+            f.render_stateful_widget(
+                user_playlist_list,
+                content_sub_chunk[1],
+                &mut app.user_playlist_state,
+            );
         }
         Menu::Search => {
             let search_block = Block::default()

@@ -32,6 +32,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
         }
         KeyCode::Char('p') => {
             app.selected_menu = Menu::Playlists;
+            app.user_playlist_state.select(Some(0));
             app.search_results_rendered = false;
             app.input_mode = InputMode::Normal;
         }
@@ -47,6 +48,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.library_state.select(Some(next_index % 6)); //wrapping around the last option
             app.search_results_rendered = false;
         }
+        KeyCode::Down if app.selected_menu == Menu::Playlists => {
+            let length = app.user_playlist_names.len();
+            let next_index = app.user_playlist_state.selected().unwrap_or(0) + 1;
+            app.user_playlist_state.select(Some(next_index % length));
+            app.search_results_rendered = false;
+        }
         KeyCode::Up if app.selected_menu == Menu::Library => {
             //move up in the library list
             let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
@@ -55,6 +62,16 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.library_state.selected().unwrap_or(0) - 1
             };
             app.library_state.select(Some(prev_index));
+            app.search_results_rendered = false;
+        }
+        KeyCode::Up if app.selected_menu == Menu::Playlists => {
+            let length = app.user_playlist_names.len();
+            let prev_index = if app.user_playlist_state.selected().unwrap_or(0) == 0 {
+                length - 1 //wrapping to the last option when user presses up at the first option
+            } else {
+                app.user_playlist_state.selected().unwrap_or(0) - 1
+            };
+            app.user_playlist_state.select(Some(prev_index));
             app.search_results_rendered = false;
         }
         _ => {}

@@ -37,7 +37,6 @@ pub fn init_logger() -> std::io::Result<()> {
     path.push("..");
     path.push("spoify-tui");
     path.push("spotify_cache");
-    path.push("spotify_log");
     std::fs::create_dir_all(&path)?;
     path.push("app.log");
 

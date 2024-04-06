@@ -18,8 +18,6 @@ use rspotify::prelude::OAuthClient;
 
 use std::path::Path;
 
-const CLIENT_FILE: &str = "spotify_cache/client.json";
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpotifyClient {
     pub token: Option<Token>,
