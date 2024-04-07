@@ -19,6 +19,7 @@ pub struct App {
     pub input: String,
     pub cursor_position: usize,
     pub input_mode: InputMode,
+
     pub album_names: Vec<String>,
     pub album_links: Vec<String>,
     pub track_names: Vec<String>,
@@ -27,9 +28,17 @@ pub struct App {
     pub playlist_links: Vec<String>,
     pub artist_names: Vec<String>,
     pub artist_links: Vec<String>,
+
     pub search_results_rendered: bool,
+
     pub user_playlist_names: Vec<String>,
     pub user_playlist_links: Vec<String>,
+    pub user_playlist_track_names: Vec<String>,
+    pub user_playlist_track_duration: Vec<String>,
+    pub user_playlist_artist_names: Vec<String>,
+    pub user_playlist_track_links: Vec<String>,
+    pub user_playlist_artist_links: Vec<String>,
+    pub selected_playlist_uri: Option<String>,
 }
 
 impl App {
@@ -81,6 +90,12 @@ impl Default for App {
             search_results_rendered: false,
             user_playlist_names: Vec::new(),
             user_playlist_links: Vec::new(),
+            user_playlist_track_names: Vec::new(),
+            user_playlist_track_duration: Vec::new(),
+            user_playlist_artist_names: Vec::new(),
+            user_playlist_track_links: Vec::new(),
+            user_playlist_artist_links: Vec::new(),
+            selected_playlist_uri: None,
         }
     }
 }

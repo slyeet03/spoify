@@ -36,6 +36,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.search_results_rendered = false;
             app.input_mode = InputMode::Normal;
         }
+
         KeyCode::Char('s') => {
             app.selected_menu = Menu::Search;
             app.input_mode = InputMode::Normal;

@@ -74,7 +74,7 @@ pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
                     }
                     Err(_) => {
                         // Token refresh failed, enter the authorization flow
-                        spotify_client = handle_authorization_flow(&mut spotify).await?;
+                        client = handle_authorization_flow(&mut spotify).await?;
                     }
                 }
             }
