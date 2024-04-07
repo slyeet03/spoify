@@ -1,7 +1,7 @@
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
-use ratatui::widgets::block::*;
 use ratatui::widgets::ListItem;
+use ratatui::widgets::{block::*, Clear};
 use ratatui::widgets::{Block, Borders, List, Paragraph};
 
 use crate::app::App;
@@ -149,7 +149,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             let user_playlist_list = List::new(user_playlist_names)
                 .block(playlist_block_user.clone())
                 .highlight_style(Style::default().fg(Color::Yellow));
-
+            f.render_widget(Clear, content_sub_chunk[1]);
             f.render_stateful_widget(
                 user_playlist_list,
                 content_sub_chunk[1],
