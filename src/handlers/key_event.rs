@@ -1,6 +1,6 @@
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
-use crate::spotify::user_playlist_track::fetch_playlists_tracks;
+use crate::spotify::user_playlist_track::{fetch_playlists_tracks, process_playlist_tracks};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 use std::io;
@@ -66,7 +66,10 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             let next_index = app.user_playlist_state.selected().unwrap_or(0) + 1;
             app.user_playlist_state.select(Some(next_index % length));
             app.search_results_rendered = false;
-            app.selected_playlist_uri = app.user_playlist_links[next_index].clone();
+            if next_index >= length {
+            } else {
+                app.selected_playlist_uri = app.user_playlist_links[next_index].clone();
+            }
         }
         KeyCode::Up if app.selected_menu == Menu::Playlists => {
             let length = app.user_playlist_names.len();
@@ -83,6 +86,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             if let Err(e) = fetch_playlists_tracks(app) {
                 println!("{}", e);
             }
+            process_playlist_tracks(app);
         }
         _ => {}
     }

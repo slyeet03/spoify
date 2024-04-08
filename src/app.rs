@@ -32,7 +32,7 @@ pub struct App {
     pub user_playlist_names: Vec<String>,
     pub user_playlist_links: Vec<String>,
     pub user_playlist_track_names: Vec<String>,
-    pub user_playlist_track_duration: Vec<String>,
+    pub user_playlist_track_duration: Vec<i64>,
     pub user_playlist_artist_names: Vec<String>,
     pub user_playlist_track_links: Vec<String>,
     pub user_playlist_artist_links: Vec<String>,

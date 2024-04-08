@@ -1,22 +1,17 @@
-use chrono::{DateTime, Utc};
+extern crate rspotify;
+use chrono::Utc;
 use dotenvy::dotenv;
 use log::info;
 use rspotify::clients::BaseClient;
+use rspotify::prelude::OAuthClient;
 use rspotify::{scopes, AuthCodeSpotify, ClientError, Credentials, OAuth, Token};
 use serde::{Deserialize, Serialize};
 use std::env;
-
-use std::fs::{File, OpenOptions};
+use std::fs::File;
 use std::io::{stdin, Read, Write};
 use std::path::PathBuf;
 use url::Url;
 use webbrowser;
-
-extern crate rspotify;
-
-use rspotify::prelude::OAuthClient;
-
-use std::path::Path;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpotifyClient {
