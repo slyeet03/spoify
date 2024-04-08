@@ -1,17 +1,9 @@
+use crate::app::App;
+use crate::ui::tui;
+use spotify::user_playlist::{get_playlists, process_user_playlists};
+use std::fs::OpenOptions;
 use std::io;
 use std::path::PathBuf;
-
-use crate::app::App;
-
-use crate::ui::tui;
-
-use log::{error, info, warn};
-use spotify::user_playlist::{get_playlists, process_user_playlists};
-
-use std::fs::OpenOptions;
-use std::fs::{self};
-
-use std::io::Write;
 
 mod app;
 mod enums;

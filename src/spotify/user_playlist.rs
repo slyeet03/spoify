@@ -8,8 +8,6 @@ use crate::app::App;
 use crate::init_logger;
 use crate::spotify::auth::{get_spotify_client, SpotifyClient};
 use dotenv::dotenv;
-use futures_util::StreamExt;
-
 use futures_util::TryStreamExt;
 use log::info;
 use rspotify::clients::OAuthClient;
@@ -18,7 +16,6 @@ use rspotify::{AuthCodeSpotify, ClientError};
 use serde_json;
 use serde_json::Value;
 use std::fs::File;
-
 use std::io::BufReader;
 use std::io::Write;
 use std::path::PathBuf;

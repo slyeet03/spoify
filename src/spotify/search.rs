@@ -8,22 +8,19 @@ extern crate rspotify;
 extern crate serde_json;
 
 use dotenvy::dotenv;
-use ratatui::widgets::ListItem;
-
-use std::env;
-use std::fs::File;
-use std::io::Write;
-
 use log::info;
+use ratatui::widgets::ListItem;
 use rspotify::{
     model::{Country, Market, SearchType},
     prelude::*,
     ClientCredsSpotify, Credentials,
 };
 use serde::{Deserialize, Serialize};
-
+use std::env;
 use std::fs;
+use std::fs::File;
 use std::io;
+use std::io::Write;
 use std::path::{Path, PathBuf};
 
 #[tokio::main]

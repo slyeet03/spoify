@@ -1,7 +1,6 @@
-use std::io::{self, stdout, Stdout};
-
 use crossterm::{execute, terminal::*};
 use ratatui::prelude::*;
+use std::io::{self, stdout, Stdout};
 
 /// A type alias for the terminal type used in this application
 pub type Tui = Terminal<CrosstermBackend<Stdout>>;

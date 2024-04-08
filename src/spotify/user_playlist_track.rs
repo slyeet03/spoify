@@ -5,14 +5,11 @@ store their names,artists,duration and links in their respective variables
 */
 
 use crate::app::App;
-use crate::init_logger;
-use crate::spotify::auth::{get_spotify_client, SpotifyClient};
+use crate::spotify::auth::get_spotify_client;
 use futures::FutureExt;
 use futures_util::TryStreamExt;
-use log::info;
 use regex::Regex;
-use rspotify::clients::OAuthClient;
-use rspotify::model::{playlist, PlaylistId, PlaylistItem, SimplifiedPlaylist};
+use rspotify::model::{PlaylistId, PlaylistItem};
 use rspotify::prelude::BaseClient;
 use rspotify::{AuthCodeSpotify, ClientError};
 use serde_json::json;

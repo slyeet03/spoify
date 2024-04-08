@@ -3,9 +3,7 @@ use crate::handlers::key_event::handle_events;
 use crate::handlers::key_event::search_input;
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
-
 use ratatui::widgets::ListState;
-
 use std::io;
 
 pub struct App {

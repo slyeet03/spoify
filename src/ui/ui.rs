@@ -1,16 +1,13 @@
-use ratatui::prelude::*;
-use ratatui::style::{Color, Style};
-use ratatui::widgets::ListItem;
-use ratatui::widgets::{block::*, Clear};
-use ratatui::widgets::{Block, Borders, List, Paragraph};
-
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
-
 use crate::spotify::search::{
     search_results_album, search_results_artist, search_results_playlist, search_results_songs,
     user_playlist,
 };
+use ratatui::prelude::*;
+use ratatui::style::{Color, Style};
+use ratatui::widgets::{block::*, Clear};
+use ratatui::widgets::{Block, Borders, List, Paragraph};
 
 pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     //define library items
