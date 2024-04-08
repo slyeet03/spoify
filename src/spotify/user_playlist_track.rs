@@ -13,6 +13,7 @@ use rspotify::model::{PlaylistId, PlaylistItem};
 use rspotify::prelude::BaseClient;
 use rspotify::{AuthCodeSpotify, ClientError};
 use serde_json::{json, Value};
+use std::env;
 use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
@@ -62,10 +63,12 @@ fn save_playlists_to_json(playlist_items: Vec<PlaylistItem>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
-use serde_json::Map;
-use std::env;
-
 pub fn process_playlist_tracks(app: &mut App) {
+    app.user_playlist_track_links.clear();
+    app.user_playlist_track_names.clear();
+    app.user_playlist_track_duration.clear();
+    app.user_playlist_artist_names.clear();
+
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
     path.push("spoify-tui");
@@ -92,13 +95,11 @@ pub fn process_playlist_tracks(app: &mut App) {
                     }
 
                     if let Some(artists) = track_info.get("artists").and_then(Value::as_array) {
-                        for artist in artists {
-                            if let Some(artist_obj) = artist.as_object() {
-                                if let Some(artist_name) =
-                                    artist_obj.get("name").and_then(Value::as_str)
-                                {
-                                    app.user_playlist_artist_names.push(artist_name.to_string());
-                                }
+                        if let Some(first_artist) = artists.get(0).and_then(Value::as_object) {
+                            if let Some(artist_name) =
+                                first_artist.get("name").and_then(Value::as_str)
+                            {
+                                app.user_playlist_artist_names.push(artist_name.to_string());
                             }
                         }
                     }

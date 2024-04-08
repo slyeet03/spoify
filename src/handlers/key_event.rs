@@ -30,15 +30,18 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.library_state.select(Some(0)); //reseting the library state
             app.search_results_rendered = false;
             app.input_mode = InputMode::Normal;
+            app.user_playlist_display = false;
         }
         KeyCode::Char('p') => {
             app.selected_menu = Menu::Playlists;
             app.user_playlist_state.select(Some(0));
             app.search_results_rendered = false;
             app.input_mode = InputMode::Normal;
+            app.user_playlist_display = false;
         }
 
         KeyCode::Char('s') => {
+            app.user_playlist_display = false;
             app.selected_menu = Menu::Search;
             app.input_mode = InputMode::Normal;
         }

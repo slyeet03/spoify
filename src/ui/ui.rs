@@ -6,7 +6,7 @@ use crate::spotify::search::{
 };
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
-use ratatui::widgets::{block::*, Clear};
+use ratatui::widgets::{block::*, Cell, Clear, Row, Table};
 use ratatui::widgets::{Block, Borders, List, Paragraph};
 
 pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
@@ -20,20 +20,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         String::from("Podcasts"),
     ];
     let current_playlist_name = (&app.current_user_playlist).to_string();
-    let user_playlist_tracks: Vec<String> = app
-        .user_playlist_track_names
-        .iter()
-        .zip(app.user_playlist_track_duration.iter())
-        .zip(app.user_playlist_artist_names.iter())
-        .map(|((name, duration), artist)| {
-            format!(
-                "{} ({:.2} mins) - {}",
-                name,
-                *duration as f64 / 60000.0,
-                artist
-            )
-        })
-        .collect();
+
     //creating all the ui blocks
     let search_block = Block::default()
         .borders(Borders::ALL)
@@ -171,16 +158,61 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 &mut app.user_playlist_state,
             );
             if app.user_playlist_display {
-                let user_playlist_tracks_list = List::new(user_playlist_tracks.clone())
-                    .block(user_playlist_block.clone())
-                    .highlight_style(Style::default().fg(Color::Yellow));
+                f.render_widget(Clear, content_chunk[1]);
+                let user_playlist_tracks: Vec<(usize, String, String, String)> = app
+                    .user_playlist_track_names
+                    .iter()
+                    .enumerate()
+                    .zip(app.user_playlist_artist_names.iter())
+                    .zip(
+                        app.user_playlist_track_duration
+                            .iter()
+                            .map(|d| format_duration(*d)),
+                    )
+                    .map(|(((index, name), artist), duration)| {
+                        (index + 1, name.clone(), artist.clone(), duration)
+                    })
+                    .collect();
+
+                fn format_duration(duration: i64) -> String {
+                    let minutes = duration / 60000;
+                    let seconds = (duration % 60000) / 1000;
+                    format!("{}:{:02}", minutes, seconds)
+                }
+
+                let user_playlist_tracks_table = Table::new(
+                    user_playlist_tracks
+                        .iter()
+                        .map(|(index, name, artist, duration)| {
+                            Row::new(vec![
+                                Cell::from(format!("{}", index)),
+                                Cell::from(name.clone()),
+                                Cell::from(artist.clone()),
+                                Cell::from(duration.clone()),
+                            ])
+                        })
+                        .collect::<Vec<_>>(),
+                    [
+                        Constraint::Ratio(1, 10),
+                        Constraint::Ratio(5, 10),
+                        Constraint::Ratio(3, 10),
+                        Constraint::Ratio(1, 10),
+                    ],
+                )
+                .header(
+                    Row::new(vec![
+                        Cell::from("#"),
+                        Cell::from("Title"),
+                        Cell::from("Artist"),
+                        Cell::from("Duration"),
+                    ])
+                    .style(Style::default().fg(Color::Yellow)),
+                )
+                .block(user_playlist_block.clone());
 
                 f.render_widget(Clear, content_chunk[1]);
-                f.render_stateful_widget(
-                    user_playlist_tracks_list,
-                    content_chunk[1],
-                    &mut app.user_playlist_state,
-                );
+                f.render_widget(user_playlist_block, content_chunk[1]);
+                f.render_widget(user_playlist_tracks_table, content_chunk[1]);
             }
         }
         Menu::Search => {
