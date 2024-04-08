@@ -36,7 +36,10 @@ pub struct App {
     pub user_playlist_artist_names: Vec<String>,
     pub user_playlist_track_links: Vec<String>,
     pub user_playlist_artist_links: Vec<String>,
+    pub current_user_playlist: String,
     pub selected_playlist_uri: String,
+    pub user_playlist_display: bool,
+    pub user_playlist_tracks_state: ListState,
 }
 
 impl App {
@@ -94,6 +97,9 @@ impl Default for App {
             user_playlist_track_links: Vec::new(),
             user_playlist_artist_links: Vec::new(),
             selected_playlist_uri: String::new(),
+            current_user_playlist: String::new(),
+            user_playlist_display: false,
+            user_playlist_tracks_state: ListState::default(),
         }
     }
 }

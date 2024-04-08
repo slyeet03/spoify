@@ -19,6 +19,21 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         String::from("Artists"),
         String::from("Podcasts"),
     ];
+    let current_playlist_name = (&app.current_user_playlist).to_string();
+    let user_playlist_tracks: Vec<String> = app
+        .user_playlist_track_names
+        .iter()
+        .zip(app.user_playlist_track_duration.iter())
+        .zip(app.user_playlist_artist_names.iter())
+        .map(|((name, duration), artist)| {
+            format!(
+                "{} ({:.2} mins) - {}",
+                name,
+                *duration as f64 / 60000.0,
+                artist
+            )
+        })
+        .collect();
     //creating all the ui blocks
     let search_block = Block::default()
         .borders(Borders::ALL)
@@ -48,6 +63,9 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlists"));
+    let user_playlist_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from(current_playlist_name));
 
     let search_input = Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
@@ -152,6 +170,18 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 content_sub_chunk[1],
                 &mut app.user_playlist_state,
             );
+            if app.user_playlist_display {
+                let user_playlist_tracks_list = List::new(user_playlist_tracks.clone())
+                    .block(user_playlist_block.clone())
+                    .highlight_style(Style::default().fg(Color::Yellow));
+
+                f.render_widget(Clear, content_chunk[1]);
+                f.render_stateful_widget(
+                    user_playlist_tracks_list,
+                    content_chunk[1],
+                    &mut app.user_playlist_state,
+                );
+            }
         }
         Menu::Search => {
             let search_block = Block::default()

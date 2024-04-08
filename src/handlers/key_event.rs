@@ -69,7 +69,9 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             if next_index >= length {
             } else {
                 app.selected_playlist_uri = app.user_playlist_links[next_index].clone();
+                app.current_user_playlist = app.user_playlist_names[next_index].clone();
             }
+            app.user_playlist_display = false;
         }
         KeyCode::Up if app.selected_menu == Menu::Playlists => {
             let length = app.user_playlist_names.len();
@@ -81,12 +83,15 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.user_playlist_state.select(Some(prev_index));
             app.search_results_rendered = false;
             app.selected_playlist_uri = app.user_playlist_links[prev_index].clone();
+            app.current_user_playlist = app.user_playlist_names[prev_index].clone();
+            app.user_playlist_display = false;
         }
         KeyCode::Enter if app.selected_menu == Menu::Playlists => {
             if let Err(e) = fetch_playlists_tracks(app) {
                 println!("{}", e);
             }
             process_playlist_tracks(app);
+            app.user_playlist_display = true;
         }
         _ => {}
     }
