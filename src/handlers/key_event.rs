@@ -5,6 +5,7 @@ use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use std::io;
 use std::thread;
 
+use crate::spotify::fetch_playlist_tracks::fetch_playlists_tracks;
 use crate::spotify::search::perform_search;
 
 pub fn handle_events(app: &mut App) -> io::Result<()> {
@@ -49,12 +50,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.library_state.select(Some(next_index % 6)); //wrapping around the last option
             app.search_results_rendered = false;
         }
-        KeyCode::Down if app.selected_menu == Menu::Playlists => {
-            let length = app.user_playlist_names.len();
-            let next_index = app.user_playlist_state.selected().unwrap_or(0) + 1;
-            app.user_playlist_state.select(Some(next_index % length));
-            app.search_results_rendered = false;
-        }
+
         KeyCode::Up if app.selected_menu == Menu::Library => {
             //move up in the library list
             let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
@@ -65,15 +61,28 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.library_state.select(Some(prev_index));
             app.search_results_rendered = false;
         }
+        KeyCode::Down if app.selected_menu == Menu::Playlists => {
+            let length = app.user_playlist_names.len();
+            let next_index = app.user_playlist_state.selected().unwrap_or(0) + 1;
+            app.user_playlist_state.select(Some(next_index % length));
+            app.search_results_rendered = false;
+            app.selected_playlist_uri = app.user_playlist_links[next_index].clone();
+        }
         KeyCode::Up if app.selected_menu == Menu::Playlists => {
             let length = app.user_playlist_names.len();
             let prev_index = if app.user_playlist_state.selected().unwrap_or(0) == 0 {
-                length - 1 //wrapping to the last option when user presses up at the first option
+                length - 1
             } else {
                 app.user_playlist_state.selected().unwrap_or(0) - 1
             };
             app.user_playlist_state.select(Some(prev_index));
             app.search_results_rendered = false;
+            app.selected_playlist_uri = app.user_playlist_links[prev_index].clone();
+        }
+        KeyCode::Enter if app.selected_menu == Menu::Playlists => {
+            if let Err(e) = fetch_playlists_tracks(app) {
+                println!("{}", e);
+            }
         }
         _ => {}
     }

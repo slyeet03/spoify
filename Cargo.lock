@@ -1735,6 +1735,7 @@ dependencies = [
  "hyper",
  "log",
  "ratatui",
+ "regex",
  "reqwest",
  "rspotify",
  "serde",
