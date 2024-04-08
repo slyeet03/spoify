@@ -2,12 +2,12 @@ use std::io;
 use std::path::PathBuf;
 
 use crate::app::App;
-use crate::spotify::user_playlist::user_playlist;
 
 use crate::ui::tui;
 
 use log::{error, info, warn};
-use spotify::fetch_user_playlist::get_playlists;
+use spotify::user_playlist::{get_playlists, process_user_playlists};
+
 use std::fs::OpenOptions;
 use std::fs::{self};
 
@@ -60,5 +60,5 @@ pub fn init_logger() -> std::io::Result<()> {
 
 fn startup(app: &mut App) {
     get_playlists();
-    user_playlist(app);
+    process_user_playlists(app);
 }

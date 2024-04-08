@@ -1,11 +1,11 @@
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
+use crate::spotify::user_playlist_track::fetch_playlists_tracks;
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 use std::io;
 use std::thread;
 
-use crate::spotify::fetch_playlist_tracks::fetch_playlists_tracks;
 use crate::spotify::search::perform_search;
 
 pub fn handle_events(app: &mut App) -> io::Result<()> {

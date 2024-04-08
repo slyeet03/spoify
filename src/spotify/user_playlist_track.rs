@@ -1,3 +1,9 @@
+/*
+fetches the tracks of selected playlists
+stores their data in json file
+store their names,artists,duration and links in their respective variables
+*/
+
 use crate::app::App;
 use crate::init_logger;
 use crate::spotify::auth::{get_spotify_client, SpotifyClient};
