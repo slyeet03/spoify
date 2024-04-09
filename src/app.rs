@@ -15,7 +15,9 @@ pub struct App {
     pub library_state: ListState,
     pub user_playlist_state: ListState,
     pub user_playlist_tracks_state: TableState,
+    pub liked_songs_state: TableState,
     pub user_playlist_tracks_selected: bool,
+    pub liked_songs_selected: bool,
 
     pub search_query: String,
     pub input: String,
@@ -43,6 +45,15 @@ pub struct App {
     pub current_user_playlist: String,
     pub selected_playlist_uri: String,
     pub user_playlist_display: bool,
+
+    pub liked_song_names: Vec<String>,
+    pub liked_song_links: Vec<String>,
+    pub liked_song_duration: Vec<i64>,
+    pub liked_song_artist_names: Vec<String>,
+    pub liked_song_artist_links: Vec<String>,
+
+    pub selected_liked_song_uri: String,
+    pub liked_song_display: bool,
 }
 
 impl App {
@@ -104,6 +115,15 @@ impl Default for App {
             user_playlist_display: false,
             user_playlist_tracks_selected: false,
             user_playlist_tracks_state: TableState::default(),
+            liked_songs_state: TableState::default(),
+            liked_song_names: Vec::new(),
+            liked_song_links: Vec::new(),
+            liked_song_duration: Vec::new(),
+            liked_song_artist_names: Vec::new(),
+            liked_song_artist_links: Vec::new(),
+            liked_songs_selected: false,
+            selected_liked_song_uri: String::new(),
+            liked_song_display: false,
         }
     }
 }

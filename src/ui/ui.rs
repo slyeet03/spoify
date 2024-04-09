@@ -20,7 +20,11 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         String::from("Podcasts"),
     ];
     let current_playlist_name = (&app.current_user_playlist).to_string();
-
+    fn format_duration(duration: i64) -> String {
+        let minutes = duration / 60000;
+        let seconds = (duration % 60000) / 1000;
+        format!("{}:{:02}", minutes, seconds)
+    }
     //creating all the ui blocks
     let search_block = Block::default()
         .borders(Borders::ALL)
@@ -54,6 +58,14 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .borders(Borders::ALL)
         .title(Title::from(current_playlist_name))
         .border_style(if app.user_playlist_tracks_selected {
+            Style::default().fg(Color::Yellow)
+        } else {
+            Style::default()
+        });
+    let liked_song_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Liked Songs"))
+        .border_style(if app.liked_songs_selected {
             Style::default().fg(Color::Yellow)
         } else {
             Style::default()
@@ -145,6 +157,58 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 .highlight_style(Style::default().fg(Color::Yellow));
 
             f.render_stateful_widget(library_list, content_sub_chunk[0], &mut app.library_state);
+
+            if app.liked_song_display {
+                f.render_widget(Clear, content_chunk[1]);
+                let liked_songs_tracks: Vec<(usize, String, String, String)> = app
+                    .liked_song_names
+                    .iter()
+                    .enumerate()
+                    .zip(app.liked_song_artist_names.iter())
+                    .zip(app.liked_song_duration.iter().map(|d| format_duration(*d)))
+                    .map(|(((index, name), artist), duration)| {
+                        (index + 1, name.clone(), artist.clone(), duration)
+                    })
+                    .collect();
+                let liked_songs_table = Table::new(
+                    liked_songs_tracks
+                        .iter()
+                        .map(|(index, name, artist, duration)| {
+                            Row::new(vec![
+                                Cell::from(format!("{}", index)),
+                                Cell::from(name.clone()),
+                                Cell::from(artist.clone()),
+                                Cell::from(duration.clone()),
+                            ])
+                        })
+                        .collect::<Vec<_>>(),
+                    [
+                        Constraint::Ratio(1, 10),
+                        Constraint::Ratio(5, 10),
+                        Constraint::Ratio(3, 10),
+                        Constraint::Ratio(1, 10),
+                    ],
+                )
+                .header(
+                    Row::new(vec![
+                        Cell::from("#"),
+                        Cell::from("Title"),
+                        Cell::from("Artist"),
+                        Cell::from("Duration"),
+                    ])
+                    .bold(),
+                )
+                .block(user_playlist_block.clone())
+                .highlight_style(Style::default().fg(Color::Yellow));
+
+                f.render_widget(Clear, content_chunk[1]);
+
+                f.render_stateful_widget(
+                    liked_songs_table,
+                    content_chunk[1],
+                    &mut app.liked_songs_state,
+                );
+            }
         }
         Menu::Playlists => {
             let playlist_block_user = Block::default()
@@ -178,12 +242,6 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                         (index + 1, name.clone(), artist.clone(), duration)
                     })
                     .collect();
-
-                fn format_duration(duration: i64) -> String {
-                    let minutes = duration / 60000;
-                    let seconds = (duration % 60000) / 1000;
-                    format!("{}:{:02}", minutes, seconds)
-                }
 
                 let user_playlist_tracks_table = Table::new(
                     user_playlist_tracks

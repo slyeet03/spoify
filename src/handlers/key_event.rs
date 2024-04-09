@@ -1,5 +1,6 @@
 use crate::app::App;
-use crate::enums::{InputMode, Menu};
+use crate::enums::{InputMode, Library, Menu};
+use crate::spotify::liked_songs::{liked_tracks, process_liked_tracks};
 use crate::spotify::user_playlist_track::{fetch_playlists_tracks, process_playlist_tracks};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
@@ -31,6 +32,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.search_results_rendered = false;
             app.input_mode = InputMode::Normal;
             app.user_playlist_display = false;
+            app.liked_song_display = false;
         }
         KeyCode::Char('p') => {
             app.selected_menu = Menu::Playlists;
@@ -38,21 +40,32 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.search_results_rendered = false;
             app.input_mode = InputMode::Normal;
             app.user_playlist_display = false;
+            app.liked_song_display = false;
         }
 
         KeyCode::Char('s') => {
             app.user_playlist_display = false;
             app.selected_menu = Menu::Search;
             app.input_mode = InputMode::Normal;
+            app.liked_song_display = false;
         }
 
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
         KeyCode::Down => {
             if app.selected_menu == Menu::Library {
-                //move down in the library list
-                let next_index = app.library_state.selected().unwrap_or(0) + 1;
-                app.library_state.select(Some(next_index % 6)); //wrapping around the last option
-                app.search_results_rendered = false;
+                if app.library_state.selected() == Some(2) {
+                    if app.liked_songs_selected {
+                        let length = app.liked_song_names.len();
+                        let next_index = app.liked_songs_state.selected().unwrap_or(0) + 1;
+                        app.liked_songs_state.select(Some(next_index % length));
+                    }
+                }
+                if !app.liked_songs_selected {
+                    let next_index = app.library_state.selected().unwrap_or(0) + 1;
+                    app.library_state.select(Some(next_index % 6)); //wrapping around the last option
+                    app.search_results_rendered = false;
+                    app.liked_song_display = false;
+                }
             }
             if app.selected_menu == Menu::Playlists {
                 if app.user_playlist_tracks_selected {
@@ -76,14 +89,27 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
         }
         KeyCode::Up => {
             if app.selected_menu == Menu::Library {
-                //move up in the library list
-                let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
-                    5 //wrapping to the last option when user presses up at the first option
-                } else {
-                    app.library_state.selected().unwrap_or(0) - 1
-                };
-                app.library_state.select(Some(prev_index));
-                app.search_results_rendered = false;
+                if app.library_state.selected() == Some(2) {
+                    if app.liked_songs_selected {
+                        let length = app.liked_song_names.len();
+                        let prev_index = if app.liked_songs_state.selected().unwrap_or(0) == 0 {
+                            length - 1
+                        } else {
+                            app.liked_songs_state.selected().unwrap_or(0) - 1
+                        };
+                        app.liked_songs_state.select(Some(prev_index));
+                    }
+                }
+                if !app.liked_songs_selected {
+                    let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
+                        5 //wrapping to the last option when user presses up at the first option
+                    } else {
+                        app.library_state.selected().unwrap_or(0) - 1
+                    };
+                    app.library_state.select(Some(prev_index));
+                    app.search_results_rendered = false;
+                    app.liked_song_display = false;
+                }
             }
             if app.selected_menu == Menu::Playlists {
                 if app.user_playlist_tracks_selected {
@@ -110,18 +136,37 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
         }
-        KeyCode::Enter if app.selected_menu == Menu::Playlists => {
-            if let Err(e) = fetch_playlists_tracks(app) {
-                println!("{}", e);
+        KeyCode::Enter => {
+            if app.selected_menu == Menu::Playlists {
+                if let Err(e) = fetch_playlists_tracks(app) {
+                    println!("{}", e);
+                }
+                process_playlist_tracks(app);
+                app.user_playlist_display = true;
             }
-            process_playlist_tracks(app);
-            app.user_playlist_display = true;
+            if app.selected_menu == Menu::Library {
+                if app.library_state.selected() == Some(2) {
+                    if let Err(e) = liked_tracks() {
+                        println!("{}", e);
+                    }
+                    process_liked_tracks(app);
+                    app.liked_song_display = true;
+                }
+            }
         }
         KeyCode::Tab => {
             if app.selected_menu == Menu::Playlists {
                 if app.user_playlist_display {
                     app.user_playlist_tracks_state.select(Some(0));
                     app.user_playlist_tracks_selected = !app.user_playlist_tracks_selected;
+                }
+            }
+            if app.selected_menu == Menu::Library {
+                if app.library_state.selected() == Some(2) {
+                    if app.liked_song_display {
+                        app.liked_songs_state.select(Some(0));
+                        app.liked_songs_selected = !app.liked_songs_selected;
+                    }
                 }
             }
         }
