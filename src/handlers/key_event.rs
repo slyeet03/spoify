@@ -47,63 +47,67 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
         }
 
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
-        KeyCode::Down if app.selected_menu == Menu::Library => {
-            //move down in the library list
-            let next_index = app.library_state.selected().unwrap_or(0) + 1;
-            app.library_state.select(Some(next_index % 6)); //wrapping around the last option
-            app.search_results_rendered = false;
-        }
-
-        KeyCode::Up if app.selected_menu == Menu::Library => {
-            //move up in the library list
-            let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
-                5 //wrapping to the last option when user presses up at the first option
-            } else {
-                app.library_state.selected().unwrap_or(0) - 1
-            };
-            app.library_state.select(Some(prev_index));
-            app.search_results_rendered = false;
-        }
-        KeyCode::Down if app.selected_menu == Menu::Playlists => {
-            if app.user_playlist_tracks_selected {
-                let length = app.user_playlist_track_names.len();
-                let next_index = app.user_playlist_tracks_state.selected().unwrap_or(0) + 1;
-                app.user_playlist_tracks_state
-                    .select(Some(next_index % length));
-            } else {
-                let length = app.user_playlist_names.len();
-                let next_index = app.user_playlist_state.selected().unwrap_or(0) + 1;
-                app.user_playlist_state.select(Some(next_index % length));
+        KeyCode::Down => {
+            if app.selected_menu == Menu::Library {
+                //move down in the library list
+                let next_index = app.library_state.selected().unwrap_or(0) + 1;
+                app.library_state.select(Some(next_index % 6)); //wrapping around the last option
                 app.search_results_rendered = false;
-                if next_index >= length {
+            }
+            if app.selected_menu == Menu::Playlists {
+                if app.user_playlist_tracks_selected {
+                    let length = app.user_playlist_track_names.len();
+                    let next_index = app.user_playlist_tracks_state.selected().unwrap_or(0) + 1;
+                    app.user_playlist_tracks_state
+                        .select(Some(next_index % length));
                 } else {
-                    app.selected_playlist_uri = app.user_playlist_links[next_index].clone();
-                    app.current_user_playlist = app.user_playlist_names[next_index].clone();
+                    let length = app.user_playlist_names.len();
+                    let next_index = app.user_playlist_state.selected().unwrap_or(0) + 1;
+                    app.user_playlist_state.select(Some(next_index % length));
+                    app.search_results_rendered = false;
+                    if next_index >= length {
+                    } else {
+                        app.selected_playlist_uri = app.user_playlist_links[next_index].clone();
+                        app.current_user_playlist = app.user_playlist_names[next_index].clone();
+                    }
+                    app.user_playlist_display = false;
                 }
-                app.user_playlist_display = false;
             }
         }
-        KeyCode::Up if app.selected_menu == Menu::Playlists => {
-            if app.user_playlist_tracks_selected {
-                let length = app.user_playlist_track_names.len();
-                let prev_index = if app.user_playlist_tracks_state.selected().unwrap_or(0) == 0 {
-                    length - 1
+        KeyCode::Up => {
+            if app.selected_menu == Menu::Library {
+                //move up in the library list
+                let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
+                    5 //wrapping to the last option when user presses up at the first option
                 } else {
-                    app.user_playlist_tracks_state.selected().unwrap_or(0) - 1
+                    app.library_state.selected().unwrap_or(0) - 1
                 };
-                app.user_playlist_tracks_state.select(Some(prev_index));
-            } else {
-                let length = app.user_playlist_names.len();
-                let prev_index = if app.user_playlist_state.selected().unwrap_or(0) == 0 {
-                    length - 1
-                } else {
-                    app.user_playlist_state.selected().unwrap_or(0) - 1
-                };
-                app.user_playlist_state.select(Some(prev_index));
+                app.library_state.select(Some(prev_index));
                 app.search_results_rendered = false;
-                app.selected_playlist_uri = app.user_playlist_links[prev_index].clone();
-                app.current_user_playlist = app.user_playlist_names[prev_index].clone();
-                app.user_playlist_display = false;
+            }
+            if app.selected_menu == Menu::Playlists {
+                if app.user_playlist_tracks_selected {
+                    let length = app.user_playlist_track_names.len();
+                    let prev_index = if app.user_playlist_tracks_state.selected().unwrap_or(0) == 0
+                    {
+                        length - 1
+                    } else {
+                        app.user_playlist_tracks_state.selected().unwrap_or(0) - 1
+                    };
+                    app.user_playlist_tracks_state.select(Some(prev_index));
+                } else {
+                    let length = app.user_playlist_names.len();
+                    let prev_index = if app.user_playlist_state.selected().unwrap_or(0) == 0 {
+                        length - 1
+                    } else {
+                        app.user_playlist_state.selected().unwrap_or(0) - 1
+                    };
+                    app.user_playlist_state.select(Some(prev_index));
+                    app.search_results_rendered = false;
+                    app.selected_playlist_uri = app.user_playlist_links[prev_index].clone();
+                    app.current_user_playlist = app.user_playlist_names[prev_index].clone();
+                    app.user_playlist_display = false;
+                }
             }
         }
         KeyCode::Enter if app.selected_menu == Menu::Playlists => {
@@ -113,10 +117,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             process_playlist_tracks(app);
             app.user_playlist_display = true;
         }
-        KeyCode::Tab if app.selected_menu == Menu::Playlists => {
-            if app.user_playlist_display {
-                app.user_playlist_tracks_state.select(Some(0));
-                app.user_playlist_tracks_selected = !app.user_playlist_tracks_selected;
+        KeyCode::Tab => {
+            if app.selected_menu == Menu::Playlists {
+                if app.user_playlist_display {
+                    app.user_playlist_tracks_state.select(Some(0));
+                    app.user_playlist_tracks_selected = !app.user_playlist_tracks_selected;
+                }
             }
         }
 
