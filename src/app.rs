@@ -133,8 +133,8 @@ impl Default for App {
             liked_song_display: false,
             user_playlist_album_names: Vec::new(),
             liked_song_album_names: Vec::new(),
-            border_color: Color::Rgb(69, 126, 89),
-            highlight_color: Color::Rgb(29, 185, 84),
+            highlight_color: Color::Rgb(0, 255, 146),
+            border_color: Color::Rgb(29, 185, 84),
             background_color: Color::Rgb(33, 33, 33),
         }
     }
