@@ -3,6 +3,7 @@ use crate::handlers::key_event::handle_events;
 use crate::handlers::key_event::search_input;
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
+use ratatui::style::Color;
 use ratatui::widgets::{ListState, TableState};
 use std::io;
 
@@ -42,6 +43,7 @@ pub struct App {
     pub user_playlist_artist_names: Vec<String>,
     pub user_playlist_track_links: Vec<String>,
     pub user_playlist_artist_links: Vec<String>,
+    pub user_playlist_album_names: Vec<String>,
     pub current_user_playlist: String,
     pub selected_playlist_uri: String,
     pub user_playlist_display: bool,
@@ -51,9 +53,14 @@ pub struct App {
     pub liked_song_duration: Vec<i64>,
     pub liked_song_artist_names: Vec<String>,
     pub liked_song_artist_links: Vec<String>,
+    pub liked_song_album_names: Vec<String>,
 
     pub selected_liked_song_uri: String,
     pub liked_song_display: bool,
+
+    pub border_color: Color,
+    pub highlight_color: Color,
+    pub background_color: Color,
 }
 
 impl App {
@@ -124,6 +131,11 @@ impl Default for App {
             liked_songs_selected: false,
             selected_liked_song_uri: String::new(),
             liked_song_display: false,
+            user_playlist_album_names: Vec::new(),
+            liked_song_album_names: Vec::new(),
+            border_color: Color::Rgb(69, 126, 89),
+            highlight_color: Color::Rgb(29, 185, 84),
+            background_color: Color::Rgb(33, 33, 33),
         }
     }
 }

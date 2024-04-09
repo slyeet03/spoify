@@ -68,6 +68,7 @@ pub fn process_playlist_tracks(app: &mut App) {
     app.user_playlist_track_names.clear();
     app.user_playlist_track_duration.clear();
     app.user_playlist_artist_names.clear();
+    app.user_playlist_album_names.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -101,6 +102,11 @@ pub fn process_playlist_tracks(app: &mut App) {
                             {
                                 app.user_playlist_artist_names.push(artist_name.to_string());
                             }
+                        }
+                    }
+                    if let Some(albums) = track_info.get("album").and_then(Value::as_object) {
+                        if let Some(album_name) = albums.get("name").and_then(Value::as_str) {
+                            app.user_playlist_album_names.push(album_name.to_string());
                         }
                     }
 

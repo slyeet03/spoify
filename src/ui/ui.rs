@@ -24,56 +24,68 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     //creating all the ui blocks
     let search_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Search"));
+        .title(Title::from("Search"))
+        .style(Style::default().bg(app.background_color));
     let library_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Library"));
+        .title(Title::from("Library"))
+        .style(Style::default().bg(app.background_color));
     let playlist_block_user = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Playlist"));
+        .title(Title::from("Playlist"))
+        .style(Style::default().bg(app.background_color));
     let player_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Player"));
+        .title(Title::from("Player"))
+        .style(Style::default().bg(app.background_color));
     let content_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Welcome!"));
+        .title(Title::from("Welcome!"))
+        .style(Style::default().bg(app.background_color));
 
     let album_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Albums"));
+        .title(Title::from("Albums"))
+        .style(Style::default().bg(app.background_color));
     let artist_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Artists"));
+        .title(Title::from("Artists"))
+        .style(Style::default().bg(app.background_color));
     let song_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Songs"));
+        .title(Title::from("Songs"))
+        .style(Style::default().bg(app.background_color));
     let playlist_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Playlists"));
+        .title(Title::from("Playlists"))
+        .style(Style::default().bg(app.background_color));
     let user_playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(current_playlist_name))
         .border_style(if app.user_playlist_tracks_selected {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(app.border_color)
         } else {
             Style::default()
-        });
+        })
+        .style(Style::default().bg(app.background_color));
     let liked_song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Liked Songs"))
         .border_style(if app.liked_songs_selected {
-            Style::default().fg(Color::Yellow)
+            Style::default().fg(app.border_color)
         } else {
             Style::default()
-        });
+        })
+        .style(Style::default().bg(app.background_color));
 
     let search_input = Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
             InputMode::Normal => Style::default(),
-            InputMode::Editing => Style::default().fg(Color::Yellow),
+            InputMode::Editing => Style::default().fg(app.border_color),
             InputMode::SearchResults => Style::default(),
         })
-        .block(Block::default().borders(Borders::ALL).title("Search"));
+        .block(Block::default().borders(Borders::ALL).title("Search"))
+        .style(Style::default().bg(app.background_color));
 
     //list widget for library items
     let library_list = List::new(library_items.clone()).block(library_block);
@@ -137,7 +149,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             let library_block = Block::default()
                 .borders(Borders::ALL)
                 .title(Title::from("Library"))
-                .border_style(Style::new().fg(Color::Yellow));
+                .border_style(Style::new().fg(app.border_color))
+                .style(Style::default().bg(app.background_color));
 
             let library_items = vec![
                 String::from("Made For You"),
@@ -150,7 +163,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             //rendering currently selected menu
             let library_list = List::new(library_items)
                 .block(library_block)
-                .highlight_style(Style::default().fg(Color::Yellow));
+                .highlight_style(Style::default().fg(app.highlight_color));
 
             f.render_stateful_widget(library_list, content_sub_chunk[0], &mut app.library_state);
 
@@ -160,8 +173,11 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 let liked_songs_table = table_ui(
                     app.liked_song_names.clone(),
                     app.liked_song_artist_names.clone(),
+                    app.liked_song_album_names.clone(),
                     app.liked_song_duration.clone(),
                     liked_song_block,
+                    app.highlight_color.clone(),
+                    app.background_color.clone(),
                 );
 
                 f.render_widget(Clear, content_chunk[1]);
@@ -177,12 +193,13 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             let playlist_block_user = Block::default()
                 .borders(Borders::ALL)
                 .title(Title::from("Playlist"))
-                .border_style(Style::new().fg(Color::Yellow));
+                .border_style(Style::new().fg(app.border_color))
+                .style(Style::default().bg(app.background_color));
 
             let user_playlist_names = user_playlist(&app.user_playlist_names);
             let user_playlist_list = List::new(user_playlist_names)
                 .block(playlist_block_user.clone())
-                .highlight_style(Style::default().fg(Color::Yellow));
+                .highlight_style(Style::default().fg(app.highlight_color));
             f.render_widget(Clear, content_sub_chunk[1]);
             f.render_stateful_widget(
                 user_playlist_list,
@@ -194,8 +211,11 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 let user_playlist_tracks_table = table_ui(
                     app.user_playlist_track_names.clone(),
                     app.user_playlist_artist_names.clone(),
+                    app.user_playlist_album_names.clone(),
                     app.user_playlist_track_duration.clone(),
                     user_playlist_block,
+                    app.highlight_color.clone(),
+                    app.background_color.clone(),
                 );
                 f.render_widget(Clear, content_chunk[1]);
 
@@ -210,7 +230,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             let search_block = Block::default()
                 .borders(Borders::ALL)
                 .title(Title::from("Search"))
-                .border_style(Style::new().fg(Color::Yellow));
+                .border_style(Style::new().fg(app.border_color))
+                .style(Style::default().bg(app.background_color));
 
             f.render_widget(search_block, header_chunk[0]);
 
@@ -258,36 +279,48 @@ fn format_duration(duration: i64) -> String {
 fn table_ui(
     names: Vec<String>,
     artist_names: Vec<String>,
+    album_names: Vec<String>,
     duration: Vec<i64>,
     block: Block,
+    highlight_color: Color,
+    background_color: Color,
 ) -> Table {
-    let tracks: Vec<(usize, String, String, String)> = names
+    let tracks: Vec<(usize, String, String, String, String)> = names
         .iter()
         .enumerate()
         .zip(artist_names.iter())
+        .zip(album_names.iter())
         .zip(duration.iter().map(|d| format_duration(*d)))
-        .map(|(((index, name), artist), duration)| {
-            (index + 1, name.clone(), artist.clone(), duration)
+        .map(|((((index, name), artist), album), duration)| {
+            (
+                index + 1,
+                name.clone(),
+                artist.clone(),
+                album.clone(),
+                duration,
+            )
         })
         .collect();
 
     let table = Table::new(
         tracks
             .iter()
-            .map(|(index, name, artist, duration)| {
+            .map(|(index, name, artist, albums, duration)| {
                 Row::new(vec![
                     Cell::from(format!("{}", index)),
                     Cell::from(name.clone()),
                     Cell::from(artist.clone()),
+                    Cell::from(albums.clone()),
                     Cell::from(duration.clone()),
                 ])
             })
             .collect::<Vec<_>>(),
         [
-            Constraint::Ratio(1, 10),
-            Constraint::Ratio(5, 10),
-            Constraint::Ratio(3, 10),
-            Constraint::Ratio(1, 10),
+            Constraint::Percentage(3),
+            Constraint::Percentage(37),
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
+            Constraint::Percentage(10),
         ],
     )
     .header(
@@ -295,12 +328,14 @@ fn table_ui(
             Cell::from("#"),
             Cell::from("Title"),
             Cell::from("Artist"),
+            Cell::from("Album"),
             Cell::from("Duration"),
         ])
         .bold(),
     )
     .block(block.clone())
-    .highlight_style(Style::default().fg(Color::Yellow));
+    .highlight_style(Style::default().fg(highlight_color))
+    .style(Style::default().bg(background_color));
 
     table
 }

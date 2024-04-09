@@ -55,6 +55,7 @@ pub fn process_liked_tracks(app: &mut App) {
     app.liked_song_names.clear();
     app.liked_song_duration.clear();
     app.liked_song_artist_names.clear();
+    app.liked_song_album_names.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -90,7 +91,11 @@ pub fn process_liked_tracks(app: &mut App) {
                             }
                         }
                     }
-
+                    if let Some(albums) = track_info.get("album").and_then(Value::as_object) {
+                        if let Some(album_name) = albums.get("name").and_then(Value::as_str) {
+                            app.liked_song_album_names.push(album_name.to_string());
+                        }
+                    }
                     if let Some(external_urls) =
                         track_info.get("external_urls").and_then(Value::as_object)
                     {
