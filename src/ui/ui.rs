@@ -59,6 +59,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .borders(Borders::ALL)
         .title(Title::from("Playlists"))
         .style(Style::default().bg(app.background_color));
+
     let user_playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(current_playlist_name))
@@ -318,8 +319,8 @@ fn table_ui(
         [
             Constraint::Percentage(3),
             Constraint::Percentage(37),
-            Constraint::Percentage(25),
-            Constraint::Percentage(25),
+            Constraint::Percentage(20),
+            Constraint::Percentage(30),
             Constraint::Percentage(10),
         ],
     )
