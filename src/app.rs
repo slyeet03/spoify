@@ -3,16 +3,20 @@ use crate::handlers::key_event::handle_events;
 use crate::handlers::key_event::search_input;
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
-use ratatui::widgets::ListState;
+use ratatui::widgets::{ListState, TableState};
 use std::io;
 
 pub struct App {
     pub exit: bool, //to control app's exit
+
     pub selected_library: Library,
     pub selected_menu: Menu,
     pub library_index: usize,
     pub library_state: ListState,
     pub user_playlist_state: ListState,
+    pub user_playlist_tracks_state: TableState,
+    pub user_playlist_tracks_selected: bool,
+
     pub search_query: String,
     pub input: String,
     pub cursor_position: usize,
@@ -39,7 +43,6 @@ pub struct App {
     pub current_user_playlist: String,
     pub selected_playlist_uri: String,
     pub user_playlist_display: bool,
-    pub user_playlist_tracks_state: ListState,
 }
 
 impl App {
@@ -99,7 +102,8 @@ impl Default for App {
             selected_playlist_uri: String::new(),
             current_user_playlist: String::new(),
             user_playlist_display: false,
-            user_playlist_tracks_state: ListState::default(),
+            user_playlist_tracks_selected: false,
+            user_playlist_tracks_state: TableState::default(),
         }
     }
 }

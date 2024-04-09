@@ -52,7 +52,12 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .title(Title::from("Playlists"));
     let user_playlist_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from(current_playlist_name));
+        .title(Title::from(current_playlist_name))
+        .border_style(if app.user_playlist_tracks_selected {
+            Style::default().fg(Color::Yellow)
+        } else {
+            Style::default()
+        });
 
     let search_input = Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
@@ -206,13 +211,18 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                         Cell::from("Artist"),
                         Cell::from("Duration"),
                     ])
-                    .style(Style::default().fg(Color::Yellow)),
+                    .bold(),
                 )
-                .block(user_playlist_block.clone());
+                .block(user_playlist_block.clone())
+                .highlight_style(Style::default().fg(Color::Yellow));
 
                 f.render_widget(Clear, content_chunk[1]);
-                f.render_widget(user_playlist_block, content_chunk[1]);
-                f.render_widget(user_playlist_tracks_table, content_chunk[1]);
+
+                f.render_stateful_widget(
+                    user_playlist_tracks_table,
+                    content_chunk[1],
+                    &mut app.user_playlist_tracks_state,
+                );
             }
         }
         Menu::Search => {
