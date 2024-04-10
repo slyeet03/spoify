@@ -1,6 +1,7 @@
 use crate::app::App;
 use crate::enums::{InputMode, Library, Menu};
 use crate::spotify::liked_songs::{liked_tracks, process_liked_tracks};
+use crate::spotify::user_albums::{process_user_albums, user_albums};
 use crate::spotify::user_playlist_track::{fetch_playlists_tracks, process_playlist_tracks};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
@@ -34,6 +35,8 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.user_playlist_display = false;
             app.liked_song_display = false;
             app.selected_search = false;
+            app.user_album_display = false;
+            app.can_navigate_menu = true;
         }
         KeyCode::Char('p') => {
             app.selected_menu = Menu::Playlists;
@@ -43,6 +46,8 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.user_playlist_display = false;
             app.liked_song_display = false;
             app.selected_search = false;
+            app.user_album_display = false;
+            app.can_navigate_menu = true;
         }
 
         KeyCode::Char('s') => {
@@ -51,6 +56,8 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.input_mode = InputMode::Normal;
             app.liked_song_display = false;
             app.search_state.select(Some(0));
+            app.user_album_display = false;
+            app.can_navigate_menu = true;
         }
 
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
@@ -62,12 +69,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         let next_index = app.liked_songs_state.selected().unwrap_or(0) + 1;
                         app.liked_songs_state.select(Some(next_index % length));
                     }
-                }
-                if !app.liked_songs_selected {
-                    let next_index = app.library_state.selected().unwrap_or(0) + 1;
-                    app.library_state.select(Some(next_index % 6)); //wrapping around the last option
-                    app.search_results_rendered = false;
-                    app.liked_song_display = false;
+                } else if app.library_state.selected() == Some(3) {
+                    if app.user_album_selected {
+                        let length = app.user_album_names.len();
+                        let next_index = app.user_album_state.selected().unwrap_or(0) + 1;
+                        app.user_album_state.select(Some(next_index % length));
+                    }
                 }
             }
             if app.selected_menu == Menu::Playlists {
@@ -113,6 +120,13 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                 }
             }
+            if app.can_navigate_menu {
+                let next_index = app.library_state.selected().unwrap_or(0) + 1;
+                app.library_state.select(Some(next_index % 6)); //wrapping around the last option
+                app.search_results_rendered = false;
+                app.liked_song_display = false;
+                app.user_album_display = false;
+            }
         }
         KeyCode::Up => {
             if app.selected_menu == Menu::Library {
@@ -126,16 +140,16 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         };
                         app.liked_songs_state.select(Some(prev_index));
                     }
-                }
-                if !app.liked_songs_selected {
-                    let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
-                        5 //wrapping to the last option when user presses up at the first option
-                    } else {
-                        app.library_state.selected().unwrap_or(0) - 1
-                    };
-                    app.library_state.select(Some(prev_index));
-                    app.search_results_rendered = false;
-                    app.liked_song_display = false;
+                } else if app.library_state.selected() == Some(3) {
+                    if app.user_album_selected {
+                        let length = app.user_album_names.len();
+                        let prev_index = if app.user_album_state.selected().unwrap_or(0) == 0 {
+                            length - 1
+                        } else {
+                            app.user_album_state.selected().unwrap_or(0) - 1
+                        };
+                        app.user_album_state.select(Some(prev_index));
+                    }
                 }
             }
             if app.selected_menu == Menu::Playlists {
@@ -202,6 +216,17 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                 }
             }
+            if app.can_navigate_menu {
+                let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
+                    5 //wrapping to the last option when user presses up at the first option
+                } else {
+                    app.library_state.selected().unwrap_or(0) - 1
+                };
+                app.library_state.select(Some(prev_index));
+                app.search_results_rendered = false;
+                app.liked_song_display = false;
+                app.user_album_display = false;
+            }
         }
         KeyCode::Enter => {
             if app.selected_menu == Menu::Playlists {
@@ -218,10 +243,17 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                     process_liked_tracks(app);
                     app.liked_song_display = true;
+                } else if app.library_state.selected() == Some(3) {
+                    if let Err(e) = user_albums() {
+                        println!("{}", e);
+                    }
+                    process_user_albums(app);
+                    app.user_album_display = true;
                 }
             }
         }
         KeyCode::Tab => {
+            app.can_navigate_menu = !app.can_navigate_menu;
             if app.selected_menu == Menu::Playlists {
                 if app.user_playlist_display {
                     app.user_playlist_tracks_state.select(Some(0));
@@ -233,6 +265,11 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     if app.liked_song_display {
                         app.liked_songs_state.select(Some(0));
                         app.liked_songs_selected = !app.liked_songs_selected;
+                    }
+                } else if app.library_state.selected() == Some(3) {
+                    if app.user_album_display {
+                        app.user_album_state.select(Some(0));
+                        app.user_album_selected = !app.user_album_selected;
                     }
                 }
             }

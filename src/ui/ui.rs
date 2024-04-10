@@ -17,6 +17,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         String::from("Podcasts"),
     ];
     let current_playlist_name = (&app.current_user_playlist).to_string();
+    let current_user_album = (&app.current_user_album).to_string();
 
     //creating all the ui blocks
     let search_block = Block::default()
@@ -90,6 +91,16 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .borders(Borders::ALL)
         .title(Title::from("Liked Songs"))
         .border_style(if app.liked_songs_selected {
+            Style::default().fg(app.border_color)
+        } else {
+            Style::default()
+        })
+        .style(Style::default().bg(app.background_color));
+
+    let user_album_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Albums"))
+        .border_style(if app.user_album_selected {
             Style::default().fg(app.border_color)
         } else {
             Style::default()
@@ -188,7 +199,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             if app.liked_song_display {
                 f.render_widget(Clear, content_chunk[1]);
 
-                let liked_songs_table = table_ui(
+                let liked_songs_table = track_table_ui(
                     app.liked_song_names.clone(),
                     app.liked_song_artist_names.clone(),
                     app.liked_song_album_names.clone(),
@@ -204,6 +215,27 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                     liked_songs_table,
                     content_chunk[1],
                     &mut app.liked_songs_state,
+                );
+            }
+
+            if app.user_album_display {
+                f.render_widget(Clear, content_chunk[1]);
+
+                let user_album_table = album_table_ui(
+                    app.user_album_names.clone(),
+                    app.user_album_artist_names.clone(),
+                    app.user_album_tracks.clone(),
+                    user_album_block,
+                    app.highlight_color.clone(),
+                    app.background_color.clone(),
+                );
+
+                f.render_widget(Clear, content_chunk[1]);
+
+                f.render_stateful_widget(
+                    user_album_table,
+                    content_chunk[1],
+                    &mut app.user_album_state,
                 );
             }
         }
@@ -226,7 +258,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             );
             if app.user_playlist_display {
                 f.render_widget(Clear, content_chunk[1]);
-                let user_playlist_tracks_table = table_ui(
+                let user_playlist_tracks_table = track_table_ui(
                     app.user_playlist_track_names.clone(),
                     app.user_playlist_artist_names.clone(),
                     app.user_playlist_album_names.clone(),
@@ -309,7 +341,7 @@ fn format_duration(duration: i64) -> String {
     format!("{}:{:02}", minutes, seconds)
 }
 
-fn table_ui(
+fn track_table_ui(
     names: Vec<String>,
     artist_names: Vec<String>,
     album_names: Vec<String>,
@@ -363,6 +395,59 @@ fn table_ui(
             Cell::from("Artist"),
             Cell::from("Album"),
             Cell::from("Duration"),
+        ])
+        .bold(),
+    )
+    .block(block.clone())
+    .highlight_style(Style::default().fg(highlight_color))
+    .style(Style::default().bg(background_color));
+
+    table
+}
+
+fn album_table_ui(
+    names: Vec<String>,
+    artist_names: Vec<String>,
+    tracks: Vec<String>,
+    block: Block,
+    highlight_color: Color,
+    background_color: Color,
+) -> Table {
+    let albums: Vec<(usize, String, String, String)> = names
+        .iter()
+        .enumerate()
+        .zip(artist_names.iter())
+        .zip(tracks.iter())
+        .map(|(((index, name), artist), track)| {
+            (index + 1, name.clone(), artist.clone(), track.clone())
+        })
+        .collect();
+
+    let table = Table::new(
+        albums
+            .iter()
+            .map(|(index, name, artist, track)| {
+                Row::new(vec![
+                    Cell::from(format!("{}", index)),
+                    Cell::from(name.clone()),
+                    Cell::from(artist.clone()),
+                    Cell::from(track.clone()),
+                ])
+            })
+            .collect::<Vec<_>>(),
+        [
+            Constraint::Percentage(10),
+            Constraint::Percentage(50),
+            Constraint::Percentage(30),
+            Constraint::Percentage(10),
+        ],
+    )
+    .header(
+        Row::new(vec![
+            Cell::from("#"),
+            Cell::from("Title"),
+            Cell::from("Artist"),
+            Cell::from("Tracks"),
         ])
         .bold(),
     )
