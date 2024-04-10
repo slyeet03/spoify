@@ -19,6 +19,7 @@ pub struct App {
     pub user_playlist_tracks_state: TableState,
     pub liked_songs_state: TableState,
 
+    pub search_state: ListState,
     pub album_state: ListState,
     pub track_state: ListState,
     pub playlist_state: ListState,
@@ -28,6 +29,7 @@ pub struct App {
     pub selected_track: bool,
     pub selected_playlist: bool,
     pub selected_artist: bool,
+    pub selected_search: bool,
 
     pub user_playlist_tracks_selected: bool,
     pub liked_songs_selected: bool,
@@ -153,6 +155,8 @@ impl Default for App {
             selected_track: false,
             selected_playlist: false,
             selected_artist: false,
+            selected_search: false,
+            search_state: ListState::default(),
 
             //configure colors of ui
             highlight_color: Color::Rgb(0, 255, 146),

@@ -33,6 +33,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.input_mode = InputMode::Normal;
             app.user_playlist_display = false;
             app.liked_song_display = false;
+            app.selected_search = false;
         }
         KeyCode::Char('p') => {
             app.selected_menu = Menu::Playlists;
@@ -41,6 +42,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.input_mode = InputMode::Normal;
             app.user_playlist_display = false;
             app.liked_song_display = false;
+            app.selected_search = false;
         }
 
         KeyCode::Char('s') => {
@@ -91,6 +93,21 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     let length = app.track_names.len();
                     let next_index = app.track_state.selected().unwrap_or(0) + 1;
                     app.track_state.select(Some(next_index % length));
+                }
+                if app.selected_album {
+                    let length = app.album_names.len();
+                    let next_index = app.album_state.selected().unwrap_or(0) + 1;
+                    app.album_state.select(Some(next_index % length));
+                }
+                if app.selected_artist {
+                    let length = app.artist_names.len();
+                    let next_index = app.artist_state.selected().unwrap_or(0) + 1;
+                    app.artist_state.select(Some(next_index % length));
+                }
+                if app.selected_playlist {
+                    let length = app.playlist_names.len();
+                    let next_index = app.playlist_state.selected().unwrap_or(0) + 1;
+                    app.playlist_state.select(Some(next_index % length));
                 }
             }
         }
@@ -152,6 +169,33 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     };
                     app.track_state.select(Some(prev_index));
                 }
+                if app.selected_album {
+                    let length = app.album_names.len();
+                    let prev_index = if app.album_state.selected().unwrap_or(0) == 0 {
+                        length - 1
+                    } else {
+                        app.album_state.selected().unwrap_or(0) - 1
+                    };
+                    app.album_state.select(Some(prev_index));
+                }
+                if app.selected_artist {
+                    let length = app.artist_names.len();
+                    let prev_index = if app.artist_state.selected().unwrap_or(0) == 0 {
+                        length - 1
+                    } else {
+                        app.artist_state.selected().unwrap_or(0) - 1
+                    };
+                    app.artist_state.select(Some(prev_index));
+                }
+                if app.selected_playlist {
+                    let length = app.playlist_names.len();
+                    let prev_index = if app.playlist_state.selected().unwrap_or(0) == 0 {
+                        length - 1
+                    } else {
+                        app.playlist_state.selected().unwrap_or(0) - 1
+                    };
+                    app.playlist_state.select(Some(prev_index));
+                }
             }
         }
         KeyCode::Enter => {
@@ -187,9 +231,36 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                 }
             }
-            if app.selected_menu == Menu::Search {
-                app.track_state.select(Some(0));
-                app.selected_track = !app.selected_track;
+            if app.selected_search {
+                let length = 4;
+                let next_index = app.search_state.selected().unwrap_or(0) + 1;
+                app.search_state.select(Some(next_index % length));
+
+                if app.search_state.selected() == Some(0) {
+                    app.track_state.select(Some(0));
+                    app.selected_track = !app.selected_track;
+                    app.selected_artist = false;
+                    app.selected_album = false;
+                    app.selected_playlist = false;
+                } else if app.search_state.selected() == Some(1) {
+                    app.artist_state.select(Some(0));
+                    app.selected_artist = !app.selected_artist;
+                    app.selected_track = false;
+                    app.selected_album = false;
+                    app.selected_playlist = false;
+                } else if app.search_state.selected() == Some(2) {
+                    app.album_state.select(Some(0));
+                    app.selected_album = !app.selected_album;
+                    app.selected_track = false;
+                    app.selected_artist = false;
+                    app.selected_playlist = false;
+                } else if app.search_state.selected() == Some(3) {
+                    app.playlist_state.select(Some(0));
+                    app.selected_playlist = !app.selected_playlist;
+                    app.selected_track = false;
+                    app.selected_artist = false;
+                    app.selected_album = false;
+                }
             }
         }
 
@@ -292,4 +363,5 @@ fn submit_message(app: &mut App) {
     reset_cursor(app);
     app.input_mode = InputMode::SearchResults;
     app.search_results_rendered = true;
+    app.selected_search = true;
 }
