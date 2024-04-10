@@ -4,7 +4,7 @@ use crate::handlers::key_event::search_input;
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
 use ratatui::style::Color;
-use ratatui::widgets::{ListState, TableState};
+use ratatui::widgets::{ListItem, ListState, TableState};
 use std::io;
 
 pub struct App {
@@ -13,10 +13,22 @@ pub struct App {
     pub selected_library: Library,
     pub selected_menu: Menu,
     pub library_index: usize,
+
     pub library_state: ListState,
     pub user_playlist_state: ListState,
     pub user_playlist_tracks_state: TableState,
     pub liked_songs_state: TableState,
+
+    pub album_state: ListState,
+    pub track_state: ListState,
+    pub playlist_state: ListState,
+    pub artist_state: ListState,
+
+    pub selected_album: bool,
+    pub selected_track: bool,
+    pub selected_playlist: bool,
+    pub selected_artist: bool,
+
     pub user_playlist_tracks_selected: bool,
     pub liked_songs_selected: bool,
 
@@ -133,6 +145,16 @@ impl Default for App {
             liked_song_display: false,
             user_playlist_album_names: Vec::new(),
             liked_song_album_names: Vec::new(),
+            album_state: ListState::default(),
+            track_state: ListState::default(),
+            playlist_state: ListState::default(),
+            artist_state: ListState::default(),
+            selected_album: false,
+            selected_track: false,
+            selected_playlist: false,
+            selected_artist: false,
+
+            //configure colors of ui
             highlight_color: Color::Rgb(0, 255, 146),
             border_color: Color::Rgb(29, 185, 84),
             background_color: Color::Rgb(33, 33, 33),

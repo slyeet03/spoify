@@ -7,7 +7,7 @@ use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 use std::io;
 use std::thread;
 
-use crate::spotify::search::perform_search;
+use crate::spotify::search::{process_search, search};
 
 pub fn handle_events(app: &mut App) -> io::Result<()> {
     match event::read()? {
@@ -86,6 +86,13 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.user_playlist_display = false;
                 }
             }
+            if app.selected_menu == Menu::Search {
+                if app.selected_track {
+                    let length = app.track_names.len();
+                    let next_index = app.track_state.selected().unwrap_or(0) + 1;
+                    app.track_state.select(Some(next_index % length));
+                }
+            }
         }
         KeyCode::Up => {
             if app.selected_menu == Menu::Library {
@@ -135,6 +142,17 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.user_playlist_display = false;
                 }
             }
+            if app.selected_menu == Menu::Search {
+                if app.selected_track {
+                    let length = app.track_names.len();
+                    let prev_index = if app.track_state.selected().unwrap_or(0) == 0 {
+                        length - 1
+                    } else {
+                        app.track_state.selected().unwrap_or(0) - 1
+                    };
+                    app.track_state.select(Some(prev_index));
+                }
+            }
         }
         KeyCode::Enter => {
             if app.selected_menu == Menu::Playlists {
@@ -168,6 +186,10 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         app.liked_songs_selected = !app.liked_songs_selected;
                     }
                 }
+            }
+            if app.selected_menu == Menu::Search {
+                app.track_state.select(Some(0));
+                app.selected_track = !app.selected_track;
             }
         }
 
@@ -217,30 +239,6 @@ pub fn search_input(app: &mut App) -> io::Result<()> {
         return Ok(());
     }
 
-    if app.input_mode == InputMode::SearchResults {
-        let (tx, rx) = std::sync::mpsc::channel();
-        let query = app.search_query.clone();
-
-        let join_handle = thread::spawn(move || {
-            let search_results = perform_search(&query);
-            tx.send(search_results).unwrap();
-        });
-
-        if let Ok(search_results) = rx.recv() {
-            app.album_names = search_results.album_names;
-            app.album_links = search_results.album_links;
-            app.track_names = search_results.track_names;
-            app.track_links = search_results.track_links;
-            app.playlist_names = search_results.playlist_names;
-            app.playlist_links = search_results.playlist_links;
-            app.artist_names = search_results.artist_names;
-            app.artist_links = search_results.artist_links;
-            app.search_results_rendered = true;
-        }
-
-        join_handle.join().unwrap();
-    }
-
     Ok(())
 }
 
@@ -287,7 +285,11 @@ fn reset_cursor(app: &mut App) {
 
 fn submit_message(app: &mut App) {
     app.search_query = app.input.clone();
+    let binding = app.search_query.clone();
+    let query = binding.as_str();
+    let _ = process_search(app, query);
     app.input.clear();
     reset_cursor(app);
     app.input_mode = InputMode::SearchResults;
+    app.search_results_rendered = true;
 }

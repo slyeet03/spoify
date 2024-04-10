@@ -23,6 +23,8 @@ use std::io;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
+use crate::app::App;
+
 #[tokio::main]
 pub async fn search(user_query: &str) -> Result<(), std::io::Error> {
     dotenv().expect(".env file not found");
@@ -111,88 +113,65 @@ pub async fn search(user_query: &str) -> Result<(), std::io::Error> {
     Ok(())
 }
 
-pub struct SearchResults {
-    pub album_names: Vec<String>,
-    pub album_links: Vec<String>,
-    pub track_names: Vec<String>,
-    pub track_links: Vec<String>,
-    pub playlist_names: Vec<String>,
-    pub playlist_links: Vec<String>,
-    pub artist_names: Vec<String>,
-    pub artist_links: Vec<String>,
-}
+pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
+    app.album_names.clear();
+    app.artist_names.clear();
+    app.track_names.clear();
+    app.playlist_names.clear();
 
-pub fn perform_search(query: &str) -> SearchResults {
+    app.album_links.clear();
+    app.artist_links.clear();
+    app.track_links.clear();
+    app.playlist_links.clear();
+
     let mut spotify_cache_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     spotify_cache_path.push("..");
     spotify_cache_path.push("spoify-tui");
     spotify_cache_path.push("spotify_cache");
 
-    let (
-        album_names,
-        album_links,
-        track_names,
-        track_links,
-        playlist_names,
-        playlist_links,
-        artist_names,
-        artist_links,
-    ) = query_storage(query).unwrap_or_default();
+    if search(query).is_ok() {
+        (app.album_names, app.album_links) = match album_storage(&spotify_cache_path) {
+            Ok(result) => result,
+            Err(err) => {
+                info!("Error reading album data: {}", err);
+                return Err(err);
+            }
+        };
 
-    SearchResults {
-        album_names,
-        album_links,
-        track_names,
-        track_links,
-        playlist_names,
-        playlist_links,
-        artist_names,
-        artist_links,
+        (app.track_names, app.track_links) = match track_storage(&spotify_cache_path) {
+            Ok(result) => result,
+            Err(err) => {
+                info!("Error reading track data: {}", err);
+                return Err(err);
+            }
+        };
+
+        (app.artist_names, app.artist_links) = match artist_storage(&spotify_cache_path) {
+            Ok(result) => result,
+            Err(err) => {
+                info!("Error reading artist data: {}", err);
+                return Err(err);
+            }
+        };
+
+        (app.playlist_names, app.playlist_links) = match playlist_storage(&spotify_cache_path) {
+            Ok(result) => result,
+            Err(err) => {
+                info!("Error reading playlist data: {}", err);
+                return Err(err);
+            }
+        };
     }
+
+    Ok(())
 }
 
-pub fn search_results_album<'a>(album_names: &'a [String]) -> Vec<ListItem<'a>> {
+pub fn convert_to_list<'a>(names: &'a [String]) -> Vec<ListItem<'a>> {
     let mut search_results = Vec::new();
 
-    for name in album_names {
+    for name in names {
         search_results.push(ListItem::new(format!("{}", name)));
     }
-    search_results
-}
-pub fn search_results_songs<'a>(track_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in track_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-
-    search_results
-}
-pub fn search_results_playlist<'a>(playlist_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in playlist_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-
-    search_results
-}
-pub fn search_results_artist<'a>(artist_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in artist_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-
-    search_results
-}
-pub fn user_playlist<'a>(user_playlist_names: &'a [String]) -> Vec<ListItem<'a>> {
-    let mut search_results = Vec::new();
-
-    for name in user_playlist_names {
-        search_results.push(ListItem::new(format!("{}", name)));
-    }
-
     search_results
 }
 
@@ -429,72 +408,4 @@ pub fn album_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Stri
     }
 
     Ok((album_names, album_links))
-}
-
-pub fn query_storage(
-    query: &str,
-) -> Result<
-    (
-        Vec<String>,
-        Vec<String>,
-        Vec<String>,
-        Vec<String>,
-        Vec<String>,
-        Vec<String>,
-        Vec<String>,
-        Vec<String>,
-    ),
-    io::Error,
-> {
-    let mut spotify_cache_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    spotify_cache_path.push("..");
-    spotify_cache_path.push("spoify-tui");
-    spotify_cache_path.push("spotify_cache");
-
-    if search(query).is_ok() {
-        let (album_names, album_links) = match album_storage(&spotify_cache_path) {
-            Ok(result) => result,
-            Err(err) => {
-                info!("Error reading album data: {}", err);
-                return Err(err);
-            }
-        };
-
-        let (track_names, track_links) = match track_storage(&spotify_cache_path) {
-            Ok(result) => result,
-            Err(err) => {
-                info!("Error reading track data: {}", err);
-                return Err(err);
-            }
-        };
-
-        let (artist_names, artist_links) = match artist_storage(&spotify_cache_path) {
-            Ok(result) => result,
-            Err(err) => {
-                info!("Error reading artist data: {}", err);
-                return Err(err);
-            }
-        };
-
-        let (playlist_names, playlist_links) = match playlist_storage(&spotify_cache_path) {
-            Ok(result) => result,
-            Err(err) => {
-                info!("Error reading playlist data: {}", err);
-                return Err(err);
-            }
-        };
-
-        return Ok((
-            album_names,
-            album_links,
-            track_names,
-            track_links,
-            playlist_names,
-            playlist_links,
-            artist_names,
-            artist_links,
-        ));
-    }
-
-    Err(io::Error::new(io::ErrorKind::Other, "Search failed"))
 }

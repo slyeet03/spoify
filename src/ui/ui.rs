@@ -1,9 +1,6 @@
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
-use crate::spotify::search::{
-    search_results_album, search_results_artist, search_results_playlist, search_results_songs,
-    user_playlist,
-};
+use crate::spotify::search::convert_to_list;
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
 use ratatui::widgets::{block::*, Cell, Clear, Row, Table};
@@ -46,18 +43,38 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
+        .border_style(if app.selected_album {
+            Style::default().fg(app.border_color)
+        } else {
+            Style::default()
+        })
         .style(Style::default().bg(app.background_color));
     let artist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Artists"))
+        .border_style(if app.selected_artist {
+            Style::default().fg(app.border_color)
+        } else {
+            Style::default()
+        })
         .style(Style::default().bg(app.background_color));
     let song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Songs"))
+        .border_style(if app.selected_track {
+            Style::default().fg(app.border_color)
+        } else {
+            Style::default()
+        })
         .style(Style::default().bg(app.background_color));
     let playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlists"))
+        .border_style(if app.selected_playlist {
+            Style::default().fg(app.border_color)
+        } else {
+            Style::default()
+        })
         .style(Style::default().bg(app.background_color));
 
     let user_playlist_block = Block::default()
@@ -90,7 +107,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
 
     //list widget for library items
     let library_list = List::new(library_items.clone()).block(library_block);
-    let user_playlist_names = user_playlist(&app.user_playlist_names);
+    let user_playlist_names = convert_to_list(&app.user_playlist_names);
     let user_playlist_list = List::new(user_playlist_names).block(playlist_block_user.clone());
     let size = f.size();
     // main display layout
@@ -197,7 +214,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 .border_style(Style::new().fg(app.border_color))
                 .style(Style::default().bg(app.background_color));
 
-            let user_playlist_names = user_playlist(&app.user_playlist_names);
+            let user_playlist_names = convert_to_list(&app.user_playlist_names);
             let user_playlist_list = List::new(user_playlist_names)
                 .block(playlist_block_user.clone())
                 .highlight_style(Style::default().fg(app.highlight_color));
@@ -246,24 +263,39 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                     );
                 }
                 InputMode::SearchResults if app.search_results_rendered => {
-                    let album_search_results = search_results_album(&app.album_names);
-                    let artist_search_results = search_results_artist(&app.artist_names);
-                    let song_search_results = search_results_songs(&app.track_names);
-                    let playlist_search_results = search_results_playlist(&app.playlist_names);
+                    let album_names_list = convert_to_list(&app.album_names);
+                    let track_names_list = convert_to_list(&app.track_names);
+                    let artist_names_list = convert_to_list(&app.artist_names);
+                    let playlist_names_list = convert_to_list(&app.playlist_names);
 
-                    let album_list = List::new(album_search_results).block(album_block.clone());
+                    let album_list = List::new(album_names_list)
+                        .block(album_block.clone())
+                        .highlight_style(Style::default().fg(app.highlight_color));
 
-                    let song_list = List::new(song_search_results).block(song_block.clone());
+                    let song_list = List::new(track_names_list)
+                        .block(song_block.clone())
+                        .highlight_style(Style::default().fg(app.highlight_color));
 
-                    let playlist_list =
-                        List::new(playlist_search_results).block(playlist_block.clone());
+                    let playlist_list = List::new(playlist_names_list)
+                        .block(playlist_block.clone())
+                        .highlight_style(Style::default().fg(app.highlight_color));
 
-                    let artist_list = List::new(artist_search_results).block(artist_block.clone());
+                    let artist_list = List::new(artist_names_list)
+                        .block(artist_block.clone())
+                        .highlight_style(Style::default().fg(app.highlight_color));
 
-                    f.render_widget(song_list, main_chunk_upper[0]);
-                    f.render_widget(artist_list, main_chunk_upper[1]);
-                    f.render_widget(album_list, main_chunk_lower[0]);
-                    f.render_widget(playlist_list, main_chunk_lower[1]);
+                    f.render_stateful_widget(song_list, main_chunk_upper[0], &mut app.track_state);
+                    f.render_stateful_widget(
+                        artist_list,
+                        main_chunk_upper[1],
+                        &mut app.artist_state,
+                    );
+                    f.render_stateful_widget(album_list, main_chunk_lower[0], &mut app.album_state);
+                    f.render_stateful_widget(
+                        playlist_list,
+                        main_chunk_lower[1],
+                        &mut app.playlist_state,
+                    );
                 }
                 _ => {}
             }
