@@ -11,28 +11,17 @@ dotenv = "0.15.0"
 ratatui = "0.26.1"
 reqwest = "0.12.2"
 tokio = {version = "1.36.0", features = ["full"]}
-tui = "0.19.0"
-tui-widget-list = "0.8.2"
 rspotify = { version = "0.13.0", features = ["cli"] }
 serde_json = "1.0.114"
 serde = "1.0.197"
-
 futures = "0.3.30"
 futures-util = "0.3.30"
 chrono = "0.4.37"
-
-getrandom = "0.2.12"
 log = "0.4.21"
-cookie = "0.18.1"
 env_logger = "0.11.3"
-webview = "0.1.1"
-web-view = "0.7.3"
 webbrowser = "0.8.13"
-hyper = "1.2.0"
-
-tiny_http = "0.12.0"
-url = "2.5.0"
 dotenvy = "0.15.7"
 regex = "1.10.4"
+url = "2.5.0"
 
 
