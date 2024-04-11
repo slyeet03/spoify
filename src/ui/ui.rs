@@ -34,7 +34,9 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let player_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(
-            "Playing | ".to_owned()
+            "".to_owned()
+                + &app.playback_status
+                + " | "
                 + &app.current_device_name
                 + " | Volume: "
                 + &app.current_device_volume

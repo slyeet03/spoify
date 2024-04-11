@@ -112,6 +112,7 @@ pub struct App {
     pub current_device_name: String,
     pub current_device_volume: String,
     pub is_device_active: Vec<bool>,
+    pub playback_status: String,
 
     pub border_color: Color,
     pub highlight_color: Color,
@@ -248,6 +249,7 @@ impl Default for App {
             current_device_name: String::new(),
             current_device_volume: String::new(),
             is_device_active: Vec::new(),
+            playback_status: String::from("Playing"),
         }
     }
 }
