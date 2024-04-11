@@ -1,7 +1,7 @@
 use crate::app::App;
-use crate::enums::{InputMode, Library, Menu};
+use crate::enums::{InputMode, Menu};
 use crate::spotify::liked_songs::{liked_tracks, process_liked_tracks};
-use crate::spotify::podcast::{self, process_podcasts, user_podcast};
+use crate::spotify::podcast::{process_podcasts, user_podcast};
 use crate::spotify::recently_played::{process_recently_played, recently_played};
 use crate::spotify::user_albums::{process_user_albums, user_albums};
 use crate::spotify::user_artists::{process_user_artists, user_artists};
@@ -9,9 +9,8 @@ use crate::spotify::user_playlist_track::{fetch_playlists_tracks, process_playli
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 use std::io;
-use std::thread;
 
-use crate::spotify::search::{process_search, search};
+use crate::spotify::search::process_search;
 
 pub fn handle_events(app: &mut App) -> io::Result<()> {
     match event::read()? {

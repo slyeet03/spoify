@@ -4,7 +4,7 @@ use crate::handlers::key_event::search_input;
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
 use ratatui::style::Color;
-use ratatui::widgets::{ListItem, ListState, TableState};
+use ratatui::widgets::{ListState, TableState};
 use std::io;
 
 pub struct App {

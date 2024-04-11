@@ -1,15 +1,12 @@
-use std::fs::File;
-use std::io::{BufReader, Write};
-use std::path::PathBuf;
-
 use crate::app::App;
-use crate::spotify::auth::{get_spotify_client, SpotifyClient};
-use futures::{pin_mut, FutureExt};
-use futures_util::TryStreamExt;
-use rspotify::model::{CursorBasedPage, FullArtist, PlayHistory};
+use crate::spotify::auth::get_spotify_client;
+use rspotify::model::FullArtist;
 use rspotify::prelude::OAuthClient;
 use rspotify::{AuthCodeSpotify, ClientError};
 use serde_json::{json, Value};
+use std::fs::File;
+use std::io::{BufReader, Write};
+use std::path::PathBuf;
 
 #[tokio::main]
 pub async fn user_artists() -> Result<(), ClientError> {

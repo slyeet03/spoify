@@ -17,7 +17,6 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         String::from("Podcasts"),
     ];
     let current_playlist_name = (&app.current_user_playlist).to_string();
-    let current_user_album = (&app.current_user_album).to_string();
 
     //creating all the ui blocks
     let search_block = Block::default()

@@ -104,12 +104,12 @@ async fn handle_authorization_flow(
     let query_pairs = url.query_pairs();
 
     let mut code = String::new();
-    let mut state = String::new();
+    let mut _state = String::new();
     for (key, value) in query_pairs {
         if key == "code" {
             code = value.to_string();
         } else if key == "state" {
-            state = value.to_string();
+            _state = value.to_string();
         }
     }
 

@@ -3,10 +3,10 @@ use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
 use crate::app::App;
-use crate::spotify::auth::{get_spotify_client, SpotifyClient};
-use futures::{pin_mut, FutureExt};
+use crate::spotify::auth::get_spotify_client;
+use futures::FutureExt;
 use futures_util::TryStreamExt;
-use rspotify::model::{CursorBasedPage, PlayHistory, SavedTrack};
+use rspotify::model::SavedTrack;
 use rspotify::prelude::OAuthClient;
 use rspotify::{AuthCodeSpotify, ClientError};
 use serde_json::{json, Value};
