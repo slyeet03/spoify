@@ -1,6 +1,7 @@
 use crate::app::App;
 use crate::enums::{InputMode, Library, Menu};
 use crate::spotify::liked_songs::{liked_tracks, process_liked_tracks};
+use crate::spotify::podcast::{self, process_podcasts, user_podcast};
 use crate::spotify::recently_played::{process_recently_played, recently_played};
 use crate::spotify::user_albums::{process_user_albums, user_albums};
 use crate::spotify::user_playlist_track::{fetch_playlists_tracks, process_playlist_tracks};
@@ -39,6 +40,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.user_album_display = false;
             app.recently_played_display = false;
             app.can_navigate_menu = true;
+            app.podcast_display = false;
         }
         KeyCode::Char('p') => {
             app.selected_menu = Menu::Playlists;
@@ -51,6 +53,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.user_album_display = false;
             app.can_navigate_menu = true;
             app.recently_played_display = false;
+            app.podcast_display = false;
         }
 
         KeyCode::Char('s') => {
@@ -62,6 +65,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.user_album_display = false;
             app.recently_played_display = false;
             app.can_navigate_menu = true;
+            app.podcast_display = false;
         }
 
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
@@ -84,6 +88,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         let length = app.recently_played_names.len();
                         let next_index = app.recently_played_state.selected().unwrap_or(0) + 1;
                         app.recently_played_state.select(Some(next_index % length));
+                    }
+                } else if app.library_state.selected() == Some(5) {
+                    if app.podcast_selected {
+                        let length = app.podcast_names.len();
+                        let next_index = app.podcast_state.selected().unwrap_or(0) + 1;
+                        app.podcast_state.select(Some(next_index % length));
                     }
                 }
             }
@@ -137,6 +147,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.liked_song_display = false;
                 app.user_album_display = false;
                 app.recently_played_display = false;
+                app.podcast_display = false;
             }
         }
         KeyCode::Up => {
@@ -170,6 +181,16 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             app.recently_played_state.selected().unwrap_or(0) - 1
                         };
                         app.recently_played_state.select(Some(prev_index));
+                    }
+                } else if app.library_state.selected() == Some(5) {
+                    if app.podcast_selected {
+                        let length = app.podcast_names.len();
+                        let prev_index = if app.podcast_state.selected().unwrap_or(0) == 0 {
+                            length - 1
+                        } else {
+                            app.podcast_state.selected().unwrap_or(0) - 1
+                        };
+                        app.podcast_state.select(Some(prev_index));
                     }
                 }
             }
@@ -248,6 +269,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.liked_song_display = false;
                 app.user_album_display = false;
                 app.recently_played_display = false;
+                app.podcast_display = false;
             }
         }
         KeyCode::Enter => {
@@ -277,18 +299,25 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                     process_recently_played(app);
                     app.recently_played_display = true;
+                } else if app.library_state.selected() == Some(5) {
+                    if let Err(e) = user_podcast() {
+                        println!("{}", e);
+                    }
+                    process_podcasts(app);
+                    app.podcast_display = true;
                 }
             }
         }
         KeyCode::Tab => {
-            app.can_navigate_menu = !app.can_navigate_menu;
             if app.selected_menu == Menu::Playlists {
+                app.can_navigate_menu = !app.can_navigate_menu;
                 if app.user_playlist_display {
                     app.user_playlist_tracks_state.select(Some(0));
                     app.user_playlist_tracks_selected = !app.user_playlist_tracks_selected;
                 }
             }
             if app.selected_menu == Menu::Library {
+                app.can_navigate_menu = !app.can_navigate_menu;
                 if app.library_state.selected() == Some(2) {
                     if app.liked_song_display {
                         app.liked_songs_state.select(Some(0));
@@ -304,9 +333,15 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         app.recently_played_state.select(Some(0));
                         app.recently_played_selected = !app.recently_played_selected;
                     }
+                } else if app.library_state.selected() == Some(5) {
+                    if app.podcast_display {
+                        app.podcast_state.select(Some(0));
+                        app.podcast_selected = !app.podcast_selected;
+                    }
                 }
             }
             if app.selected_search {
+                app.can_navigate_menu = false;
                 app.track_state.select(None);
                 app.artist_state.select(None);
                 app.album_state.select(None);
