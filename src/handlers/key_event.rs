@@ -1,11 +1,13 @@
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
-use crate::spotify::liked_songs::{liked_tracks, process_liked_tracks};
-use crate::spotify::podcast::{process_podcasts, user_podcast};
-use crate::spotify::recently_played::{process_recently_played, recently_played};
-use crate::spotify::user_albums::{process_user_albums, user_albums};
-use crate::spotify::user_artists::{process_user_artists, user_artists};
-use crate::spotify::user_playlist_track::{fetch_playlists_tracks, process_playlist_tracks};
+use crate::spotify::library_section::liked_songs::{liked_tracks, process_liked_tracks};
+use crate::spotify::library_section::podcast::{process_podcasts, user_podcast};
+use crate::spotify::library_section::recently_played::{process_recently_played, recently_played};
+use crate::spotify::library_section::user_albums::{process_user_albums, user_albums};
+use crate::spotify::library_section::user_artists::{process_user_artists, user_artists};
+use crate::spotify::user_playlist::user_playlist_track::{
+    fetch_playlists_tracks, process_playlist_tracks,
+};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
 use std::io;

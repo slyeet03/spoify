@@ -1,6 +1,7 @@
 use crate::app::App;
+use crate::spotify::player::devices::device;
 use crate::ui::tui;
-use spotify::user_playlist::{get_playlists, process_user_playlists};
+use spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use std::fs::OpenOptions;
 use std::io;
 use std::path::PathBuf;
@@ -12,6 +13,7 @@ mod spotify;
 mod ui;
 
 fn main() -> io::Result<()> {
+    /*
     //new instance for app
     let mut app = App::default();
     startup(&mut app);
@@ -22,6 +24,9 @@ fn main() -> io::Result<()> {
     let app_result = app.run(&mut terminal);
     tui::restore()?;
     app_result
+    */
+    let _ = device();
+    Ok(())
 }
 
 pub fn init_logger() -> std::io::Result<()> {
