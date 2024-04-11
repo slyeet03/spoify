@@ -67,6 +67,9 @@ pub fn process_devices(app: &mut App) {
                 if let Some(is_active) = device_obj.get("is_active").and_then(Value::as_bool) {
                     app.is_device_active.push(is_active as bool);
                 }
+                if let Some(device_id) = device_obj.get("id").and_then(Value::as_str) {
+                    app.device_ids.push(device_id.to_string());
+                }
             }
         }
     }
@@ -80,6 +83,9 @@ pub fn get_current_device(app: &mut App) {
             }
             for volume in &app.devices_volume {
                 app.current_device_volume = volume.to_string();
+            }
+            for id in &app.device_ids {
+                app.current_device_id = Some(id.to_string());
             }
         }
     }

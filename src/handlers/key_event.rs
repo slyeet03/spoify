@@ -5,13 +5,12 @@ use crate::spotify::library_section::podcast::{process_podcasts, user_podcast};
 use crate::spotify::library_section::recently_played::{process_recently_played, recently_played};
 use crate::spotify::library_section::user_albums::{process_user_albums, user_albums};
 use crate::spotify::library_section::user_artists::{process_user_artists, user_artists};
-use crate::spotify::player::devices::device;
-use crate::spotify::player::devices::get_current_device;
-use crate::spotify::player::devices::process_devices;
+use crate::spotify::player::devices::{device, get_current_device, process_devices};
+use crate::spotify::player::shuffle::toogle_shuffle;
 use crate::spotify::user_playlist::user_playlist_track::{
     fetch_playlists_tracks, process_playlist_tracks,
 };
-use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
+use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 
 use std::io;
 
@@ -33,6 +32,12 @@ pub fn handle_events(app: &mut App) -> io::Result<()> {
 fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     match key_event.code {
         //hadling key events
+        KeyCode::Char('s') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+            app.is_shuffle = !app.is_shuffle;
+            if let Err(e) = toogle_shuffle(app) {
+                println!("{}", e);
+            }
+        }
         KeyCode::Char('q') => app.exit(),
         KeyCode::Char('l') => {
             app.selected_menu = Menu::Library;

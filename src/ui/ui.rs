@@ -36,11 +36,13 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .title(Title::from(
             "".to_owned()
                 + &app.playback_status
-                + " | "
+                + " ( "
                 + &app.current_device_name
+                + " | Shuffle: "
+                + &app.shuffle_status
                 + " | Volume: "
                 + &app.current_device_volume
-                + "%",
+                + "%)",
         ))
         .style(Style::default().bg(app.background_color));
     let content_block = Block::default()

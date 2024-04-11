@@ -113,6 +113,12 @@ pub struct App {
     pub current_device_volume: String,
     pub is_device_active: Vec<bool>,
     pub playback_status: String,
+    pub shuffle_status: String,
+    pub repeat_status: String,
+    pub is_shuffle: bool,
+    pub is_repeat: bool,
+    pub device_ids: Vec<String>,
+    pub current_device_id: Option<String>,
 
     pub border_color: Color,
     pub highlight_color: Color,
@@ -250,6 +256,12 @@ impl Default for App {
             current_device_volume: String::new(),
             is_device_active: Vec::new(),
             playback_status: String::from("Playing"),
+            shuffle_status: String::from("Off"),
+            repeat_status: String::from("Off"),
+            is_shuffle: false,
+            is_repeat: false,
+            device_ids: Vec::new(),
+            current_device_id: Some(String::new()),
         }
     }
 }
