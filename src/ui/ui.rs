@@ -97,6 +97,16 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         })
         .style(Style::default().bg(app.background_color));
 
+    let recently_played_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Recently Played"))
+        .border_style(if app.recently_played_selected {
+            Style::default().fg(app.border_color)
+        } else {
+            Style::default()
+        })
+        .style(Style::default().bg(app.background_color));
+
     let user_album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
@@ -215,6 +225,28 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                     liked_songs_table,
                     content_chunk[1],
                     &mut app.liked_songs_state,
+                );
+            }
+
+            if app.recently_played_display {
+                f.render_widget(Clear, content_chunk[1]);
+
+                let recently_played_table = track_table_ui(
+                    app.recently_played_names.clone(),
+                    app.recently_played_artist_names.clone(),
+                    app.recently_played_album_names.clone(),
+                    app.recently_played_duration.clone(),
+                    recently_played_block,
+                    app.highlight_color.clone(),
+                    app.background_color.clone(),
+                );
+
+                f.render_widget(Clear, content_chunk[1]);
+
+                f.render_stateful_widget(
+                    recently_played_table,
+                    content_chunk[1],
+                    &mut app.recently_played_state,
                 );
             }
 
@@ -408,12 +440,12 @@ fn track_table_ui(
 fn album_table_ui(
     names: Vec<String>,
     artist_names: Vec<String>,
-    tracks: Vec<String>,
+    tracks: Vec<usize>,
     block: Block,
     highlight_color: Color,
     background_color: Color,
 ) -> Table {
-    let albums: Vec<(usize, String, String, String)> = names
+    let albums: Vec<(usize, String, String, usize)> = names
         .iter()
         .enumerate()
         .zip(artist_names.iter())
@@ -431,14 +463,14 @@ fn album_table_ui(
                     Cell::from(format!("{}", index)),
                     Cell::from(name.clone()),
                     Cell::from(artist.clone()),
-                    Cell::from(track.clone()),
+                    Cell::from(format!("{}", track)),
                 ])
             })
             .collect::<Vec<_>>(),
         [
             Constraint::Percentage(10),
-            Constraint::Percentage(50),
-            Constraint::Percentage(30),
+            Constraint::Percentage(45),
+            Constraint::Percentage(35),
             Constraint::Percentage(10),
         ],
     )

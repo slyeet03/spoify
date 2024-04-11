@@ -94,8 +94,8 @@ pub fn process_user_albums(app: &mut App) {
                         }
                     }
                     if let Some(tracks) = album_info.get("tracks").and_then(Value::as_object) {
-                        if let Some(track_total) = tracks.get("total").and_then(Value::as_str) {
-                            app.user_album_tracks.push(track_total.to_string());
+                        if let Some(total_tracks) = tracks.get("total").and_then(Value::as_u64) {
+                            app.user_album_tracks.push(total_tracks as usize);
                         }
                     }
                 }

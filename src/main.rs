@@ -1,7 +1,5 @@
 use crate::app::App;
 use crate::ui::tui;
-use spotify::liked_songs::{liked_tracks, process_liked_tracks};
-use spotify::user_albums::user_albums;
 use spotify::user_playlist::{get_playlists, process_user_playlists};
 use std::fs::OpenOptions;
 use std::io;

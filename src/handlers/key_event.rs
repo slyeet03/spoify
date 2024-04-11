@@ -1,6 +1,7 @@
 use crate::app::App;
 use crate::enums::{InputMode, Library, Menu};
 use crate::spotify::liked_songs::{liked_tracks, process_liked_tracks};
+use crate::spotify::recently_played::{process_recently_played, recently_played};
 use crate::spotify::user_albums::{process_user_albums, user_albums};
 use crate::spotify::user_playlist_track::{fetch_playlists_tracks, process_playlist_tracks};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
@@ -36,6 +37,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.liked_song_display = false;
             app.selected_search = false;
             app.user_album_display = false;
+            app.recently_played_display = false;
             app.can_navigate_menu = true;
         }
         KeyCode::Char('p') => {
@@ -48,6 +50,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.selected_search = false;
             app.user_album_display = false;
             app.can_navigate_menu = true;
+            app.recently_played_display = false;
         }
 
         KeyCode::Char('s') => {
@@ -57,6 +60,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.liked_song_display = false;
             app.search_state.select(Some(0));
             app.user_album_display = false;
+            app.recently_played_display = false;
             app.can_navigate_menu = true;
         }
 
@@ -74,6 +78,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         let length = app.user_album_names.len();
                         let next_index = app.user_album_state.selected().unwrap_or(0) + 1;
                         app.user_album_state.select(Some(next_index % length));
+                    }
+                } else if app.library_state.selected() == Some(1) {
+                    if app.recently_played_selected {
+                        let length = app.recently_played_names.len();
+                        let next_index = app.recently_played_state.selected().unwrap_or(0) + 1;
+                        app.recently_played_state.select(Some(next_index % length));
                     }
                 }
             }
@@ -126,6 +136,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.search_results_rendered = false;
                 app.liked_song_display = false;
                 app.user_album_display = false;
+                app.recently_played_display = false;
             }
         }
         KeyCode::Up => {
@@ -149,6 +160,16 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             app.user_album_state.selected().unwrap_or(0) - 1
                         };
                         app.user_album_state.select(Some(prev_index));
+                    }
+                } else if app.library_state.selected() == Some(1) {
+                    if app.recently_played_selected {
+                        let length = app.recently_played_names.len();
+                        let prev_index = if app.recently_played_state.selected().unwrap_or(0) == 0 {
+                            length - 1
+                        } else {
+                            app.recently_played_state.selected().unwrap_or(0) - 1
+                        };
+                        app.recently_played_state.select(Some(prev_index));
                     }
                 }
             }
@@ -226,6 +247,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.search_results_rendered = false;
                 app.liked_song_display = false;
                 app.user_album_display = false;
+                app.recently_played_display = false;
             }
         }
         KeyCode::Enter => {
@@ -249,6 +271,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                     process_user_albums(app);
                     app.user_album_display = true;
+                } else if app.library_state.selected() == Some(1) {
+                    if let Err(e) = recently_played() {
+                        println!("{}", e);
+                    }
+                    process_recently_played(app);
+                    app.recently_played_display = true;
                 }
             }
         }
@@ -270,6 +298,11 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     if app.user_album_display {
                         app.user_album_state.select(Some(0));
                         app.user_album_selected = !app.user_album_selected;
+                    }
+                } else if app.library_state.selected() == Some(1) {
+                    if app.recently_played_display {
+                        app.recently_played_state.select(Some(0));
+                        app.recently_played_selected = !app.recently_played_selected;
                     }
                 }
             }
