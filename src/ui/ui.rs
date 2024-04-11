@@ -33,7 +33,13 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .style(Style::default().bg(app.background_color));
     let player_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Player"))
+        .title(Title::from(
+            "Playing | ".to_owned()
+                + &app.current_device_name
+                + " | Volume: "
+                + &app.current_device_volume
+                + "%",
+        ))
         .style(Style::default().bg(app.background_color));
     let content_block = Block::default()
         .borders(Borders::ALL)

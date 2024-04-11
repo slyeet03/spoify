@@ -107,6 +107,12 @@ pub struct App {
     pub user_artist_selected_uri: String,
     pub current_user_artist: String,
 
+    pub devices_names: Vec<String>,
+    pub devices_volume: Vec<usize>,
+    pub current_device_name: String,
+    pub current_device_volume: String,
+    pub is_device_active: Vec<bool>,
+
     pub border_color: Color,
     pub highlight_color: Color,
     pub background_color: Color,
@@ -140,6 +146,11 @@ impl App {
 impl Default for App {
     fn default() -> Self {
         Self {
+            //configure colors of ui
+            highlight_color: Color::Rgb(0, 255, 146),
+            border_color: Color::Rgb(29, 185, 84),
+            background_color: Color::Rgb(33, 33, 33),
+
             exit: false,
             selected_library: Library::MadeFY,
             selected_menu: Menu::Default,
@@ -232,10 +243,11 @@ impl Default for App {
             user_artist_selected_uri: String::new(),
             current_user_artist: String::new(),
 
-            //configure colors of ui
-            highlight_color: Color::Rgb(0, 255, 146),
-            border_color: Color::Rgb(29, 185, 84),
-            background_color: Color::Rgb(33, 33, 33),
+            devices_names: Vec::new(),
+            devices_volume: Vec::new(),
+            current_device_name: String::new(),
+            current_device_volume: String::new(),
+            is_device_active: Vec::new(),
         }
     }
 }
