@@ -99,6 +99,14 @@ pub struct App {
     pub selected_recently_played_uri: String,
     pub recently_played_state: TableState,
 
+    pub user_artist_names: Vec<String>,
+    pub user_artist_links: Vec<String>,
+    pub user_artist_selected: bool,
+    pub user_artist_display: bool,
+    pub user_artist_state: TableState,
+    pub user_artist_selected_uri: String,
+    pub current_user_artist: String,
+
     pub border_color: Color,
     pub highlight_color: Color,
     pub background_color: Color,
@@ -215,6 +223,14 @@ impl Default for App {
             podcast_state: TableState::default(),
             podcast_selected_uri: String::new(),
             current_podcast: String::new(),
+
+            user_artist_names: Vec::new(),
+            user_artist_links: Vec::new(),
+            user_artist_selected: false,
+            user_artist_display: false,
+            user_artist_state: TableState::default(),
+            user_artist_selected_uri: String::new(),
+            current_user_artist: String::new(),
 
             //configure colors of ui
             highlight_color: Color::Rgb(0, 255, 146),

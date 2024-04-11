@@ -4,6 +4,7 @@ use crate::spotify::liked_songs::{liked_tracks, process_liked_tracks};
 use crate::spotify::podcast::{self, process_podcasts, user_podcast};
 use crate::spotify::recently_played::{process_recently_played, recently_played};
 use crate::spotify::user_albums::{process_user_albums, user_albums};
+use crate::spotify::user_artists::{process_user_artists, user_artists};
 use crate::spotify::user_playlist_track::{fetch_playlists_tracks, process_playlist_tracks};
 use crossterm::event::{self, Event, KeyCode, KeyEvent, KeyEventKind};
 
@@ -41,6 +42,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.recently_played_display = false;
             app.can_navigate_menu = true;
             app.podcast_display = false;
+            app.user_artist_display = false;
         }
         KeyCode::Char('p') => {
             app.selected_menu = Menu::Playlists;
@@ -54,6 +56,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.can_navigate_menu = true;
             app.recently_played_display = false;
             app.podcast_display = false;
+            app.user_artist_display = false;
         }
 
         KeyCode::Char('s') => {
@@ -66,6 +69,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.recently_played_display = false;
             app.can_navigate_menu = true;
             app.podcast_display = false;
+            app.user_artist_display = false;
         }
 
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
@@ -94,6 +98,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         let length = app.podcast_names.len();
                         let next_index = app.podcast_state.selected().unwrap_or(0) + 1;
                         app.podcast_state.select(Some(next_index % length));
+                    }
+                } else if app.library_state.selected() == Some(4) {
+                    if app.user_artist_selected {
+                        let length = app.user_artist_names.len();
+                        let next_index = app.user_artist_state.selected().unwrap_or(0) + 1;
+                        app.user_artist_state.select(Some(next_index % length));
                     }
                 }
             }
@@ -148,6 +158,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_album_display = false;
                 app.recently_played_display = false;
                 app.podcast_display = false;
+                app.user_artist_display = false;
             }
         }
         KeyCode::Up => {
@@ -191,6 +202,16 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             app.podcast_state.selected().unwrap_or(0) - 1
                         };
                         app.podcast_state.select(Some(prev_index));
+                    }
+                } else if app.library_state.selected() == Some(4) {
+                    if app.user_artist_selected {
+                        let length = app.user_artist_names.len();
+                        let prev_index = if app.user_artist_state.selected().unwrap_or(0) == 0 {
+                            length - 1
+                        } else {
+                            app.user_artist_state.selected().unwrap_or(0) - 1
+                        };
+                        app.user_artist_state.select(Some(prev_index));
                     }
                 }
             }
@@ -270,6 +291,7 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_album_display = false;
                 app.recently_played_display = false;
                 app.podcast_display = false;
+                app.user_artist_display = false;
             }
         }
         KeyCode::Enter => {
@@ -305,6 +327,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                     process_podcasts(app);
                     app.podcast_display = true;
+                } else if app.library_state.selected() == Some(4) {
+                    if let Err(e) = user_artists() {
+                        println!("{}", e);
+                    }
+                    process_user_artists(app);
+                    app.user_artist_display = true;
                 }
             }
         }
@@ -337,6 +365,11 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     if app.podcast_display {
                         app.podcast_state.select(Some(0));
                         app.podcast_selected = !app.podcast_selected;
+                    }
+                } else if app.library_state.selected() == Some(4) {
+                    if app.user_artist_display {
+                        app.user_artist_state.select(Some(0));
+                        app.user_artist_selected = !app.user_artist_selected;
                     }
                 }
             }

@@ -127,6 +127,16 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         })
         .style(Style::default().bg(app.background_color));
 
+    let user_artist_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Podcasts"))
+        .border_style(if app.user_artist_selected {
+            Style::default().fg(app.border_color)
+        } else {
+            Style::default()
+        })
+        .style(Style::default().bg(app.background_color));
+
     let search_input = Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
             InputMode::Normal => Style::default(),
@@ -274,6 +284,25 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 f.render_widget(Clear, content_chunk[1]);
 
                 f.render_stateful_widget(podcast_table, content_chunk[1], &mut app.podcast_state);
+            }
+
+            if app.user_artist_display {
+                f.render_widget(Clear, content_chunk[1]);
+
+                let artist_table = artist_table_ui(
+                    app.user_artist_names.clone(),
+                    user_artist_block,
+                    app.highlight_color.clone(),
+                    app.background_color.clone(),
+                );
+
+                f.render_widget(Clear, content_chunk[1]);
+
+                f.render_stateful_widget(
+                    artist_table,
+                    content_chunk[1],
+                    &mut app.user_artist_state,
+                );
             }
 
             if app.user_album_display {
@@ -555,6 +584,38 @@ fn podcast_table_ui(
         ])
         .bold(),
     )
+    .block(block.clone())
+    .highlight_style(Style::default().fg(highlight_color))
+    .style(Style::default().bg(background_color));
+
+    table
+}
+
+fn artist_table_ui(
+    names: Vec<String>,
+    block: Block,
+    highlight_color: Color,
+    background_color: Color,
+) -> Table {
+    let podcasts: Vec<(usize, String)> = names
+        .iter()
+        .enumerate()
+        .map(|(index, name)| (index + 1, name.clone()))
+        .collect();
+
+    let table = Table::new(
+        podcasts
+            .iter()
+            .map(|(index, name)| {
+                Row::new(vec![
+                    Cell::from(format!("{}", index)),
+                    Cell::from(name.clone()),
+                ])
+            })
+            .collect::<Vec<_>>(),
+        [Constraint::Percentage(10), Constraint::Percentage(90)],
+    )
+    .header(Row::new(vec![Cell::from("#"), Cell::from("Title")]).bold())
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
     .style(Style::default().bg(background_color));
