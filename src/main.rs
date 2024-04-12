@@ -1,5 +1,5 @@
 use crate::app::App;
-use crate::spotify::player::currently_playling::currently_playing;
+use crate::spotify::player::currently_playling::{currently_playing, process_currently_playing};
 use crate::spotify::player::devices::device;
 use crate::spotify::player::devices::get_current_device;
 use crate::spotify::player::devices::process_devices;
@@ -61,4 +61,5 @@ fn startup(app: &mut App) {
     process_devices(app);
     get_current_device(app);
     let _ = currently_playing();
+    process_currently_playing(app);
 }

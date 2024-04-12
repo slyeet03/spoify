@@ -31,20 +31,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .borders(Borders::ALL)
         .title(Title::from("Playlist"))
         .style(Style::default().bg(app.background_color));
-    let player_block = Block::default()
-        .borders(Borders::ALL)
-        .title(Title::from(
-            "".to_owned()
-                + &app.playback_status
-                + " ( "
-                + &app.current_device_name
-                + " | Shuffle: "
-                + &app.shuffle_status
-                + " | Volume: "
-                + &app.current_device_volume
-                + "%)",
-        ))
-        .style(Style::default().bg(app.background_color));
+
     let content_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"))
@@ -199,11 +186,37 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(main_chunk[1]);
 
+    //player section
+    let player_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from(
+            "".to_owned()
+                + &app.playback_status
+                + " ( "
+                + &app.current_device_name
+                + " | Shuffle: "
+                + &app.shuffle_status
+                + " | Volume: "
+                + &app.current_device_volume
+                + "%)",
+        ))
+        .style(Style::default().bg(app.background_color));
+
+    let current_playing_name_style = Style::default().fg(app.highlight_color);
+    let current_playing_artist_style = Style::default();
+
+    let player_items = vec![
+        Span::styled(&app.current_playing_name, current_playing_name_style),
+        Span::styled(&app.currently_playing_artist, current_playing_artist_style),
+    ];
+
+    let player_list = List::new(player_items).block(player_block);
+
     //rendering the default ui
     f.render_widget(search_block, header_chunk[0]);
     f.render_widget(&library_list, content_sub_chunk[0]);
     f.render_widget(playlist_block_user, content_sub_chunk[1]);
-    f.render_widget(player_block, chunks[2]);
+    f.render_widget(player_list, chunks[2]);
     f.render_widget(content_block, content_chunk[1]);
     f.render_widget(user_playlist_list, content_sub_chunk[1]);
     //rendering different sections based on the selected menu

@@ -113,12 +113,19 @@ pub struct App {
     pub current_device_volume: String,
     pub is_device_active: Vec<bool>,
     pub playback_status: String,
+    pub device_ids: Vec<String>,
+    pub current_device_id: Option<String>,
     pub shuffle_status: String,
     pub repeat_status: String,
     pub is_shuffle: bool,
     pub is_repeat: bool,
-    pub device_ids: Vec<String>,
-    pub current_device_id: Option<String>,
+
+    pub currrent_timestamp: i64,
+    pub ending_timestamp: i64,
+    pub currently_playing_artist: String,
+    pub current_playing_name: String,
+    pub current_playing_album: String,
+    pub is_playing: bool,
 
     pub border_color: Color,
     pub highlight_color: Color,
@@ -262,6 +269,13 @@ impl Default for App {
             is_repeat: false,
             device_ids: Vec::new(),
             current_device_id: Some(String::new()),
+
+            currrent_timestamp: i64::from(0),
+            ending_timestamp: i64::from(0),
+            currently_playing_artist: String::new(),
+            current_playing_name: String::new(),
+            current_playing_album: String::new(),
+            is_playing: false,
         }
     }
 }
