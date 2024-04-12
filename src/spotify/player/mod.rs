@@ -1,3 +1,2 @@
-pub mod currently_playling;
-pub mod devices;
+pub mod player;
 pub mod shuffle;

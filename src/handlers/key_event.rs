@@ -5,7 +5,7 @@ use crate::spotify::library_section::podcast::{process_podcasts, user_podcast};
 use crate::spotify::library_section::recently_played::{process_recently_played, recently_played};
 use crate::spotify::library_section::user_albums::{process_user_albums, user_albums};
 use crate::spotify::library_section::user_artists::{process_user_artists, user_artists};
-use crate::spotify::player::devices::{device, get_current_device, process_devices};
+use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::player::shuffle::toogle_shuffle;
 use crate::spotify::user_playlist::user_playlist_track::{
     fetch_playlists_tracks, process_playlist_tracks,
@@ -81,14 +81,12 @@ fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.user_artist_display = false;
         }
         KeyCode::Char('+') => {
-            let _ = device();
-            process_devices(app);
-            get_current_device(app);
+            let _ = currently_playing();
+            process_currently_playing(app);
         }
         KeyCode::Char('-') => {
-            let _ = device();
-            process_devices(app);
-            get_current_device(app);
+            let _ = currently_playing();
+            process_currently_playing(app);
         }
 
         KeyCode::Char('m') => app.selected_menu = Menu::Main,

@@ -5,8 +5,8 @@ use futures::future::err;
 use futures::FutureExt;
 use futures_util::TryStreamExt;
 use rspotify::model::{
-    track, Actions, AdditionalType, CurrentlyPlayingContext, CurrentlyPlayingType, Market,
-    SavedAlbum,
+    track, Actions, AdditionalType, CurrentPlaybackContext, CurrentlyPlayingContext,
+    CurrentlyPlayingType, Device, DeviceType, Market, RepeatState, SavedAlbum,
 };
 use rspotify::prelude::OAuthClient;
 use rspotify::{AuthCodeSpotify, ClientError};
@@ -24,7 +24,7 @@ pub async fn currently_playing() -> Result<(), ClientError> {
     };
 
     let currently_playing_result = spotify
-        .current_playing(
+        .current_playback(
             Some(Market::FromToken),
             Some(
                 vec![AdditionalType::Episode]
@@ -34,26 +34,48 @@ pub async fn currently_playing() -> Result<(), ClientError> {
         )
         .await;
 
-    let currently_playing_tracks: CurrentlyPlayingContext = match currently_playing_result {
-        Ok(page) => page.unwrap_or_else(|| CurrentlyPlayingContext {
-            item: None,
-            currently_playing_type: CurrentlyPlayingType::Unknown,
-            actions: Actions::default(),
-            is_playing: false,
+    let currently_playing_tracks: CurrentPlaybackContext = match currently_playing_result {
+        Ok(page) => page.unwrap_or_else(|| CurrentPlaybackContext {
+            device: Device {
+                id: None,
+                is_active: false,
+                is_private_session: false,
+                is_restricted: false,
+                name: "".to_string(),
+                _type: DeviceType::Computer,
+                volume_percent: Some(0),
+            },
+            repeat_state: RepeatState::Off,
+            shuffle_state: false,
             context: None,
             timestamp: DateTime::default(),
             progress: None,
+            is_playing: false,
+            item: None,
+            currently_playing_type: CurrentlyPlayingType::Unknown,
+            actions: Actions::default(),
         }),
         Err(err) => {
-            eprintln!("Error fetching recently played tracks: {}", err);
-            CurrentlyPlayingContext {
-                item: None,
-                currently_playing_type: CurrentlyPlayingType::Unknown,
-                actions: Actions::default(),
-                is_playing: false,
+            eprintln!("Error fetching currently played tracks: {}", err);
+            CurrentPlaybackContext {
+                device: Device {
+                    id: None,
+                    is_active: false,
+                    is_private_session: false,
+                    is_restricted: false,
+                    name: "".to_string(),
+                    _type: DeviceType::Computer,
+                    volume_percent: Some(0),
+                },
+                repeat_state: RepeatState::Off,
+                shuffle_state: false,
                 context: None,
                 timestamp: DateTime::default(),
                 progress: None,
+                is_playing: false,
+                item: None,
+                currently_playing_type: CurrentlyPlayingType::Unknown,
+                actions: Actions::default(),
             }
         }
     };
@@ -63,7 +85,7 @@ pub async fn currently_playing() -> Result<(), ClientError> {
     Ok(())
 }
 
-fn save_data_to_json(items: CurrentlyPlayingContext) {
+fn save_data_to_json(items: CurrentPlaybackContext) {
     let json_data = json!(items);
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -81,6 +103,10 @@ pub fn process_currently_playing(app: &mut App) {
     app.currently_playing_artist.clear();
     app.current_playing_name.clear();
     app.current_playing_album.clear();
+    app.current_device_name.clear();
+    app.current_device_volume.clear();
+
+    let mut repeat_state = String::new();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -100,6 +126,27 @@ pub fn process_currently_playing(app: &mut App) {
         if let Some(is_playing) = currently_playing.get("is_playing").and_then(Value::as_bool) {
             app.is_playing = is_playing;
         }
+        if let Some(repeat) = currently_playing
+            .get("repeat_state")
+            .and_then(Value::as_str)
+        {
+            repeat_state = repeat.to_string();
+        }
+        if let Some(device) = currently_playing.get("device").and_then(Value::as_object) {
+            if let Some(device_name) = device.get("name").and_then(Value::as_str) {
+                app.current_device_name = device_name.to_string();
+            }
+            if let Some(device_volume) = device.get("volume_percent").and_then(Value::as_u64) {
+                app.current_device_volume = device_volume.to_string();
+            }
+        }
+        if let Some(shuffle) = currently_playing
+            .get("shuffle_state")
+            .and_then(Value::as_bool)
+        {
+            app.is_shuffle = shuffle;
+        }
+
         if let Some(item) = currently_playing.get("item").and_then(Value::as_object) {
             if let Some(duration_ms) = item.get("duration_ms").and_then(Value::as_i64) {
                 app.ending_timestamp = duration_ms as i64;
@@ -129,5 +176,17 @@ pub fn process_currently_playing(app: &mut App) {
         app.playback_status = "Playing".to_owned();
     } else {
         app.playback_status = "Paused".to_owned();
+    }
+    if app.is_shuffle {
+        app.shuffle_status = "On".to_string();
+    } else if !app.is_shuffle {
+        app.shuffle_status = "Off".to_string();
+    }
+    if repeat_state == "track" {
+        app.repeat_status = "Track".to_string();
+    } else if repeat_state == "context" {
+        app.repeat_status = "Album/Playlist".to_string();
+    } else {
+        app.repeat_status = "Off".to_string();
     }
 }

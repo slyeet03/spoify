@@ -1,8 +1,10 @@
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
+use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::search::convert_to_list;
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
+use ratatui::widgets::Gauge;
 use ratatui::widgets::{block::*, Cell, Clear, Row, Table};
 use ratatui::widgets::{Block, Borders, List, Paragraph};
 
@@ -187,6 +189,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .split(main_chunk[1]);
 
     //player section
+
     let player_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(
@@ -196,6 +199,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 + &app.current_device_name
                 + " | Shuffle: "
                 + &app.shuffle_status
+                + " | Repeat: "
+                + &app.repeat_status
                 + " | Volume: "
                 + &app.current_device_volume
                 + "%)",
@@ -210,13 +215,24 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         Span::styled(&app.currently_playing_artist, current_playing_artist_style),
     ];
 
-    let player_list = List::new(player_items).block(player_block);
+    let player_list = List::new(player_items).block(player_block.clone());
+
+    let progress_bar = Gauge::default()
+        .block(player_block.clone())
+        .gauge_style(
+            Style::default()
+                .bg(app.background_color)
+                .fg(app.highlight_color),
+        )
+        .ratio(app.progress_bar_ratio);
+
+    //f.render_widget(progress_bar, chunks[2]);
+    f.render_widget(player_list, chunks[2]);
 
     //rendering the default ui
     f.render_widget(search_block, header_chunk[0]);
     f.render_widget(&library_list, content_sub_chunk[0]);
     f.render_widget(playlist_block_user, content_sub_chunk[1]);
-    f.render_widget(player_list, chunks[2]);
     f.render_widget(content_block, content_chunk[1]);
     f.render_widget(user_playlist_list, content_sub_chunk[1]);
     //rendering different sections based on the selected menu
