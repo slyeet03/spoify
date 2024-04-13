@@ -118,8 +118,8 @@ pub struct App {
     pub repeat_status: String,
     pub is_shuffle: bool,
 
-    pub currrent_timestamp: i64,
-    pub ending_timestamp: i64,
+    pub currrent_timestamp: f64,
+    pub ending_timestamp: f64,
     pub currently_playing_artist: String,
     pub current_playing_name: String,
     pub current_playing_album: String,
@@ -266,8 +266,8 @@ impl Default for App {
             device_ids: Vec::new(),
             current_device_id: Some(String::new()),
 
-            currrent_timestamp: i64::from(0),
-            ending_timestamp: i64::from(1),
+            currrent_timestamp: f64::from(0),
+            ending_timestamp: f64::from(1),
             currently_playing_artist: String::new(),
             current_playing_name: String::new(),
             current_playing_album: String::new(),

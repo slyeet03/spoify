@@ -4,9 +4,9 @@ use crate::spotify::player::player::{currently_playing, process_currently_playin
 use crate::spotify::search::convert_to_list;
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
-use ratatui::widgets::Gauge;
-use ratatui::widgets::{block::*, Cell, Clear, Row, Table};
+use ratatui::widgets::{block::*, Cell, Clear, Row, Table, Wrap};
 use ratatui::widgets::{Block, Borders, List, Paragraph};
+use ratatui::widgets::{Gauge, LineGauge};
 
 pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     //define library items
@@ -154,8 +154,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .direction(Direction::Vertical)
         .constraints([
             Constraint::Percentage(8),
-            Constraint::Percentage(72),
-            Constraint::Percentage(20),
+            Constraint::Percentage(82),
+            Constraint::Percentage(10),
         ])
         .split(size);
     // search layout
@@ -188,46 +188,65 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(main_chunk[1]);
 
-    //player section
+    // Create the player section layout
+    let player_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(chunks[2]);
 
-    let player_block = Block::default()
-        .borders(Borders::ALL)
-        .title(Title::from(
-            "".to_owned()
-                + &app.playback_status
-                + " ( "
-                + &app.current_device_name
-                + " | Shuffle: "
-                + &app.shuffle_status
-                + " | Repeat: "
-                + &app.repeat_status
-                + " | Volume: "
-                + &app.current_device_volume
-                + "%)",
+    // Create player info block
+    let player_info_block = Block::default()
+        .borders(Borders::TOP | Borders::RIGHT | Borders::LEFT)
+        .title(format!(
+            "Playing ({} | Shuffle: {} | Repeat: {} | Volume: {}%)",
+            app.current_device_name,
+            app.shuffle_status,
+            app.repeat_status,
+            app.current_device_volume
         ))
         .style(Style::default().bg(app.background_color));
 
-    let current_playing_name_style = Style::default().fg(app.highlight_color);
-    let current_playing_artist_style = Style::default();
+    let player_info_vec = vec![Line::from(vec![
+        Span::styled(
+            app.current_playing_name.clone(),
+            Style::default().fg(app.highlight_color),
+        ),
+        Span::raw(", "),
+        Span::styled(app.currently_playing_artist.clone(), Style::default()),
+        Span::raw(" ("),
+        Span::styled(app.current_playing_album.clone(), Style::default()),
+        Span::raw(")"),
+    ])];
 
-    let player_items = vec![
-        Span::styled(&app.current_playing_name, current_playing_name_style),
-        Span::styled(&app.currently_playing_artist, current_playing_artist_style),
-    ];
+    let current_timestamp = format_duration(app.currrent_timestamp.round() as i64);
+    let ending_timestamp = format_duration(app.ending_timestamp.round() as i64);
 
-    let player_list = List::new(player_items).block(player_block.clone());
+    let label = &format!("{}/{}", current_timestamp, ending_timestamp);
+    // Create player info paragraph
+    let player_info = Paragraph::new(player_info_vec).wrap(Wrap { trim: true });
 
+    // Create progress bar
     let progress_bar = Gauge::default()
-        .block(player_block.clone())
+        .block(
+            Block::default()
+                .borders(Borders::BOTTOM | Borders::RIGHT | Borders::LEFT)
+                .style(Style::default().bg(app.background_color)),
+        )
         .gauge_style(
             Style::default()
-                .bg(app.background_color)
-                .fg(app.highlight_color),
+                .fg(app.highlight_color)
+                .bg(app.background_color),
         )
-        .ratio(app.progress_bar_ratio);
+        .label(label)
+        .ratio(app.currrent_timestamp / app.ending_timestamp);
 
-    //f.render_widget(progress_bar, chunks[2]);
-    f.render_widget(player_list, chunks[2]);
+    // Render player section
+    f.render_widget(player_info_block.clone(), player_layout[0]);
+    f.render_widget(
+        player_info,
+        player_info_block.clone().inner(player_layout[0]),
+    );
+    f.render_widget(progress_bar, player_layout[1]);
 
     //rendering the default ui
     f.render_widget(search_block, header_chunk[0]);

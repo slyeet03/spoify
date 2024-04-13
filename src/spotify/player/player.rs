@@ -1,12 +1,9 @@
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
-use chrono::{DateTime, Utc};
-use futures::future::err;
-use futures::FutureExt;
-use futures_util::TryStreamExt;
+use chrono::DateTime;
 use rspotify::model::{
-    track, Actions, AdditionalType, CurrentPlaybackContext, CurrentlyPlayingContext,
-    CurrentlyPlayingType, Device, DeviceType, Market, RepeatState, SavedAlbum,
+    Actions, AdditionalType, CurrentPlaybackContext, CurrentlyPlayingType, Device, DeviceType,
+    Market, RepeatState,
 };
 use rspotify::prelude::OAuthClient;
 use rspotify::{AuthCodeSpotify, ClientError};
@@ -98,8 +95,8 @@ fn save_data_to_json(items: CurrentPlaybackContext) {
 }
 
 pub fn process_currently_playing(app: &mut App) {
-    app.currrent_timestamp = 0;
-    app.ending_timestamp = 0;
+    app.currrent_timestamp = 0.0;
+    app.ending_timestamp = 0.0;
     app.currently_playing_artist.clear();
     app.current_playing_name.clear();
     app.current_playing_album.clear();
@@ -121,7 +118,7 @@ pub fn process_currently_playing(app: &mut App) {
 
     if let Value::Object(currently_playing) = json_data {
         if let Some(progress_ms) = currently_playing.get("progress_ms").and_then(Value::as_i64) {
-            app.currrent_timestamp = progress_ms as i64;
+            app.currrent_timestamp = progress_ms as f64;
         }
         if let Some(is_playing) = currently_playing.get("is_playing").and_then(Value::as_bool) {
             app.is_playing = is_playing;
@@ -149,7 +146,7 @@ pub fn process_currently_playing(app: &mut App) {
 
         if let Some(item) = currently_playing.get("item").and_then(Value::as_object) {
             if let Some(duration_ms) = item.get("duration_ms").and_then(Value::as_i64) {
-                app.ending_timestamp = duration_ms as i64;
+                app.ending_timestamp = duration_ms as f64;
             }
 
             if let Some(album) = item.get("album").and_then(Value::as_object) {
