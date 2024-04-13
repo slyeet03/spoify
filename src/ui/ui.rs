@@ -7,6 +7,8 @@ use ratatui::style::{Color, Style};
 use ratatui::widgets::{block::*, Cell, Clear, Row, Table, Wrap};
 use ratatui::widgets::{Block, Borders, List, Paragraph};
 use ratatui::widgets::{Gauge, LineGauge};
+use std::thread;
+use std::time::Duration;
 
 pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     //define library items
@@ -221,6 +223,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let current_timestamp = format_duration(app.currrent_timestamp.round() as i64);
     let ending_timestamp = format_duration(app.ending_timestamp.round() as i64);
 
+    app.progress_bar_ratio = app.currrent_timestamp / app.ending_timestamp;
+
     let label = &format!("{}/{}", current_timestamp, ending_timestamp);
     // Create player info paragraph
     let player_info = Paragraph::new(player_info_vec).wrap(Wrap { trim: true });
@@ -238,7 +242,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 .bg(app.background_color),
         )
         .label(label)
-        .ratio(app.currrent_timestamp / app.ending_timestamp);
+        .ratio(app.progress_bar_ratio);
 
     // Render player section
     f.render_widget(player_info_block.clone(), player_layout[0]);

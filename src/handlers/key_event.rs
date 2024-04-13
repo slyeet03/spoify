@@ -16,20 +16,7 @@ use std::io;
 
 use crate::spotify::search::process_search;
 
-pub fn handle_events(app: &mut App) -> io::Result<()> {
-    match event::read()? {
-        //handling key press events
-        Event::Key(key_event) if key_event.kind == KeyEventKind::Press => {
-            handle_key_event(app, key_event);
-            search_input(app).unwrap();
-        }
-        _ => {}
-    };
-
-    Ok(())
-}
-
-fn handle_key_event(app: &mut App, key_event: KeyEvent) {
+pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     match key_event.code {
         //hadling key events
         KeyCode::Char('s') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {

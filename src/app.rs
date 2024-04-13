@@ -1,11 +1,14 @@
 use crate::enums::{InputMode, Library, Menu};
-use crate::handlers::key_event::handle_events;
+use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
+use crate::spotify::player::player::process_currently_playing;
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
+use crossterm::event::{self, Event};
 use ratatui::style::Color;
 use ratatui::widgets::{ListState, TableState};
 use std::io;
+use std::sync::mpsc::Receiver;
 
 #[derive(Clone, Debug)]
 pub struct App {
@@ -133,21 +136,34 @@ pub struct App {
 
 impl App {
     /// runs the application's main loop until the user quits
-    pub fn run(&mut self, terminal: &mut tui::Tui) -> io::Result<()> {
+    pub fn run(&mut self, terminal: &mut tui::Tui, rx: Receiver<()>) -> io::Result<()> {
+        let mut last_tick = std::time::Instant::now();
+        let timeout = std::time::Duration::from_millis(100); // Update UI every 200ms
+
         while !self.exit {
-            // drawing the ui
-            terminal.draw(|frame| render_frame(frame, self.selected_menu, self))?;
-            // Handling user inputs
-            if self.selected_menu == Menu::Search {
-                if self.input_mode == InputMode::Editing {
+            // Handle input events
+            if event::poll(timeout)? {
+                if let Event::Key(key_event) = event::read()? {
+                    handle_key_event(self, key_event);
                     search_input(self)?;
-                } else {
-                    handle_events(self)?;
                 }
-            } else {
-                handle_events(self)?;
+            }
+
+            // Update UI
+            let now = std::time::Instant::now();
+            if now.duration_since(last_tick) >= timeout {
+                last_tick = now;
+
+                // Check if a message has been received from the player info update thread
+                if let Ok(_) = rx.try_recv() {
+                    process_currently_playing(self);
+                }
+
+                // Draw the UI
+                terminal.draw(|frame| render_frame(frame, self.selected_menu, self))?;
             }
         }
+
         Ok(())
     }
 

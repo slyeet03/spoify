@@ -1,10 +1,14 @@
 use crate::app::App;
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::ui::tui;
+use ratatui::style::Color;
 use spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use std::fs::OpenOptions;
 use std::io;
 use std::path::PathBuf;
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
 
 mod app;
 mod enums;
@@ -19,10 +23,34 @@ fn main() -> io::Result<()> {
 
     //initialise the tui
     let mut terminal = tui::init()?;
+
+    // Create a channel to communicate with the player info update thread
+    let (tx, rx) = mpsc::channel();
+
+    // Create a new instance of App to pass to the update_player_info thread
+    let mut player_info_app = app.clone();
+
+    // Spawn a new thread to update player info
+    thread::spawn(move || update_player_info(tx, &mut player_info_app));
+
     //running app's main loop
-    let app_result = app.run(&mut terminal);
+    let app_result = app.run(&mut terminal, rx);
     tui::restore()?;
     app_result
+}
+
+fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
+    loop {
+        currently_playing().unwrap();
+        process_currently_playing(app);
+
+        // Send a message to the main thread to update the UI
+        if tx.send(()).is_err() {
+            break;
+        }
+
+        thread::sleep(Duration::from_millis(1000));
+    }
 }
 
 pub fn init_logger() -> std::io::Result<()> {
@@ -54,8 +82,4 @@ pub fn init_logger() -> std::io::Result<()> {
 fn startup(app: &mut App) {
     get_playlists();
     process_user_playlists(app);
-    /*
-    let _ = currently_playing();
-    process_currently_playing(app);
-    */
 }
