@@ -35,13 +35,14 @@ fn main() -> io::Result<()> {
 fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
     loop {
         currently_playing().unwrap();
+        process_currently_playing(app);
 
         // Send a message to the main thread to update the UI
         if tx.send(()).is_err() {
             break;
         }
 
-        thread::sleep(Duration::from_millis(900));
+        thread::sleep(Duration::from_millis(1000));
     }
 }
 

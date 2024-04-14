@@ -56,20 +56,17 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
         }
 
         KeyCode::Char('s') if key_event.kind == KeyEventKind::Press => {
-            app.user_playlist_display = false;
             app.selected_menu = Menu::Search;
-            app.input_mode = InputMode::Normal;
+            app.input_mode = InputMode::Editing;
+            app.search_results_rendered = false;
             app.liked_song_display = false;
-            app.search_state.select(Some(0));
             app.user_album_display = false;
             app.recently_played_display = false;
             app.can_navigate_menu = true;
             app.podcast_display = false;
             app.user_artist_display = false;
-            if let Err(e) = search_input(app) {
-                println!("Error: {}", e);
-            }
         }
+
         KeyCode::Char('+') if key_event.kind == KeyEventKind::Press => {
             let _ = currently_playing();
             process_currently_playing(app);
@@ -422,46 +419,31 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     }
 }
 
-pub fn search_input(app: &mut App) -> io::Result<()> {
-    if let Event::Key(key) = event::read()? {
-        match app.input_mode {
-            InputMode::Normal => match key.code {
-                KeyCode::Char('s') => {
-                    app.input_mode = InputMode::Editing;
-                    app.search_results_rendered = false;
-                }
-                KeyCode::Char('q') => {
-                    return Ok(());
-                }
-                _ => {}
-            },
-            InputMode::Editing if key.kind == KeyEventKind::Press => match key.code {
-                KeyCode::Enter => {
-                    submit_message(app);
-                }
-                KeyCode::Char(to_insert) => {
-                    enter_char(app, to_insert);
-                }
-                KeyCode::Backspace => {
-                    delete_char(app);
-                }
-                KeyCode::Left => {
-                    move_cursor_left(app);
-                }
-                KeyCode::Right => {
-                    move_cursor_right(app);
-                }
-                KeyCode::Esc => {
-                    app.input_mode = InputMode::Normal;
-                    app.search_results_rendered = false;
-                }
-                _ => {}
-            },
-            InputMode::Editing => {}
+pub fn search_input(app: &mut App, key_event: KeyEvent) -> io::Result<()> {
+    match app.input_mode {
+        InputMode::Editing => match key_event.code {
+            KeyCode::Enter => {
+                submit_message(app);
+            }
+            KeyCode::Char(to_insert) => {
+                enter_char(app, to_insert);
+            }
+            KeyCode::Backspace => {
+                delete_char(app);
+            }
+            KeyCode::Left => {
+                move_cursor_left(app);
+            }
+            KeyCode::Right => {
+                move_cursor_right(app);
+            }
+            KeyCode::Esc => {
+                app.input_mode = InputMode::Normal;
+                app.search_results_rendered = false;
+            }
             _ => {}
-        }
-    } else {
-        return Ok(());
+        },
+        _ => {}
     }
 
     Ok(())

@@ -143,11 +143,11 @@ impl App {
 
         while !self.exit {
             // Handling user inputs
-            if event::poll(Duration::from_millis(0))? {
+            if event::poll(timeout)? {
                 if let Event::Key(key_event) = event::read()? {
                     handle_key_event(self, key_event);
                     if self.input_mode == InputMode::Editing {
-                        search_input(self)?;
+                        let _ = search_input(self, key_event);
                     }
                 }
             }
