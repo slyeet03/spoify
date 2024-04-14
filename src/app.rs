@@ -129,6 +129,7 @@ pub struct App {
     pub current_playing_album: String,
     pub is_playing: bool,
     pub progress_bar_ratio: f64,
+    pub currently_playing_media_type: String,
 
     pub border_color: Color,
     pub highlight_color: Color,
@@ -292,6 +293,7 @@ impl Default for App {
             current_playing_album: String::new(),
             is_playing: false,
             progress_bar_ratio: 0.0,
+            currently_playing_media_type: String::new(),
         }
     }
 }

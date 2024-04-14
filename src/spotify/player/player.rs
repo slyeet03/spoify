@@ -117,6 +117,12 @@ pub fn process_currently_playing(app: &mut App) {
         serde_json::from_reader(reader).expect("Failed to parse currently_playing.json");
 
     if let Value::Object(currently_playing) = json_data {
+        if let Some(currently_playing_type) = currently_playing
+            .get("currently_playing_type")
+            .and_then(Value::as_str)
+        {
+            app.currently_playing_media_type = currently_playing_type.to_string();
+        }
         if let Some(progress_ms) = currently_playing.get("progress_ms").and_then(Value::as_i64) {
             app.currrent_timestamp = progress_ms as f64;
         }
@@ -148,17 +154,25 @@ pub fn process_currently_playing(app: &mut App) {
             if let Some(duration_ms) = item.get("duration_ms").and_then(Value::as_i64) {
                 app.ending_timestamp = duration_ms as f64;
             }
-
-            if let Some(album) = item.get("album").and_then(Value::as_object) {
-                if let Some(album_name) = album.get("name").and_then(Value::as_str) {
-                    app.current_playing_album = album_name.to_string();
+            if app.currently_playing_media_type == "episode" {
+                if let Some(show) = item.get("show").and_then(Value::as_object) {
+                    if let Some(show_name) = show.get("name").and_then(Value::as_str) {
+                        app.current_playing_album = show_name.to_string();
+                    }
                 }
-            }
+            } else {
+                if let Some(album) = item.get("album").and_then(Value::as_object) {
+                    if let Some(album_name) = album.get("name").and_then(Value::as_str) {
+                        app.current_playing_album = album_name.to_string();
+                    }
+                }
 
-            if let Some(artist_section) = item.get("artists").and_then(Value::as_array) {
-                if let Some(first_artist) = artist_section.get(0).and_then(Value::as_object) {
-                    if let Some(artist_name) = first_artist.get("name").and_then(Value::as_str) {
-                        app.currently_playing_artist = artist_name.to_string();
+                if let Some(artist_section) = item.get("artists").and_then(Value::as_array) {
+                    if let Some(first_artist) = artist_section.get(0).and_then(Value::as_object) {
+                        if let Some(artist_name) = first_artist.get("name").and_then(Value::as_str)
+                        {
+                            app.currently_playing_artist = artist_name.to_string();
+                        }
                     }
                 }
             }

@@ -1,14 +1,11 @@
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
-use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::search::convert_to_list;
 use ratatui::prelude::*;
 use ratatui::style::{Color, Style};
+use ratatui::widgets::Gauge;
 use ratatui::widgets::{block::*, Cell, Clear, Row, Table, Wrap};
 use ratatui::widgets::{Block, Borders, List, Paragraph};
-use ratatui::widgets::{Gauge, LineGauge};
-use std::thread;
-use std::time::Duration;
 
 pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     //define library items
@@ -200,7 +197,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let player_info_block = Block::default()
         .borders(Borders::TOP | Borders::RIGHT | Borders::LEFT)
         .title(format!(
-            "Playing ({} | Shuffle: {} | Repeat: {} | Volume: {}%)",
+            "{} ({} | Shuffle: {} | Repeat: {} | Volume: {}%)",
+            app.playback_status,
             app.current_device_name,
             app.shuffle_status,
             app.repeat_status,
@@ -208,17 +206,30 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         ))
         .style(Style::default().bg(app.background_color));
 
-    let player_info_vec = vec![Line::from(vec![
-        Span::styled(
-            app.current_playing_name.clone(),
-            Style::default().fg(app.highlight_color),
-        ),
-        Span::raw(", "),
-        Span::styled(app.currently_playing_artist.clone(), Style::default()),
-        Span::raw(" ("),
-        Span::styled(app.current_playing_album.clone(), Style::default()),
-        Span::raw(")"),
-    ])];
+    let mut player_info_vec = Vec::new();
+
+    if app.currently_playing_media_type == "episode" {
+        player_info_vec = vec![Line::from(vec![
+            Span::styled(
+                app.current_playing_name.clone(),
+                Style::default().fg(app.highlight_color),
+            ),
+            Span::raw(", "),
+            Span::styled(app.current_playing_album.clone(), Style::default()),
+        ])];
+    } else {
+        player_info_vec = vec![Line::from(vec![
+            Span::styled(
+                app.current_playing_name.clone(),
+                Style::default().fg(app.highlight_color),
+            ),
+            Span::raw(", "),
+            Span::styled(app.currently_playing_artist.clone(), Style::default()),
+            Span::raw(" ("),
+            Span::styled(app.current_playing_album.clone(), Style::default()),
+            Span::raw(")"),
+        ])];
+    }
 
     let current_timestamp = format_duration(app.currrent_timestamp.round() as i64);
     let ending_timestamp = format_duration(app.ending_timestamp.round() as i64);
