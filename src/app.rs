@@ -142,8 +142,8 @@ impl App {
         let timeout = std::time::Duration::from_millis(200);
 
         while !self.exit {
-            // Handle input events
-            if event::poll(Duration::from_millis(0))? {
+            // Handling user inputs
+            if event::poll(timeout)? {
                 if let Event::Key(key_event) = event::read()? {
                     handle_key_event(self, key_event);
                     search_input(self)?;
