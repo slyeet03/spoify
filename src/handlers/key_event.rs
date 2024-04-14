@@ -26,7 +26,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             }
         }
         KeyCode::Char('q') => app.exit(),
-        KeyCode::Char('l') => {
+        KeyCode::Char('l') if key_event.kind == KeyEventKind::Press => {
             app.selected_menu = Menu::Library;
             app.library_state.select(Some(0)); //reseting the library state
             app.search_results_rendered = false;
@@ -40,7 +40,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.podcast_display = false;
             app.user_artist_display = false;
         }
-        KeyCode::Char('p') => {
+        KeyCode::Char('p') if key_event.kind == KeyEventKind::Press => {
             app.selected_menu = Menu::Playlists;
             app.user_playlist_state.select(Some(0));
             app.search_results_rendered = false;
@@ -55,7 +55,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.user_artist_display = false;
         }
 
-        KeyCode::Char('s') => {
+        KeyCode::Char('s') if key_event.kind == KeyEventKind::Press => {
             app.user_playlist_display = false;
             app.selected_menu = Menu::Search;
             app.input_mode = InputMode::Normal;
@@ -66,18 +66,21 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             app.can_navigate_menu = true;
             app.podcast_display = false;
             app.user_artist_display = false;
+            if let Err(e) = search_input(app) {
+                println!("Error: {}", e);
+            }
         }
-        KeyCode::Char('+') => {
+        KeyCode::Char('+') if key_event.kind == KeyEventKind::Press => {
             let _ = currently_playing();
             process_currently_playing(app);
         }
-        KeyCode::Char('-') => {
+        KeyCode::Char('-') if key_event.kind == KeyEventKind::Press => {
             let _ = currently_playing();
             process_currently_playing(app);
         }
 
         KeyCode::Char('m') => app.selected_menu = Menu::Main,
-        KeyCode::Down => {
+        KeyCode::Down if key_event.kind == KeyEventKind::Press => {
             if app.selected_menu == Menu::Library {
                 if app.library_state.selected() == Some(2) {
                     if app.liked_songs_selected {
@@ -165,7 +168,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_artist_display = false;
             }
         }
-        KeyCode::Up => {
+        KeyCode::Up if key_event.kind == KeyEventKind::Press => {
             if app.selected_menu == Menu::Library {
                 if app.library_state.selected() == Some(2) {
                     if app.liked_songs_selected {
@@ -298,7 +301,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_artist_display = false;
             }
         }
-        KeyCode::Enter => {
+        KeyCode::Enter if key_event.kind == KeyEventKind::Press => {
             if app.selected_menu == Menu::Playlists {
                 if let Err(e) = fetch_playlists_tracks(app) {
                     println!("{}", e);
@@ -340,7 +343,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
         }
-        KeyCode::Tab => {
+        KeyCode::Tab if key_event.kind == KeyEventKind::Press => {
             if app.selected_menu == Menu::Playlists {
                 app.can_navigate_menu = !app.can_navigate_menu;
                 if app.user_playlist_display {
