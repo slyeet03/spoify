@@ -17,26 +17,19 @@ mod spotify;
 mod ui;
 
 fn main() -> io::Result<()> {
-    //new instance for app
     let mut app = App::default();
     startup(&mut app);
 
-    //initialise the tui
     let mut terminal = tui::init()?;
 
-    // Create a channel to communicate with the player info update thread
     let (tx, rx) = mpsc::channel();
-
-    // Create a new instance of App to pass to the update_player_info thread
     let mut player_info_app = app.clone();
-
-    // Spawn a new thread to update player info
     thread::spawn(move || update_player_info(tx, &mut player_info_app));
 
-    //running app's main loop
-    let app_result = app.run(&mut terminal, rx);
+    app.run(&mut terminal, rx)?;
+
     tui::restore()?;
-    app_result
+    Ok(())
 }
 
 fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {

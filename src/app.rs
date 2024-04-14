@@ -9,6 +9,7 @@ use ratatui::style::Color;
 use ratatui::widgets::{ListState, TableState};
 use std::io;
 use std::sync::mpsc::Receiver;
+use std::time::Duration;
 
 #[derive(Clone, Debug)]
 pub struct App {
@@ -138,11 +139,11 @@ impl App {
     /// runs the application's main loop until the user quits
     pub fn run(&mut self, terminal: &mut tui::Tui, rx: Receiver<()>) -> io::Result<()> {
         let mut last_tick = std::time::Instant::now();
-        let timeout = std::time::Duration::from_millis(100); // Update UI every 200ms
+        let timeout = std::time::Duration::from_millis(200);
 
         while !self.exit {
             // Handle input events
-            if event::poll(timeout)? {
+            if event::poll(Duration::from_millis(0))? {
                 if let Event::Key(key_event) = event::read()? {
                     handle_key_event(self, key_event);
                     search_input(self)?;
