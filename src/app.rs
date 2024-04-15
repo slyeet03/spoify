@@ -213,9 +213,9 @@ impl Default for App {
     fn default() -> Self {
         Self {
             // Configure the UI color's
-            highlight_color: Color::Rgb(0, 255, 146),
-            border_color: Color::Rgb(29, 185, 84),
-            background_color: Color::Rgb(33, 33, 33),
+            highlight_color: Color::Rgb(0, 0, 0),
+            border_color: Color::Rgb(0, 0, 0),
+            background_color: Color::Rgb(0, 0, 0),
 
             exit: false,
 

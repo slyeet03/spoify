@@ -1,0 +1,11 @@
+# Default Values:
+# Border Color: Color::Rgb(29, 185, 84)
+# Background Color: Color::Rgb(33, 33, 33)
+# Highlight Color: Color::Rgb(0, 255, 146)
+# 
+# Note: Only put RGB values
+#
+
+Border Color: Color::Rgb(29, 185, 84)
+Background Color: Color::Rgb(33, 33, 33)
+Highlight Color: Color::Rgb(0, 255, 146)
