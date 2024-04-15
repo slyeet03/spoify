@@ -21,5 +21,6 @@ webbrowser = "0.8.13"
 dotenvy = "0.15.7"
 regex = "1.10.4"
 url = "2.5.0"
+serde_yaml = "0.9.34"
 
 

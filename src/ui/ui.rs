@@ -3,7 +3,7 @@ use crate::enums::Menu;
 
 use ratatui::prelude::*;
 
-use super::help::render_default_help;
+use super::help::{render_default_help, render_help};
 use super::library::{render_default_library, render_library};
 use super::main_area::render_main_area;
 use super::player::render_player;
@@ -89,7 +89,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             render_search(f, &header_chunk, &main_chunk_upper, &main_chunk_lower, app);
         }
         Menu::Help => {
-            //TODO: Add Help Page
+            render_help(f, app);
         }
     }
 }

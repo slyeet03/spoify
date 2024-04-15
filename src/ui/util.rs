@@ -216,3 +216,49 @@ pub fn artist_table_ui(
 
     table
 }
+
+pub fn help_table_ui(
+    task: Vec<String>,
+    first_key: Vec<String>,
+    block: Block,
+    highlight_color: Color,
+    background_color: Color,
+) -> Table {
+    let items: Vec<(usize, String, String)> = task
+        .iter()
+        .enumerate()
+        .zip(first_key.iter())
+        .map(|((index, task), first_key)| (index + 1, task.clone(), first_key.clone()))
+        .collect();
+
+    let table = Table::new(
+        items
+            .iter()
+            .map(|(index, task, first_key)| {
+                Row::new(vec![
+                    Cell::from(format!("{}", index)),
+                    Cell::from(task.clone()),
+                    Cell::from(first_key.clone()),
+                ])
+            })
+            .collect::<Vec<_>>(),
+        [
+            Constraint::Percentage(10),
+            Constraint::Percentage(50),
+            Constraint::Percentage(40),
+        ],
+    )
+    .header(
+        Row::new(vec![
+            Cell::from("#"),
+            Cell::from("Task"),
+            Cell::from("First Key"),
+        ])
+        .bold(),
+    )
+    .block(block.clone())
+    .highlight_style(Style::default().fg(highlight_color))
+    .style(Style::default().bg(background_color));
+
+    table
+}

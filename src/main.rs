@@ -6,6 +6,7 @@ use std::time::Duration;
 use crate::app::App;
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::ui::tui;
+use handlers::keybindings::{process_keybindings, read_keybindings, set_keybindings};
 use spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 
 mod app;
@@ -56,4 +57,7 @@ fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
 fn startup(app: &mut App) {
     get_playlists();
     process_user_playlists(app);
+    read_keybindings();
+    set_keybindings(app);
+    process_keybindings(app);
 }

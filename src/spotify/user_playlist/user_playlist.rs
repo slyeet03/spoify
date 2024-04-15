@@ -37,8 +37,6 @@ pub async fn fetch_user_playlists(
 
     if playlists.is_empty() {
         println!("No playlists found. Check if the authorization code is valid and has the required scopes.");
-    } else {
-        println!("Fetched playlists");
     }
 
     Ok(playlists)
@@ -56,7 +54,6 @@ fn save_playlists_to_json(playlists: &[SimplifiedPlaylist]) {
 
     let mut file = File::create(&path).unwrap();
     file.write_all(&json_data).unwrap();
-    println!("Playlists saved to {}", path.display());
 }
 
 #[tokio::main]
@@ -64,7 +61,6 @@ pub async fn get_playlists() {
     let spotify_client = get_spotify_client().await.unwrap();
     match fetch_user_playlists(&spotify_client).await {
         Ok(playlists) => {
-            println!("Playlist caching successful");
             save_playlists_to_json(&playlists);
         }
         Err(e) => println!("Error fetching playlists: {}", e),

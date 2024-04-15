@@ -19,6 +19,16 @@ use super::util::{delete_char, move_cursor_left, move_cursor_right, reset_cursor
 
 /// Function to handle key events for the application
 pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
+    let go_to_search_key = app.go_to_search_key;
+    let go_to_library_key = app.go_to_library_key;
+    let go_to_user_playlists_key = app.go_to_user_playlists_key;
+    let exit_application_key = app.exit_application_key;
+    let _shuffle_key = app.shuffle_key;
+    let _repeat_key = app.repeat_key;
+    let help_key = app.help_key;
+    let volume_up_key = app.volume_up_key;
+    let volume_down_key = app.volume_down_key;
+
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
             // Toggle shuffle mode when Ctrl+S is pressed
@@ -28,10 +38,17 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     println!("{}", e);
                 }
             }
+
             // Exit the application when 'q' is pressed in Normal mode
-            KeyCode::Char('q') if app.input_mode != InputMode::Editing => app.exit(),
+            code if code == KeyCode::Char(exit_application_key)
+                && app.input_mode != InputMode::Editing =>
+            {
+                app.exit()
+            }
             // Navigate to different menus (Library, Playlists, Search) when 'l', 'p', or 's' is pressed
-            KeyCode::Char('l') if app.input_mode != InputMode::Editing => {
+            code if code == KeyCode::Char(go_to_library_key)
+                && app.input_mode != InputMode::Editing =>
+            {
                 app.selected_menu = Menu::Library;
                 app.library_state.select(Some(0)); //reseting the library state
                 app.search_results_rendered = false;
@@ -45,7 +62,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
-            KeyCode::Char('p') if app.input_mode != InputMode::Editing => {
+            code if code == KeyCode::Char(go_to_user_playlists_key)
+                && app.input_mode != InputMode::Editing =>
+            {
                 app.selected_menu = Menu::Playlists;
                 app.user_playlist_state.select(Some(0));
                 app.search_results_rendered = false;
@@ -59,7 +78,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
-            KeyCode::Char('s') if app.input_mode != InputMode::Editing => {
+            code if code == KeyCode::Char(go_to_search_key)
+                && app.input_mode != InputMode::Editing =>
+            {
                 app.selected_menu = Menu::Search;
                 app.input_mode = InputMode::Editing;
                 app.search_results_rendered = false;
@@ -70,9 +91,24 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
+            code if code == KeyCode::Char(help_key) && app.input_mode != InputMode::Editing => {
+                app.selected_menu = Menu::Help;
+                app.search_results_rendered = false;
+                app.input_mode = InputMode::Normal;
+                app.user_playlist_display = false;
+                app.liked_song_display = false;
+                app.selected_search = false;
+                app.user_album_display = false;
+                app.can_navigate_menu = false;
+                app.recently_played_display = false;
+                app.podcast_display = false;
+                app.user_artist_display = false;
+            }
             // Keys for Volume Control
-            KeyCode::Char('+') if app.input_mode != InputMode::Editing => {}
-            KeyCode::Char('-') if app.input_mode != InputMode::Editing => {}
+            code if code == KeyCode::Char(volume_up_key)
+                && app.input_mode != InputMode::Editing => {}
+            code if code == KeyCode::Char(volume_down_key)
+                && app.input_mode != InputMode::Editing => {}
 
             KeyCode::Char('m') if app.input_mode != InputMode::Editing => {
                 app.selected_menu = Menu::Main

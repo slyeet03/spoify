@@ -142,6 +142,23 @@ pub struct App {
 
     // Handle Help section
     pub is_help_section: bool,
+    pub task: Vec<String>,
+    pub key: Vec<String>,
+
+    // Keybindings
+    pub go_to_search_key: char,
+    pub go_to_library_key: char,
+    pub go_to_user_playlists_key: char,
+    pub exit_application_key: char,
+    pub shuffle_key: char,
+    pub repeat_key: char,
+    pub pause_play_key: char,
+    pub help_key: char,
+    pub volume_up_key: char,
+    pub volume_down_key: char,
+
+    pub first_keys: Vec<String>,
+    pub tasks: Vec<String>,
 
     // Color's for UI
     pub border_color: Color,
@@ -320,6 +337,22 @@ impl Default for App {
             currently_playing_media_type: String::new(),
 
             is_help_section: false,
+            task: Vec::new(),
+            key: Vec::new(),
+
+            go_to_search_key: char::from(' '),
+            go_to_library_key: char::from(' '),
+            go_to_user_playlists_key: char::from(' '),
+            exit_application_key: char::from(' '),
+            shuffle_key: char::from(' '),
+            repeat_key: char::from(' '),
+            pause_play_key: char::from(' '),
+            help_key: char::from(' '),
+            volume_up_key: char::from(' '),
+            volume_down_key: char::from(' '),
+
+            first_keys: Vec::new(),
+            tasks: Vec::new(),
         }
     }
 }
