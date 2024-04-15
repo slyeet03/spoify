@@ -452,6 +452,10 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.search_state.select(Some(next_index % length));
                 }
             }
+            
+            KeyCode::Esc if app.input_mode != InputMode::Editing => {
+                app.selected_menu = Menu::Default;
+            }
             // Handle character input in search mode
             KeyCode::Char(c) if app.input_mode == InputMode::Editing => {
                 // Handle character input in search mode
