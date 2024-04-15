@@ -5,11 +5,9 @@ saves their name and links in variables
 */
 
 use crate::app::App;
-use crate::init_logger;
 use crate::spotify::auth::{get_spotify_client, SpotifyClient};
 use dotenv::dotenv;
 use futures_util::TryStreamExt;
-use log::info;
 use rspotify::clients::OAuthClient;
 use rspotify::model::SimplifiedPlaylist;
 use rspotify::{AuthCodeSpotify, ClientError};
@@ -38,9 +36,9 @@ pub async fn fetch_user_playlists(
     }
 
     if playlists.is_empty() {
-        info!("No playlists found. Check if the authorization code is valid and has the required scopes.");
+        println!("No playlists found. Check if the authorization code is valid and has the required scopes.");
     } else {
-        info!("Fetched playlists");
+        println!("Fetched playlists");
     }
 
     Ok(playlists)
@@ -58,19 +56,18 @@ fn save_playlists_to_json(playlists: &[SimplifiedPlaylist]) {
 
     let mut file = File::create(&path).unwrap();
     file.write_all(&json_data).unwrap();
-    info!("Playlists saved to {}", path.display());
+    println!("Playlists saved to {}", path.display());
 }
 
 #[tokio::main]
 pub async fn get_playlists() {
-    init_logger().unwrap();
     let spotify_client = get_spotify_client().await.unwrap();
     match fetch_user_playlists(&spotify_client).await {
         Ok(playlists) => {
-            info!("Playlist caching successful");
+            println!("Playlist caching successful");
             save_playlists_to_json(&playlists);
         }
-        Err(e) => info!("Error fetching playlists: {}", e),
+        Err(e) => println!("Error fetching playlists: {}", e),
     }
 }
 

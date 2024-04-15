@@ -14,6 +14,7 @@ pub enum Menu {
     Search,
     Main,
     Default,
+    Help,
 }
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum InputMode {
@@ -30,6 +31,7 @@ impl From<Menu> for usize {
             Menu::Search => 2,
             Menu::Main => 3,
             Menu::Default => 4,
+            Menu::Help => 5,
         }
     }
 }

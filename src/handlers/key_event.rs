@@ -15,17 +15,22 @@ use std::io::{self, Write};
 
 use crate::spotify::search::process_search;
 
+use super::util::{delete_char, move_cursor_left, move_cursor_right, reset_cursor};
+
+/// Function to handle key events for the application
 pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
-            //hadling key events
+            // Toggle shuffle mode when Ctrl+S is pressed
             KeyCode::Char('s') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
                 app.is_shuffle = !app.is_shuffle;
                 if let Err(e) = toogle_shuffle(app) {
                     println!("{}", e);
                 }
             }
+            // Exit the application when 'q' is pressed in Normal mode
             KeyCode::Char('q') if app.input_mode != InputMode::Editing => app.exit(),
+            // Navigate to different menus (Library, Playlists, Search) when 'l', 'p', or 's' is pressed
             KeyCode::Char('l') if app.input_mode != InputMode::Editing => {
                 app.selected_menu = Menu::Library;
                 app.library_state.select(Some(0)); //reseting the library state
@@ -54,7 +59,6 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
-
             KeyCode::Char('s') if app.input_mode != InputMode::Editing => {
                 app.selected_menu = Menu::Search;
                 app.input_mode = InputMode::Editing;
@@ -66,13 +70,14 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
-
+            // Keys for Volume Control
             KeyCode::Char('+') if app.input_mode != InputMode::Editing => {}
             KeyCode::Char('-') if app.input_mode != InputMode::Editing => {}
 
             KeyCode::Char('m') if app.input_mode != InputMode::Editing => {
                 app.selected_menu = Menu::Main
             }
+
             KeyCode::Down if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Library {
                     if app.library_state.selected() == Some(2) {
@@ -411,6 +416,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.search_state.select(Some(next_index % length));
                 }
             }
+            // Handle character input in search mode
             KeyCode::Char(c) if app.input_mode == InputMode::Editing => {
                 // Handle character input in search mode
                 if !c.is_control() {
@@ -424,25 +430,31 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     }
 }
 
+/// Function to handle search input and related key events
 pub fn search_input(app: &mut App, key_event: KeyEvent) -> io::Result<()> {
     match app.input_mode {
         InputMode::Editing => match key_event.code {
+            // Submit the search query when Enter is pressed
             KeyCode::Enter => {
                 submit_message(app);
                 std::io::sink().write_all(&[0])?;
             }
+            // Delete a character when Backspace is pressed
             KeyCode::Backspace => {
                 delete_char(app);
                 std::io::sink().write_all(&[0])?;
             }
+            // Move the cursor left when Left arrow is pressed
             KeyCode::Left => {
                 move_cursor_left(app);
                 std::io::sink().write_all(&[0])?;
             }
+            // Move the cursor right when Right arrow is pressed
             KeyCode::Right => {
                 move_cursor_right(app);
                 std::io::sink().write_all(&[0])?;
             }
+            // Exit search mode when Esc is pressed
             KeyCode::Esc => {
                 app.input_mode = InputMode::Normal;
                 app.search_results_rendered = false;
@@ -456,41 +468,7 @@ pub fn search_input(app: &mut App, key_event: KeyEvent) -> io::Result<()> {
     Ok(())
 }
 
-fn move_cursor_left(app: &mut App) {
-    let cursor_moved_left = app.cursor_position.saturating_sub(1);
-    app.cursor_position = clamp_cursor(app, cursor_moved_left);
-}
-
-fn move_cursor_right(app: &mut App) {
-    let cursor_moved_right = app.cursor_position.saturating_add(1);
-    app.cursor_position = clamp_cursor(app, cursor_moved_right);
-}
-
-fn delete_char(app: &mut App) {
-    let is_not_cursor_leftmost = app.cursor_position != 0;
-    if is_not_cursor_leftmost {
-        let current_index = app.cursor_position;
-        let from_left_to_current_index = current_index - 1;
-
-        // Getting all characters before the selected character.
-        let before_char_to_delete = app.input.chars().take(from_left_to_current_index);
-        // Getting all characters after selected character.
-        let after_char_to_delete = app.input.chars().skip(current_index);
-
-        // Put all characters together except the selected one.
-        // By leaving the selected one out, it is forgotten and therefore deleted.
-        app.input = before_char_to_delete.chain(after_char_to_delete).collect();
-        move_cursor_left(app);
-    }
-}
-
-fn clamp_cursor(app: &mut App, new_cursor_pos: usize) -> usize {
-    new_cursor_pos.clamp(0, app.input.len())
-}
-fn reset_cursor(app: &mut App) {
-    app.cursor_position = 0;
-}
-
+// Submit the search query and process the search results
 fn submit_message(app: &mut App) {
     app.search_query = app.input.clone();
     let binding = app.search_query.clone();

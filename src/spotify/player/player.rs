@@ -12,6 +12,7 @@ use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
+// Main function to fetch the currently playing track information
 #[tokio::main]
 pub async fn currently_playing() -> Result<(), ClientError> {
     let spotify_client = get_spotify_client().await.unwrap();
@@ -20,6 +21,7 @@ pub async fn currently_playing() -> Result<(), ClientError> {
         None => return Err(ClientError::InvalidToken),
     };
 
+    // Fetch the currently playing track information from the Spotify API
     let currently_playing_result = spotify
         .current_playback(
             Some(Market::FromToken),
@@ -31,6 +33,7 @@ pub async fn currently_playing() -> Result<(), ClientError> {
         )
         .await;
 
+    // Process and handle the API response
     let currently_playing_tracks: CurrentPlaybackContext = match currently_playing_result {
         Ok(page) => page.unwrap_or_else(|| CurrentPlaybackContext {
             device: Device {
@@ -82,6 +85,7 @@ pub async fn currently_playing() -> Result<(), ClientError> {
     Ok(())
 }
 
+// Function to save the currently playing track data to a JSON file
 fn save_data_to_json(items: CurrentPlaybackContext) {
     let json_data = json!(items);
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -94,6 +98,7 @@ fn save_data_to_json(items: CurrentPlaybackContext) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
+// Function to process the currently playing track information and update the application state
 pub fn process_currently_playing(app: &mut App) {
     app.currrent_timestamp = 0.0;
     app.ending_timestamp = 0.0;
@@ -117,6 +122,7 @@ pub fn process_currently_playing(app: &mut App) {
         serde_json::from_reader(reader).expect("Failed to parse currently_playing.json");
 
     if let Value::Object(currently_playing) = json_data {
+        // Extract relevant information from the JSON data and update the application state
         if let Some(currently_playing_type) = currently_playing
             .get("currently_playing_type")
             .and_then(Value::as_str)
@@ -183,6 +189,7 @@ pub fn process_currently_playing(app: &mut App) {
         }
     }
 
+    // Update the playback status based on the current state
     if app.is_playing {
         app.playback_status = "Playing".to_owned();
     } else {

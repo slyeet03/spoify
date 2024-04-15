@@ -1,7 +1,7 @@
 extern crate rspotify;
+
 use chrono::Utc;
 use dotenvy::dotenv;
-use log::info;
 use rspotify::clients::BaseClient;
 use rspotify::prelude::OAuthClient;
 use rspotify::{scopes, AuthCodeSpotify, ClientError, Credentials, OAuth, Token};
@@ -13,18 +13,20 @@ use std::path::PathBuf;
 use url::Url;
 use webbrowser;
 
+// Defining a struct to hold the Spotify client and its token
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpotifyClient {
     pub token: Option<Token>,
 }
 
+// Function to get the Spotify client, either from a cached token or through the authorization flow
 pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
     dotenv().expect(".env file not found");
     let client_id = env::var("CLIENT_ID").expect("You've not set the CLIENT_ID");
     let client_secret_id =
         env::var("CLIENT_SECRET_ID").expect("You've not set the CLIENT_SECRET_ID");
 
-    // Using every possible scope
+    // Defining the scopes (permissions) required for the application
     let scopes = scopes!(
         "user-read-email",
         "user-read-private",
@@ -54,8 +56,9 @@ pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
     let mut spotify = AuthCodeSpotify::with_config(creds, oauth, config);
 
     let mut spotify_client = SpotifyClient { token: None };
+    let _var = spotify_client;
 
-    let client_from_file = read_client_from_file().await;
+    let client_from_file = read_client_from_file().await; // Checking if a cached token exists
 
     if let Some(mut client) = client_from_file {
         let now = Utc::now();
@@ -83,23 +86,27 @@ pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
     Ok(spotify_client)
 }
 
+// Function to handle the authorization flow with Spotify
 async fn handle_authorization_flow(
     spotify: &mut AuthCodeSpotify,
 ) -> Result<SpotifyClient, ClientError> {
-    let auth_url = spotify.get_authorize_url(true).unwrap();
+    let auth_url = spotify.get_authorize_url(true).unwrap(); // Getting the authorization UR
 
     if webbrowser::open(&auth_url).is_err() {
+        // Attempting to open the authorization URL in the default browser
         println!(
             "Failed to open the authorization URL. Please visit the URL manually: {}",
             auth_url
         );
     }
 
+    // Prompting the user to enter the redirected URL after authorization
     println!("Enter redirected url:");
     let mut url_input = String::new();
     stdin().read_line(&mut url_input).unwrap();
     let url_string = &url_input.as_str();
 
+    // Parsing the redirected URL
     let url = Url::parse(url_string).expect("Failed to parse URL");
     let query_pairs = url.query_pairs();
 
@@ -113,14 +120,18 @@ async fn handle_authorization_flow(
         }
     }
 
+    // Requesting the access token using the authorization code
     spotify.request_token(&code.trim()).await?;
     let token = spotify.token.lock().await.unwrap().clone();
     let spotify_client = SpotifyClient { token: token };
+
+    // Saving the client and token to a file
     write_client_to_file(&spotify_client).await;
 
     Ok(spotify_client)
 }
 
+// Function to read the cached Spotify client from a file
 async fn read_client_from_file() -> Option<SpotifyClient> {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -140,6 +151,7 @@ async fn read_client_from_file() -> Option<SpotifyClient> {
     }
 }
 
+// Function to write the Spotify client and token to a file
 async fn write_client_to_file(client: &SpotifyClient) {
     let json_data = serde_json::to_vec_pretty(client).unwrap();
 
@@ -148,11 +160,10 @@ async fn write_client_to_file(client: &SpotifyClient) {
     path.push("spoify-tui");
     path.push("spotify_cache");
 
+    // Creating the directory if it doesn't exist
     std::fs::create_dir_all(&path).unwrap();
     path.push("client.json");
 
     let mut file = File::create(&path).unwrap();
     file.write_all(&json_data).unwrap();
-
-    info!("Client saved to {}", path.display());
 }
