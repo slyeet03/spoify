@@ -1,3 +1,5 @@
+use ratatui::widgets::{ListState, TableState};
+
 use crate::app::App;
 
 // Helper functions for cursor movement and character deletion
@@ -34,4 +36,44 @@ pub fn clamp_cursor(app: &mut App, new_cursor_pos: usize) -> usize {
 }
 pub fn reset_cursor(app: &mut App) {
     app.cursor_position = 0;
+}
+
+pub fn down_key_for_table(names: Vec<String>, mut state: TableState) -> TableState {
+    let length: usize = names.len();
+    let next_index: usize = state.selected().unwrap_or(0) + 1;
+    state.select(Some(next_index % length));
+
+    state
+}
+
+pub fn down_key_for_list(names: Vec<String>, mut state: ListState) -> ListState {
+    let length: usize = names.len();
+    let next_index: usize = state.selected().unwrap_or(0) + 1;
+    state.select(Some(next_index % length));
+
+    state
+}
+
+pub fn up_key_for_table(names: Vec<String>, mut state: TableState) -> TableState {
+    let length: usize = names.len();
+    let prev_index: usize = if state.selected().unwrap_or(0) == 0 {
+        length - 1
+    } else {
+        state.selected().unwrap_or(0) - 1
+    };
+    state.select(Some(prev_index));
+
+    state
+}
+
+pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> ListState {
+    let length: usize = names.len();
+    let prev_index: usize = if state.selected().unwrap_or(0) == 0 {
+        length - 1
+    } else {
+        state.selected().unwrap_or(0) - 1
+    };
+    state.select(Some(prev_index));
+
+    state
 }

@@ -169,9 +169,9 @@ pub struct App {
 impl App {
     /// Runs the application's main loop until the user quits
     pub fn run(&mut self, terminal: &mut tui::Tui, rx: Receiver<()>) -> io::Result<()> {
-        let mut last_tick = Instant::now();
+        let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
-        let timeout = Duration::from_millis(200);
+        let timeout: Duration = Duration::from_millis(200);
 
         while !self.exit {
             // Handling user inputs
@@ -187,7 +187,7 @@ impl App {
             }
 
             // Update UI
-            let now = std::time::Instant::now();
+            let now: Instant = std::time::Instant::now();
             if now.duration_since(last_tick) >= timeout {
                 last_tick = now;
 

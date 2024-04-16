@@ -53,11 +53,8 @@ pub fn set_theme(app: &mut App) {
 }
 
 fn parse_color(value: &str) -> (u8, u8, u8) {
-    let binding = value.replace("Color::Rgb(", "")
-        .replace(")", "");
-    let rgb: Vec<&str> = binding
-        .split(", ")
-        .collect();
+    let binding = value.replace("Color::Rgb(", "").replace(")", "");
+    let rgb: Vec<&str> = binding.split(", ").collect();
 
     (
         rgb[0].parse().unwrap(),

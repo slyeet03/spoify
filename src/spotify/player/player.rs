@@ -55,29 +55,26 @@ pub async fn currently_playing() -> Result<(), ClientError> {
             currently_playing_type: CurrentlyPlayingType::Unknown,
             actions: Actions::default(),
         }),
-        Err(err) => {
-            eprintln!("Error fetching currently played tracks: {}", err);
-            CurrentPlaybackContext {
-                device: Device {
-                    id: None,
-                    is_active: false,
-                    is_private_session: false,
-                    is_restricted: false,
-                    name: "".to_string(),
-                    _type: DeviceType::Computer,
-                    volume_percent: Some(0),
-                },
-                repeat_state: RepeatState::Off,
-                shuffle_state: false,
-                context: None,
-                timestamp: DateTime::default(),
-                progress: None,
-                is_playing: false,
-                item: None,
-                currently_playing_type: CurrentlyPlayingType::Unknown,
-                actions: Actions::default(),
-            }
-        }
+        Err(_err) => CurrentPlaybackContext {
+            device: Device {
+                id: None,
+                is_active: false,
+                is_private_session: false,
+                is_restricted: false,
+                name: "".to_string(),
+                _type: DeviceType::Computer,
+                volume_percent: Some(0),
+            },
+            repeat_state: RepeatState::Off,
+            shuffle_state: false,
+            context: None,
+            timestamp: DateTime::default(),
+            progress: None,
+            is_playing: false,
+            item: None,
+            currently_playing_type: CurrentlyPlayingType::Unknown,
+            actions: Actions::default(),
+        },
     };
 
     save_data_to_json(currently_playing_tracks);
@@ -87,14 +84,14 @@ pub async fn currently_playing() -> Result<(), ClientError> {
 
 // Function to save the currently playing track data to a JSON file
 fn save_data_to_json(items: CurrentPlaybackContext) {
-    let json_data = json!(items);
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let json_data: Value = json!(items);
+    let mut path: PathBuf = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
     path.push("spoify-tui");
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("currently_playing.json");
-    let mut file = File::create(&path).unwrap();
+    let mut file: File = File::create(&path).unwrap();
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
