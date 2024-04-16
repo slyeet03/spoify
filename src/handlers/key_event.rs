@@ -26,11 +26,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     let go_to_library_key: char = app.go_to_library_key;
     let go_to_user_playlists_key: char = app.go_to_user_playlists_key;
     let exit_application_key: char = app.exit_application_key;
-    let _shuffle_key: char = app.shuffle_key;
-    let _repeat_key: char = app.repeat_key;
     let help_key: char = app.help_key;
     let volume_up_key: char = app.volume_up_key;
-    let volume_down_key_for_table: char = app.volume_down_key;
+    let volume_down_key: char = app.volume_down_key;
 
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
@@ -41,7 +39,10 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     println!("{}", e);
                 }
             }
-
+            // Cycle through repeat options when Ctrl+R is pressed
+            KeyCode::Char('r') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+                // TODO: add repeat function
+            }
             // Exit the application when 'q' is pressed in Normal mode
             code if code == KeyCode::Char(exit_application_key)
                 && app.input_mode != InputMode::Editing =>
@@ -108,7 +109,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_artist_display = false;
             }
             // Keys for Volume Control
-            code if code == KeyCode::Char(volume_down_key_for_table)
+            code if code == KeyCode::Char(volume_down_key)
                 && app.input_mode != InputMode::Editing => {}
             code if code == KeyCode::Char(volume_up_key)
                 && app.input_mode != InputMode::Editing => {}

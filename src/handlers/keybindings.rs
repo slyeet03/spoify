@@ -45,18 +45,7 @@ pub fn set_keybindings(app: &mut App) {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    /*app.shuffle_key = match keybindings
-        .get("Shuffle")
-        {
-        Some(s) => s.chars().next().unwrap_or(' '),
-        None => ' ',
-    };
-    app.repeat_key = match keybindings
-        .get("Repeat")
-        {
-        Some(s) => s.chars().next().unwrap_or(' '),
-        None => ' ',
-    };*/
+
     app.pause_play_key = match keybindings.get("Pause/Play") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
@@ -69,11 +58,11 @@ pub fn set_keybindings(app: &mut App) {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    /*
+
     app.volume_down_key = match keybindings.get("Volume Down") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
-    };*/
+    };
 }
 
 pub fn process_keybindings(app: &mut App) {
