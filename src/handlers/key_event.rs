@@ -5,6 +5,9 @@ use crate::spotify::library_section::podcast::{process_podcasts, user_podcast};
 use crate::spotify::library_section::recently_played::{process_recently_played, recently_played};
 use crate::spotify::library_section::user_albums::{process_user_albums, user_albums};
 use crate::spotify::library_section::user_artists::{process_user_artists, user_artists};
+use crate::spotify::player::pause_playback::pause;
+use crate::spotify::player::play_playback::play;
+use crate::spotify::player::repeat::cycle_repeat;
 use crate::spotify::player::shuffle::toogle_shuffle;
 use crate::spotify::user_playlist::user_playlist_track::{
     fetch_playlists_tracks, process_playlist_tracks,
@@ -41,7 +44,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             }
             // Cycle through repeat options when Ctrl+R is pressed
             KeyCode::Char('r') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
-                // TODO: add repeat function
+                if let Err(e) = cycle_repeat(app) {
+                    println!("{}", e);
+                }
             }
             // Exit the application when 'q' is pressed in Normal mode
             code if code == KeyCode::Char(exit_application_key)
@@ -426,6 +431,18 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
 
+            // Pause/Play using Spacebar
+            KeyCode::Char(' ') if app.input_mode != InputMode::Editing => {
+                if app.playback_status == "Paused" {
+                    if let Err(e) = play(app) {
+                        println!("{}", e);
+                    }
+                } else if app.playback_status == "Playing" {
+                    if let Err(e) = pause(app) {
+                        println!("{}", e);
+                    }
+                }
+            }
             KeyCode::Esc if app.input_mode != InputMode::Editing => {
                 app.selected_menu = Menu::Default;
             }
