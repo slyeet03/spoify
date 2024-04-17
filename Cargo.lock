@@ -1439,6 +1439,8 @@ dependencies = [
  "dotenvy",
  "futures",
  "futures-util",
+ "indoc",
+ "itertools",
  "ratatui",
  "regex",
  "reqwest",
