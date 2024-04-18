@@ -145,6 +145,25 @@ pub struct App {
     pub task: Vec<String>,
     pub key: Vec<String>,
 
+    // Handle New Release section
+    pub new_release_artist: Vec<String>,
+    pub new_release_name: Vec<String>,
+    pub new_release_state: ListState,
+    pub current_new_release: String,
+    pub new_release_display: bool,
+    pub new_release_selected: String,
+    pub is_new_release_selected: bool,
+    pub new_release_album_selected: bool,
+    pub new_release_album_state: TableState,
+    pub new_release_album_links: Vec<String>,
+    pub current_new_release_album: String,
+    pub current_new_release_album_link: String,
+
+    pub new_release_track_names: Vec<String>,
+    pub new_release_artist_names: Vec<String>,
+    pub new_release_durations_ms: Vec<i64>,
+    pub new_release_spotify_urls: Vec<String>,
+
     // Keybindings
     pub go_to_search_key: char,
     pub go_to_library_key: char,
@@ -154,6 +173,7 @@ pub struct App {
     pub help_key: char,
     pub volume_up_key: char,
     pub volume_down_key: char,
+    pub new_release_key: char,
 
     pub first_keys: Vec<String>,
     pub tasks: Vec<String>,
@@ -346,9 +366,27 @@ impl Default for App {
             help_key: char::from(' '),
             volume_up_key: char::from(' '),
             volume_down_key: char::from(' '),
+            new_release_key: char::from(' '),
 
             first_keys: Vec::new(),
             tasks: Vec::new(),
+
+            new_release_artist: Vec::new(),
+            new_release_name: Vec::new(),
+            new_release_state: ListState::default(),
+            current_new_release: String::new(),
+            new_release_display: false,
+            new_release_selected: String::new(),
+            is_new_release_selected: false,
+            new_release_album_selected: false,
+            new_release_album_state: TableState::default(),
+            new_release_album_links: Vec::new(),
+            current_new_release_album: String::new(),
+            current_new_release_album_link: String::new(),
+            new_release_track_names: Vec::new(),
+            new_release_artist_names: Vec::new(),
+            new_release_durations_ms: Vec::new(),
+            new_release_spotify_urls: Vec::new(),
         }
     }
 }

@@ -9,12 +9,7 @@ use crate::app::App;
 
 use super::util::{convert_to_list, track_table_ui};
 
-pub fn render_user_playlist(
-    f: &mut Frame,
-    content_sub_chunk: &[Rect],
-    content_chunk: &[Rect],
-    app: &mut App,
-) {
+pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
     let current_playlist_name = (&app.current_user_playlist).to_string();
 
     let playlist_block_user = Block::default()
@@ -37,10 +32,10 @@ pub fn render_user_playlist(
     let user_playlist_list = List::new(user_playlist_names)
         .block(playlist_block_user.clone())
         .highlight_style(Style::default().fg(app.highlight_color));
-    f.render_widget(Clear, content_sub_chunk[1]);
+    f.render_widget(Clear, content_chunk[2]);
     f.render_stateful_widget(
         user_playlist_list,
-        content_sub_chunk[1],
+        content_chunk[2],
         &mut app.user_playlist_state,
     );
     if app.user_playlist_display {
@@ -64,7 +59,7 @@ pub fn render_user_playlist(
     }
 }
 
-pub fn render_default_user_playlist(f: &mut Frame, content_sub_chunk: &[Rect], app: &mut App) {
+pub fn render_default_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
     let playlist_block_user = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlist"))
@@ -73,5 +68,5 @@ pub fn render_default_user_playlist(f: &mut Frame, content_sub_chunk: &[Rect], a
     let user_playlist_names = convert_to_list(&app.user_playlist_names);
     let user_playlist_list = List::new(user_playlist_names).block(playlist_block_user.clone());
 
-    f.render_widget(user_playlist_list, content_sub_chunk[1]);
+    f.render_widget(user_playlist_list, content_chunk[2]);
 }

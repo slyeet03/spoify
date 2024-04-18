@@ -5,6 +5,9 @@ use crate::spotify::library_section::podcast::{process_podcasts, user_podcast};
 use crate::spotify::library_section::recently_played::{process_recently_played, recently_played};
 use crate::spotify::library_section::user_albums::{process_user_albums, user_albums};
 use crate::spotify::library_section::user_artists::{process_user_artists, user_artists};
+use crate::spotify::new_release_section::new_releases_tracks::{
+    new_releases_tracks, process_new_releases_tracks,
+};
 use crate::spotify::player::pause_playback::pause;
 use crate::spotify::player::play_playback::play;
 use crate::spotify::player::repeat::cycle_repeat;
@@ -32,6 +35,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     let help_key: char = app.help_key;
     let volume_up_key: char = app.volume_up_key;
     let volume_down_key: char = app.volume_down_key;
+    let new_release_key: char = app.new_release_key;
 
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
@@ -113,6 +117,22 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
+            code if code == KeyCode::Char(new_release_key)
+                && app.input_mode != InputMode::Editing =>
+            {
+                app.selected_menu = Menu::NewRelease;
+                app.new_release_state.select(Some(0));
+                app.search_results_rendered = false;
+                app.input_mode = InputMode::Normal;
+                app.user_playlist_display = false;
+                app.liked_song_display = false;
+                app.selected_search = false;
+                app.user_album_display = false;
+                app.can_navigate_menu = true;
+                app.recently_played_display = false;
+                app.podcast_display = false;
+                app.user_artist_display = false;
+            }
             // Keys for Volume Control
             code if code == KeyCode::Char(volume_down_key)
                 && app.input_mode != InputMode::Editing => {}
@@ -160,6 +180,26 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                                 app.user_artist_state.clone(),
                             );
                         }
+                    }
+                }
+                if app.selected_menu == Menu::NewRelease {
+                    if app.new_release_album_selected {
+                        app.new_release_album_state = down_key_for_table(
+                            app.new_release_track_names.clone(),
+                            app.new_release_album_state.clone(),
+                        );
+                    } else {
+                        let length: usize = app.new_release_name.len();
+                        let next_index: usize = app.new_release_state.selected().unwrap_or(0) + 1;
+                        app.new_release_state.select(Some(next_index % length));
+                        app.search_results_rendered = false;
+                        if next_index >= length {
+                        } else {
+                            app.current_new_release = app.new_release_name[next_index].clone();
+                            app.current_new_release_album_link =
+                                app.new_release_album_links[next_index].clone();
+                        }
+                        app.new_release_display = false;
                     }
                 }
                 if app.selected_menu == Menu::Playlists {
@@ -256,6 +296,28 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         }
                     }
                 }
+                if app.selected_menu == Menu::NewRelease {
+                    if app.new_release_album_selected {
+                        app.new_release_album_state = up_key_for_table(
+                            app.new_release_track_names.clone(),
+                            app.new_release_album_state.clone(),
+                        );
+                    } else {
+                        let length: usize = app.new_release_name.len();
+                        let prev_index: usize =
+                            if app.new_release_state.selected().unwrap_or(0) == 0 {
+                                length - 1
+                            } else {
+                                app.new_release_state.selected().unwrap_or(0) - 1
+                            };
+                        app.new_release_state.select(Some(prev_index));
+                        app.search_results_rendered = false;
+                        app.current_new_release = app.new_release_name[prev_index].clone();
+                        app.current_new_release_album_link =
+                            app.new_release_album_links[prev_index].clone();
+                        app.new_release_display = false;
+                    }
+                }
                 if app.selected_menu == Menu::Playlists {
                     if app.user_playlist_tracks_selected {
                         app.user_playlist_tracks_state = up_key_for_table(
@@ -322,6 +384,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     process_playlist_tracks(app);
                     app.user_playlist_display = true;
                 }
+                if app.selected_menu == Menu::NewRelease {
+                    if let Err(e) = new_releases_tracks(app) {
+                        println!("{}", e);
+                    }
+                    process_new_releases_tracks(app);
+                    app.new_release_display = true;
+                }
                 if app.selected_menu == Menu::Library {
                     if app.library_state.selected() == Some(2) {
                         if let Err(e) = liked_tracks() {
@@ -362,6 +431,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     if app.user_playlist_display {
                         app.user_playlist_tracks_state.select(Some(0));
                         app.user_playlist_tracks_selected = !app.user_playlist_tracks_selected;
+                    }
+                }
+                if app.selected_menu == Menu::NewRelease {
+                    app.can_navigate_menu = !app.can_navigate_menu;
+                    if app.new_release_display {
+                        app.new_release_album_state.select(Some(0));
+                        app.new_release_album_selected = !app.new_release_album_selected;
                     }
                 }
                 if app.selected_menu == Menu::Library {

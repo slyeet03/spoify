@@ -262,3 +262,56 @@ pub fn help_table_ui(
 
     table
 }
+
+pub fn new_release_table_ui(
+    names: Vec<String>,
+    artist_names: Vec<String>,
+    duration: Vec<i64>,
+    block: Block,
+    highlight_color: Color,
+    background_color: Color,
+) -> Table {
+    let tracks: Vec<(usize, String, String, String)> = names
+        .iter()
+        .enumerate()
+        .zip(artist_names.iter())
+        .zip(duration.iter().map(|d| format_duration(*d)))
+        .map(|(((index, name), artist), duration)| {
+            (index + 1, name.clone(), artist.clone(), duration)
+        })
+        .collect();
+
+    let table = Table::new(
+        tracks
+            .iter()
+            .map(|(index, name, artist, duration)| {
+                Row::new(vec![
+                    Cell::from(format!("{}", index)),
+                    Cell::from(name.clone()),
+                    Cell::from(artist.clone()),
+                    Cell::from(duration.clone()),
+                ])
+            })
+            .collect::<Vec<_>>(),
+        [
+            Constraint::Percentage(3),
+            Constraint::Percentage(47),
+            Constraint::Percentage(40),
+            Constraint::Percentage(10),
+        ],
+    )
+    .header(
+        Row::new(vec![
+            Cell::from("#"),
+            Cell::from("Title"),
+            Cell::from("Artist"),
+            Cell::from("Duration"),
+        ])
+        .bold(),
+    )
+    .block(block.clone())
+    .highlight_style(Style::default().fg(highlight_color))
+    .style(Style::default().bg(background_color));
+
+    table
+}

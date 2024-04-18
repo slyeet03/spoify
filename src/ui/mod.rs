@@ -1,6 +1,7 @@
 pub mod help;
 pub mod library;
 pub mod main_area;
+pub mod new_release;
 pub mod player;
 pub mod search;
 pub mod tui;

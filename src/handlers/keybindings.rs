@@ -63,6 +63,10 @@ pub fn set_keybindings(app: &mut App) {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
+    app.new_release_key = match keybindings.get("Go to New Release") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
 }
 
 pub fn process_keybindings(app: &mut App) {

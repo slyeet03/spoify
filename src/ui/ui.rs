@@ -6,6 +6,7 @@ use ratatui::prelude::*;
 use super::help::{render_default_help, render_help};
 use super::library::{render_default_library, render_library};
 use super::main_area::render_main_area;
+use super::new_release::{render_default_new_releases, render_new_releases};
 use super::player::render_player;
 use super::search::{render_default_search, render_search};
 use super::user_playlist::{render_default_user_playlist, render_user_playlist};
@@ -31,16 +32,24 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
         .split(chunks[0]);
 
-    // library, playlist and main content display layout
+    // library, playlist new releases and main content display layout
     let content_chunk = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(20), Constraint::Percentage(80)])
+        .constraints([
+            Constraint::Percentage(20),
+            Constraint::Percentage(60),
+            Constraint::Percentage(20),
+        ])
         .split(chunks[1]);
 
-    // library and playlist layout
+    // library and new releases layout
     let content_sub_chunk = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
+        .constraints([
+            Constraint::Percentage(25),
+            Constraint::Percentage(35),
+            Constraint::Percentage(40),
+        ])
         .split(content_chunk[0]);
 
     let main_chunk = Layout::default()
@@ -67,10 +76,11 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     // Render the default UI
     render_default_search(f, &header_chunk, app);
     render_default_library(f, &content_sub_chunk, app);
-    render_default_user_playlist(f, &content_sub_chunk, app);
+    render_default_user_playlist(f, &content_chunk, app);
     render_player(f, &player_layout, app);
     render_main_area(f, &content_chunk, app);
     render_default_help(f, &header_chunk, app);
+    render_default_new_releases(f, &content_sub_chunk, app);
 
     // Render different sections based on the selected menu
     match selected_menu {
@@ -83,13 +93,16 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             render_library(f, &content_sub_chunk, &content_chunk, app);
         }
         Menu::Playlists => {
-            render_user_playlist(f, &content_sub_chunk, &content_chunk, app);
+            render_user_playlist(f, &content_chunk, app);
         }
         Menu::Search => {
             render_search(f, &header_chunk, &main_chunk_upper, &main_chunk_lower, app);
         }
         Menu::Help => {
             render_help(f, app);
+        }
+        Menu::NewRelease => {
+            render_new_releases(f, &content_sub_chunk, &content_chunk, app);
         }
     }
 }

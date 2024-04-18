@@ -1,6 +1,7 @@
 use crate::app::App;
 use crate::handlers::keybindings::{process_keybindings, read_keybindings, set_keybindings};
 use crate::handlers::theme::{read_theme, set_theme};
+use crate::spotify::new_release_section::new_releases::{new_releases, process_new_releases};
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use std::sync::mpsc;
@@ -33,4 +34,6 @@ pub fn startup(app: &mut App) {
     process_keybindings(app);
     read_theme();
     set_theme(app);
+    let _ = new_releases();
+    process_new_releases(app);
 }
