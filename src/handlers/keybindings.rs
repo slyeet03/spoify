@@ -1,10 +1,10 @@
 use serde::Deserialize;
-use serde_json::Value;
 use serde_yaml;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::PathBuf;
+use yaml_rust::YamlLoader;
 
 use crate::app::App;
 
@@ -69,27 +69,26 @@ pub fn set_keybindings(app: &mut App) {
     };
 }
 
-pub fn process_keybindings(app: &mut App) {
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
-    path.push("spotify_cache");
-    path.push("keybindings.json");
+pub fn parse_keybindings(app: &mut App) {
+    // Construct the paths relative to the root directory
+    let mut yaml_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    yaml_path.push("..");
+    yaml_path.push("spoify-tui");
+    yaml_path.push("configure");
+    yaml_path.push("keybindings.yml");
 
-    let file = File::open(&path).expect("Failed to open keybindings.json");
-    let reader = BufReader::new(file);
-    let json_data: Vec<Value> =
-        serde_json::from_reader(reader).expect("Failed to parse keybindings.json");
+    // Load the YAML file
+    let yaml_data = std::fs::read_to_string(&yaml_path).expect("Failed to read YAML file");
 
-    for obj in json_data {
-        if let Value::Object(data) = obj {
-            if let Some(first_key) = data.get("first key").and_then(Value::as_str) {
-                app.first_keys.push(first_key.to_string());
-            }
+    let docs = YamlLoader::load_from_str(yaml_data.as_str()).expect("Failed to load YAML data");
+    let doc = &docs[0];
 
-            if let Some(task) = data.get("task").and_then(Value::as_str) {
-                app.tasks.push(task.to_string());
-            }
-        }
+    // Iterate over the YAML data
+    for (key, value) in doc.as_hash().unwrap() {
+        let task = key.as_str().unwrap().to_string();
+        let key_binding = value.as_str().unwrap().to_string();
+
+        app.tasks.push(task);
+        app.first_keys.push(key_binding);
     }
 }

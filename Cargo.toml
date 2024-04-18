@@ -24,6 +24,8 @@ url = "2.5.0"
 serde_yaml = "0.9.34"
 indoc = "2.0.5"
 itertools = "0.12.1"
+schemars = "0.8.16"
+yaml-rust = "0.4.5"
 
 
 

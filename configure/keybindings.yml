@@ -1,5 +1,10 @@
 # There are some keys which you cannot configure, please see help menu in app to see all the keybindings
-
+#Permanent key bindings
+Shuffle: "Ctrl+S"
+Repeat: "Ctrl+R"
+Navigate between Menu: "Tab"
+Play/Pause: "Space"
+Exit Search menu or Help menu: "Esc"
 # Changable key bindings
 Go to Search: "s"
 Go to Library: "l"

@@ -1,5 +1,9 @@
+extern crate serde_json;
+extern crate serde_yaml;
+extern crate yaml_rust;
+
 use crate::app::App;
-use crate::handlers::keybindings::{process_keybindings, read_keybindings, set_keybindings};
+use crate::handlers::keybindings::{parse_keybindings, read_keybindings, set_keybindings};
 use crate::handlers::theme::{read_theme, set_theme};
 use crate::spotify::new_release_section::new_releases::{new_releases, process_new_releases};
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
@@ -27,13 +31,16 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
 
 /// Function to run before starting the main app loop
 pub fn startup(app: &mut App) {
-    get_playlists();
-    process_user_playlists(app);
     read_keybindings();
     set_keybindings(app);
-    process_keybindings(app);
+    parse_keybindings(app);
+
     read_theme();
     set_theme(app);
+
     let _ = new_releases();
     process_new_releases(app);
+
+    get_playlists();
+    process_user_playlists(app);
 }
