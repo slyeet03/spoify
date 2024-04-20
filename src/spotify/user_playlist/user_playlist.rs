@@ -1,12 +1,7 @@
-/*
-fetches the user playlist list
-saves their data in a json file
-saves their name and links in variables
-*/
+// This section handles fetching and processing the user's Spotify playlists
 
 use crate::app::App;
 use crate::spotify::auth::{get_spotify_client, SpotifyClient};
-use dotenv::dotenv;
 use futures_util::TryStreamExt;
 use rspotify::clients::OAuthClient;
 use rspotify::model::SimplifiedPlaylist;
@@ -18,16 +13,17 @@ use std::io::BufReader;
 use std::io::Write;
 use std::path::PathBuf;
 
+/// Fetches user playlists from Spotify
 pub async fn fetch_user_playlists(
     spotify_client: &SpotifyClient,
 ) -> Result<Vec<SimplifiedPlaylist>, ClientError> {
-    dotenv().ok();
-
+    // Extract the access token from the provided Spotify client
     let spotify = match &spotify_client.token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),
         None => return Err(ClientError::InvalidToken),
     };
 
+    // Collect information about the user playlists
     let mut playlists = Vec::new();
     let mut stream = spotify.current_user_playlists();
 
@@ -42,6 +38,7 @@ pub async fn fetch_user_playlists(
     Ok(playlists)
 }
 
+/// Saves a list of playlists in JSON format to a file for later use
 fn save_playlists_to_json(playlists: &[SimplifiedPlaylist]) {
     let json_data = serde_json::to_vec_pretty(playlists).unwrap();
 
@@ -58,6 +55,7 @@ fn save_playlists_to_json(playlists: &[SimplifiedPlaylist]) {
 
 #[tokio::main]
 pub async fn get_playlists() {
+    // Obtain a Spotify client using the access token (if available)
     let spotify_client = get_spotify_client().await.unwrap();
     match fetch_user_playlists(&spotify_client).await {
         Ok(playlists) => {
@@ -67,6 +65,7 @@ pub async fn get_playlists() {
     }
 }
 
+/// Processes the playlist data stored in the cache file and populates the app's data structures
 pub fn process_user_playlists(app: &mut App) {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -79,6 +78,7 @@ pub fn process_user_playlists(app: &mut App) {
 
     let playlists: Value = serde_json::from_reader(reader).expect("Failed to parse playlists.json");
 
+    // Extract information about each playlist from the JSON data and populate the app's data structures for displaying the playlists
     if let Value::Array(playlists) = playlists {
         for playlist in playlists {
             if let Value::Object(playlist_obj) = playlist {

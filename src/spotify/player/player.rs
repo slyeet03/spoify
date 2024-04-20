@@ -118,8 +118,8 @@ pub fn process_currently_playing(app: &mut App) {
     let json_data: Value =
         serde_json::from_reader(reader).expect("Failed to parse currently_playing.json");
 
+    // Extract relevant information from the JSON data and update the application state
     if let Value::Object(currently_playing) = json_data {
-        // Extract relevant information from the JSON data and update the application state
         if let Some(currently_playing_type) = currently_playing
             .get("currently_playing_type")
             .and_then(Value::as_str)

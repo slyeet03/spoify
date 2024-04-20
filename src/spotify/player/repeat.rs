@@ -20,7 +20,6 @@ pub async fn cycle_repeat(app: &mut App) -> Result<(), ClientError> {
     let device_id: Option<&str> = app.current_device_id.as_ref().map(Deref::deref);
 
     // Cycle through repeat states for the specified device
-
     let mut state: RepeatState = RepeatState::Off;
 
     if app.repeat_status == "Off" {

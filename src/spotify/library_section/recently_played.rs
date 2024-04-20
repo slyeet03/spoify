@@ -8,8 +8,10 @@ use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
+/// Fetches a user's recently played tracks from Spotify
 #[tokio::main]
 pub async fn recently_played() -> Result<(), ClientError> {
+    // Get a Spotify client using an existing access token (if available)
     let spotify_client = get_spotify_client().await.unwrap();
 
     let spotify = match &spotify_client.token {
@@ -17,6 +19,7 @@ pub async fn recently_played() -> Result<(), ClientError> {
         None => return Err(ClientError::InvalidToken),
     };
 
+    // Retrieve up to 50 of the user's recently played tracks
     let recently_played_result = spotify.current_user_recently_played(Some(50), None).await;
 
     let recently_played_tracks: Vec<PlayHistory> = match recently_played_result {
@@ -30,6 +33,7 @@ pub async fn recently_played() -> Result<(), ClientError> {
     Ok(())
 }
 
+/// Saves a vector of recently played tracks to a JSON file in the Spotify cache directory
 fn save_recently_played_to_json(items: Vec<PlayHistory>) {
     let json_data = json!(items);
 
@@ -44,7 +48,9 @@ fn save_recently_played_to_json(items: Vec<PlayHistory>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
+/// Processes the recently played tracks data stored in the cache file and populates the app's data structures
 pub fn process_recently_played(app: &mut App) {
+    // Clear any existing recently played track data in the app before processing
     app.recently_played_links.clear();
     app.recently_played_names.clear();
     app.recently_played_duration.clear();
@@ -62,6 +68,7 @@ pub fn process_recently_played(app: &mut App) {
     let json_data: Value =
         serde_json::from_reader(reader).expect("Failed to parse recently_played.json");
 
+    // Extract information about each recently played track from the JSON data
     if let Value::Array(tracks) = json_data {
         for track in tracks {
             if let Value::Object(track_obj) = track {

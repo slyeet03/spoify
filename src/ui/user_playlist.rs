@@ -9,6 +9,7 @@ use crate::app::App;
 
 use super::util::{convert_to_list, track_table_ui};
 
+/// Renders the user playlist UI section, including playlist selection list and track table
 pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
     let current_playlist_name = (&app.current_user_playlist).to_string();
 
@@ -28,6 +29,7 @@ pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App
         })
         .style(Style::default().bg(app.background_color));
 
+    // Convert app data (user playlist names) to a List widget
     let user_playlist_names = convert_to_list(&app.user_playlist_names);
     let user_playlist_list = List::new(user_playlist_names)
         .block(playlist_block_user.clone())
@@ -38,6 +40,8 @@ pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App
         content_chunk[2],
         &mut app.user_playlist_state,
     );
+
+    // Conditionally render the user playlist track table
     if app.user_playlist_display {
         f.render_widget(Clear, content_chunk[1]);
         let user_playlist_tracks_table = track_table_ui(
@@ -59,12 +63,14 @@ pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App
     }
 }
 
+/// Renders a default UI for the user playlist section when no playlist is selected
 pub fn render_default_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
     let playlist_block_user = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlist"))
         .style(Style::default().bg(app.background_color));
 
+    // Convert app data (user playlist names) to a List widget
     let user_playlist_names = convert_to_list(&app.user_playlist_names);
     let user_playlist_list = List::new(user_playlist_names).block(playlist_block_user.clone());
 

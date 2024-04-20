@@ -12,6 +12,7 @@ use std::io::BufReader;
 use std::io::Write;
 use std::path::PathBuf;
 
+/// Fetches a list of new releases from Spotify and stores them for later use
 #[tokio::main]
 pub async fn new_releases() -> Result<(), ClientError> {
     dotenv().expect(".env file not found");
@@ -20,18 +21,20 @@ pub async fn new_releases() -> Result<(), ClientError> {
     let client_secret_id =
         env::var("CLIENT_SECRET_ID").expect("You've not set the CLIENT_SECRET_ID");
 
+    // Create authentication credentials
     let creds = Credentials {
         id: client_id.to_string(),
         secret: Some(client_secret_id.to_string()),
     };
+
+    // Create a Spotify client using client credentials flow.
     let spotify = ClientCredsSpotify::new(creds);
 
-    // Obtaining the access token
+    // Request an access token from Spotify.
     spotify.request_token().await.unwrap();
 
+    // Collect information about a limited number of new releases.
     let mut new_releases = Vec::new();
-
-    // Executing the futures sequentially
     let stream = spotify
         .new_releases(None)
         .try_for_each(|item| {
@@ -47,6 +50,7 @@ pub async fn new_releases() -> Result<(), ClientError> {
     Ok(())
 }
 
+/// Saves a vector of simplified album data to a JSON file in the Spotify cache directory
 fn save_new_releases_to_json(items: Vec<SimplifiedAlbum>) {
     let json_data = json!(items);
 
@@ -61,6 +65,7 @@ fn save_new_releases_to_json(items: Vec<SimplifiedAlbum>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
+/// Processes the new releases data stored in the cache file and populates the app's data structures
 pub fn process_new_releases(app: &mut App) {
     app.new_release_artist.clear();
     app.new_release_name.clear();
@@ -76,6 +81,7 @@ pub fn process_new_releases(app: &mut App) {
     let json_data: Value =
         serde_json::from_reader(reader).expect("Failed to parse new_releases.json");
 
+    // Extract information about each new release from the JSON data
     if let Value::Array(albums) = json_data {
         for album in albums {
             if let Value::Object(album_obj) = album {

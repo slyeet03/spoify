@@ -26,6 +26,8 @@ use super::util::{
     reset_cursor, up_key_for_list, up_key_for_table,
 };
 
+// TODO: add a common back button(potentially q)
+
 /// Function to handle key events for the application
 pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     let go_to_search_key: char = app.go_to_search_key;

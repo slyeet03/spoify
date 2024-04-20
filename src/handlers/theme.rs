@@ -12,9 +12,10 @@ use crate::app::App;
 #[derive(Deserialize, Debug)]
 struct Theme(HashMap<String, Value>);
 
+/// Reads the theme configuration file and returns the parsed theme data as a HashMap
 pub fn read_theme() -> HashMap<String, Value> {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push(".."); // Move up to the root of the Git repository
+    path.push("..");
     path.push("spoify-tui");
     path.push("configure");
     path.push("theme.yml");
@@ -27,9 +28,12 @@ pub fn read_theme() -> HashMap<String, Value> {
     theme.0
 }
 
+/// Sets the application theme based on the configuration loaded from the theme file
 pub fn set_theme(app: &mut App) {
     let theme = read_theme();
 
+    // Try to get the theme color values from the configuration.
+    // If a value is not found or invalid, use default values.
     if let Some(border_color) = theme.get("Border Color") {
         if let Some(rgb) = border_color.as_str() {
             let (r, g, b) = parse_color(rgb);
@@ -52,6 +56,7 @@ pub fn set_theme(app: &mut App) {
     }
 }
 
+/// Parses an RGB color string in the format "Color::Rgb(r, g, b)" into a tuple of (u8, u8, u8)
 fn parse_color(value: &str) -> (u8, u8, u8) {
     let binding = value.replace("Color::Rgb(", "").replace(")", "");
     let rgb: Vec<&str> = binding.split(", ").collect();

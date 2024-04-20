@@ -11,6 +11,7 @@ use ratatui::{
 
 use crate::app::App;
 
+/// Renders the main content area of the application, currently displaying a welcome message and logo
 pub fn render_main_area(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
     let content_block = Block::default()
         .borders(Borders::ALL)

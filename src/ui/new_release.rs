@@ -9,6 +9,7 @@ use crate::app::App;
 
 use super::util::{convert_to_list, new_release_table_ui};
 
+/// Renders a simplified list of new release album names
 pub fn render_default_new_releases(f: &mut Frame, content_sub_chunk: &[Rect], app: &mut App) {
     let new_release_block = Block::default()
         .borders(Borders::ALL)
@@ -23,6 +24,7 @@ pub fn render_default_new_releases(f: &mut Frame, content_sub_chunk: &[Rect], ap
     f.render_widget(new_releases_list, content_sub_chunk[1]);
 }
 
+/// Renders the full new releases view, including the tracks and other details for the selected album.
 pub fn render_new_releases(
     f: &mut Frame,
     content_sub_chunk: &[Rect],
@@ -58,6 +60,8 @@ pub fn render_new_releases(
         content_sub_chunk[1],
         &mut app.new_release_state,
     );
+
+    // Conditionally render details for the selected new release album.
     if app.new_release_display {
         f.render_widget(Clear, content_chunk[1]);
 

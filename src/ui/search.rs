@@ -9,6 +9,7 @@ use crate::{app::App, enums::InputMode};
 
 use super::util::convert_to_list;
 
+/// Renders the search UI section, including search input, category blocks, and search results
 pub fn render_search(
     f: &mut Frame,
     header_chunk: &[Rect],
@@ -22,6 +23,7 @@ pub fn render_search(
         .border_style(Style::new().fg(app.border_color))
         .style(Style::default().bg(app.background_color));
 
+    // Create styled blocks for each search category (albums, artists, etc.) with dynamic borders
     let album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
@@ -59,7 +61,7 @@ pub fn render_search(
         })
         .style(Style::default().bg(app.background_color));
 
-    // Create the search input paragraph
+    // Create a Paragraph widget for displaying the search input text
     let search_input = Paragraph::new(app.input.as_str())
         .style(match app.input_mode {
             InputMode::Normal => Style::default(),
@@ -71,9 +73,11 @@ pub fn render_search(
 
     f.render_widget(search_block, header_chunk[0]);
 
+    // Render search input or search results depending on the input mode
     match app.input_mode {
         InputMode::Normal => {}
         InputMode::Editing => {
+            // Render the search input with a cursor at the current position
             f.render_widget(search_input, header_chunk[0]);
             f.set_cursor(
                 header_chunk[0].x + app.cursor_position as u16 + 1,
@@ -113,6 +117,7 @@ pub fn render_search(
     }
 }
 
+/// Renders a simplified search bar
 pub fn render_default_search(f: &mut Frame, header_chunk: &[Rect], app: &mut App) {
     let search_block = Block::default()
         .borders(Borders::ALL)

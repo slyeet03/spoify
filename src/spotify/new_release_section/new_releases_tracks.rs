@@ -12,6 +12,7 @@ use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
+/// Fetches the tracks from a new release album and stores them for later use
 #[tokio::main]
 pub async fn new_releases_tracks(app: &mut App) -> Result<(), ClientError> {
     dotenv().expect(".env file not found");
@@ -20,22 +21,23 @@ pub async fn new_releases_tracks(app: &mut App) -> Result<(), ClientError> {
     let client_secret_id =
         env::var("CLIENT_SECRET_ID").expect("You've not set the CLIENT_SECRET_ID");
 
+    // Create authentication credentials
     let creds = Credentials {
         id: client_id.to_string(),
         secret: Some(client_secret_id.to_string()),
     };
 
+    // Create a Spotify client using client credentials flow
     let spotify = ClientCredsSpotify::new(creds);
 
-    // Obtaining the access token
+    // Request an access token from Spotify
     spotify.request_token().await.unwrap();
 
+    // Collect tracks from the new release album
     let mut new_releases_tracks = Vec::new();
-
-    // Convert the string to an AlbumId
     let album_id: AlbumId = AlbumId::from_id(app.current_new_release_album_link.clone()).unwrap();
 
-    // Executing the futures sequentially
+    // Stream the album tracks and collect them into a vector.
     let stream = spotify
         .album_track(album_id, None)
         .try_for_each(|item| {
@@ -51,6 +53,7 @@ pub async fn new_releases_tracks(app: &mut App) -> Result<(), ClientError> {
     Ok(())
 }
 
+/// Saves a vector of simplified track data to a JSON file in the Spotify cache directory
 fn save_new_releases_tracks_to_json(items: Vec<SimplifiedTrack>) {
     let json_data = json!(items);
 
@@ -65,6 +68,7 @@ fn save_new_releases_tracks_to_json(items: Vec<SimplifiedTrack>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
+/// Processes the new releases tracks data stored in the cache file and populates the app's data structures
 pub fn process_new_releases_tracks(app: &mut App) {
     app.new_release_track_names.clear();
     app.new_release_artist_names.clear();
@@ -82,7 +86,7 @@ pub fn process_new_releases_tracks(app: &mut App) {
     let json_data: Value =
         serde_json::from_reader(reader).expect("Failed to parse new_releases_tracks.json");
 
-    // Assuming the JSON data is an array of tracks
+    // Extract information about each track from the JSON data
     if let Value::Array(tracks) = &json_data {
         // Iterate over each track
         for track in tracks {

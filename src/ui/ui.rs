@@ -16,7 +16,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     // Calculate the layout constraints
     let size = f.size();
 
-    // main display layout
+    // Whole display layout
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -26,13 +26,13 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         ])
         .split(size);
 
-    // search layout
+    // Dividing the header into two horizontal layouts: Search section and Help section
     let header_chunk = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
         .split(chunks[0]);
 
-    // library, playlist new releases and main content display layout
+    // Dividing the middle layout into three horizontal layouts: Library/New Release section, Main screen section and User Playlist section
     let content_chunk = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
@@ -42,28 +42,31 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         ])
         .split(chunks[1]);
 
-    // library and new releases layout
+    // Dividing the fist portion of middle layout into two vertical layouts: Library section and New Release section
     let content_sub_chunk = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(25), Constraint::Percentage(75)])
         .split(content_chunk[0]);
 
+    // Dividing the middle screen into 2 vertical layout which will be firther divided into two horizontal layouts each to have the middle screen be divided into 4 sections
     let main_chunk = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(content_chunk[1]);
 
+    // Dividing the middle screen upper layout into two section: Songs and Artist section
     let main_chunk_upper = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(main_chunk[0]);
 
+    // Dividing the midlle screen lower layout into two section: Album and Playlist section
     let main_chunk_lower = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(main_chunk[1]);
 
-    // Create the player section layout
+    // Making the live player layout
     let player_layout = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
@@ -81,10 +84,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     // Render different sections based on the selected menu
     match selected_menu {
         Menu::Default => {}
-        Menu::Main => {
-            // TODO: Add tabbing function through artists, albums, songs, and playlists
-            // TODO: Add menu navigation inside those blocks
-        }
+        Menu::Main => {}
         Menu::Library => {
             render_library(f, &content_sub_chunk, &content_chunk, app);
         }

@@ -16,12 +16,20 @@ pub fn convert_to_list<'a>(names: &'a [String]) -> Vec<ListItem<'a>> {
     search_results
 }
 
+/// Formats a duration in milliseconds to minutes and seconds with leading zeros
 pub fn format_duration(duration: i64) -> String {
     let minutes = duration / 60000;
     let seconds = (duration % 60000) / 1000;
     format!("{}:{:02}", minutes, seconds)
 }
 
+/*
+ Creates a table UI for displaying track information.
+
+ This function takes various data about tracks (names, artists, albums, durations),
+ a styling block, highlight color, and background color, and returns a Table widget
+ configured to display the track information.
+*/
 pub fn track_table_ui(
     names: Vec<String>,
     artist_names: Vec<String>,

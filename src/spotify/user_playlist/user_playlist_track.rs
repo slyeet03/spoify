@@ -1,8 +1,4 @@
-/*
-fetches the tracks of selected playlists
-stores their data in json file
-store their names,artists,duration and links in their respective variables
-*/
+// Fetches tracks from a user's selected Spotify playlist and stores information for display
 
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
@@ -18,20 +14,24 @@ use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
+/// Fetches playlist tracks from Spotify
 #[tokio::main]
 pub async fn fetch_playlists_tracks(app: &mut App) -> Result<(), ClientError> {
+    // Obtain a Spotify client using the access token (if available)
     let spotify_client = get_spotify_client().await;
     let spotify = match &spotify_client.unwrap().token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),
         None => return Err(ClientError::InvalidToken),
     };
 
+    // Extract the playlist URI from the app's selected playlist URL
     let playlist_url = app.selected_playlist_uri.as_str();
     let re = Regex::new(r"/playlist/(.+)").unwrap();
     let captures = re.captures(playlist_url).unwrap();
     let playlist_uri = captures.get(1).unwrap().as_str();
     let playlist_id = PlaylistId::from_id(playlist_uri).unwrap();
 
+    // Collect information about the playlist items (tracks)
     let mut playlist_items = Vec::new();
 
     let stream = spotify
@@ -49,6 +49,7 @@ pub async fn fetch_playlists_tracks(app: &mut App) -> Result<(), ClientError> {
     Ok(())
 }
 
+/// Saves playlist items data (including tracks) to a JSON file
 fn save_playlists_to_json(playlist_items: Vec<PlaylistItem>) {
     let json_data = json!(playlist_items);
 
@@ -63,7 +64,9 @@ fn save_playlists_to_json(playlist_items: Vec<PlaylistItem>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
+/// Processes the playlist tracks data stored in the cache file and populates the app's data structures
 pub fn process_playlist_tracks(app: &mut App) {
+    // Clear any existing playlist tracks data in the app before processing new data
     app.user_playlist_track_links.clear();
     app.user_playlist_track_names.clear();
     app.user_playlist_track_duration.clear();
@@ -81,6 +84,7 @@ pub fn process_playlist_tracks(app: &mut App) {
     let json_data: Value =
         serde_json::from_reader(reader).expect("Failed to parse playlist_item.json");
 
+    // Extract information about each track from the JSON data and populate the app's data structures for displaying the playlist
     if let Value::Array(tracks) = json_data {
         for track in tracks {
             if let Value::Object(track_obj) = track {

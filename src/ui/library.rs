@@ -8,6 +8,7 @@ use ratatui::{
 use crate::app::App;
 use crate::ui::util::{album_table_ui, artist_table_ui, podcast_table_ui, track_table_ui};
 
+/// Renders the library view of the application, including the list of library sections and content for the selected section
 pub fn render_library(
     f: &mut Frame,
     content_sub_chunk: &[Rect],
@@ -78,13 +79,14 @@ pub fn render_library(
         String::from("Artists"),
         String::from("Podcasts"),
     ];
-    //rendering currently selected menu
+    // Rendering currently selected menu
     let library_list = List::new(library_items)
         .block(library_block)
         .highlight_style(Style::default().fg(app.highlight_color));
 
     f.render_stateful_widget(library_list, content_sub_chunk[0], &mut app.library_state);
 
+    // Render content for the selected library section based on app state.
     if app.liked_song_display {
         f.render_widget(Clear, content_chunk[1]);
 
@@ -182,6 +184,7 @@ pub fn render_library(
     }
 }
 
+/// Renders a simplified library view with only the list of library sections
 pub fn render_default_library(f: &mut Frame, content_sub_chunk: &[Rect], app: &mut App) {
     // Define the library items
     let library_items = vec![

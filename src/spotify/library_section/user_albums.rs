@@ -10,14 +10,18 @@ use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
+/// Fetches a user's saved albums from Spotify
 #[tokio::main]
 pub async fn user_albums() -> Result<(), ClientError> {
+    // Get a Spotify client using an existing access token (if available)
     let spotify_client = get_spotify_client().await.unwrap();
 
     let spotify = match &spotify_client.token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),
         None => return Err(ClientError::InvalidToken),
     };
+
+    // Collect all the user's saved albums from Spotify
     let mut albums = Vec::new();
     // Executing the futures sequentially
     let stream = spotify
@@ -35,6 +39,7 @@ pub async fn user_albums() -> Result<(), ClientError> {
     Ok(())
 }
 
+/// Saves a vector of saved albums to a JSON file in the Spotify cache directory
 fn save_albums_to_json(albums: Vec<SavedAlbum>) {
     let json_data = json!(albums);
 
@@ -49,7 +54,9 @@ fn save_albums_to_json(albums: Vec<SavedAlbum>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
+/// Processes the saved albums data stored in the cache file and populates the app's data structures
 pub fn process_user_albums(app: &mut App) {
+    // Clear any existing user album data in the app before processing
     app.user_album_names.clear();
     app.user_album_links.clear();
     app.user_album_tracks.clear();
@@ -66,6 +73,7 @@ pub fn process_user_albums(app: &mut App) {
     let json_data: Value =
         serde_json::from_reader(reader).expect("Failed to parse user_albums.json");
 
+    // Extract information about each saved album from the JSON data
     if let Value::Array(albums) = json_data {
         for album in albums {
             if let Value::Object(album_obj) = album {

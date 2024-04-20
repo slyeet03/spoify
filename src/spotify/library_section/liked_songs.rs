@@ -11,14 +11,18 @@ use rspotify::prelude::OAuthClient;
 use rspotify::{AuthCodeSpotify, ClientError};
 use serde_json::{json, Value};
 
+/// Fetches a user's liked songs from Spotify
 #[tokio::main]
 pub async fn liked_tracks() -> Result<(), ClientError> {
+    // Get a Spotify client using an existing access token (if available).
     let spotify_client = get_spotify_client().await.unwrap();
 
     let spotify = match &spotify_client.token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),
         None => return Err(ClientError::InvalidToken),
     };
+
+    // Collect all the user's liked songs from Spotify.
     let mut liked_songs = Vec::new();
     // Executing the futures sequentially
     let stream = spotify
@@ -36,6 +40,7 @@ pub async fn liked_tracks() -> Result<(), ClientError> {
     Ok(())
 }
 
+/// Saves a vector of liked songs to a JSON file in the Spotify cache directory.
 fn save_liked_songs_to_json(liked_songs: Vec<SavedTrack>) {
     let json_data = json!(liked_songs);
 
@@ -50,7 +55,9 @@ fn save_liked_songs_to_json(liked_songs: Vec<SavedTrack>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
+/// Processes the liked songs data stored in the cache file and populates the app's data structures
 pub fn process_liked_tracks(app: &mut App) {
+    // Clear any existing liked song data in the app before processing
     app.liked_song_links.clear();
     app.liked_song_names.clear();
     app.liked_song_duration.clear();
@@ -68,6 +75,7 @@ pub fn process_liked_tracks(app: &mut App) {
     let json_data: Value =
         serde_json::from_reader(reader).expect("Failed to parse liked_songs.json");
 
+    // Extract information about each liked song from the JSON data
     if let Value::Array(tracks) = json_data {
         for track in tracks {
             if let Value::Object(track_obj) = track {

@@ -29,34 +29,22 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
     }
 }
 
-/*
-pub fn update_current_queue(tx: mpsc::Sender<()>, app: &mut App) {
-    loop {
-        if let Err(e) = current_queue() {
-            println!("{}", e);
-        }
-        // Send a message to the main thread to update the UI
-        if tx.send(()).is_err() {
-            break;
-        }
-
-        // Wait one second before fetching playback again
-        thread::sleep(Duration::from_millis(5000));
-    }
-}
-*/
 /// Function to run before starting the main app loop
 pub fn startup(app: &mut App) {
+    // Set the keybindings from the configure files
     read_keybindings();
     set_keybindings(app);
     parse_keybindings(app);
 
+    // Set the theme from the configure files
     read_theme();
     set_theme(app);
 
+    // Fetch the new released albums from spotify
     let _ = new_releases();
     process_new_releases(app);
 
+    // Fetch user playlists from spotify
     get_playlists();
     process_user_playlists(app);
 }

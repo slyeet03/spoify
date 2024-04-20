@@ -10,8 +10,8 @@ use crate::app::App;
 
 use super::util::format_duration;
 
+/// Renders the player UI section, including playback info, progress bar, and current media details
 pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
-    // Create player info block
     let player_info_block = Block::default()
         .borders(Borders::TOP | Borders::RIGHT | Borders::LEFT)
         .title(format!(
@@ -27,6 +27,7 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
     let mut player_info_vec = Vec::new();
     let _var = player_info_vec;
 
+    // Collect player information lines based on the media type (episode or song)
     if app.currently_playing_media_type == "episode" {
         player_info_vec = vec![Line::from(vec![
             Span::styled(
@@ -56,10 +57,9 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
     app.progress_bar_ratio = app.currrent_timestamp / app.ending_timestamp;
 
     let label = &format!("{}/{}", current_timestamp, ending_timestamp);
-    // Create player info paragraph
+
     let player_info = Paragraph::new(player_info_vec).wrap(Wrap { trim: true });
 
-    // Create progress bar
     let progress_bar = Gauge::default()
         .block(
             Block::default()
@@ -74,7 +74,6 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
         .label(label)
         .ratio(app.progress_bar_ratio);
 
-    // Render player section
     f.render_widget(player_info_block.clone(), player_layout[0]);
     f.render_widget(
         player_info,

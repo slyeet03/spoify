@@ -10,6 +10,7 @@ use crate::app::App;
 
 use super::util::help_table_ui;
 
+/// Renders the default help block
 pub fn render_default_help(f: &mut Frame, header_chunk: &[Rect], app: &mut App) {
     let help_block = Block::default()
         .borders(Borders::ALL)
@@ -29,6 +30,7 @@ pub fn render_default_help(f: &mut Frame, header_chunk: &[Rect], app: &mut App) 
     f.render_widget(help_panel, header_chunk[1]);
 }
 
+/// Renders the full help UI with a table of available commands and keybindings
 pub fn render_help(f: &mut Frame, app: &mut App) {
     f.render_widget(Clear, f.size());
 
