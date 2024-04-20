@@ -60,9 +60,10 @@ pub fn render_new_releases(
     );
     if app.new_release_display {
         f.render_widget(Clear, content_chunk[1]);
+
         let new_release_tracks_table = new_release_table_ui(
             app.new_release_track_names.clone(),
-            app.new_release_artist.clone(),
+            app.new_release_artist_names.clone(),
             app.new_release_durations_ms.clone(),
             current_new_release_block,
             app.highlight_color.clone(),

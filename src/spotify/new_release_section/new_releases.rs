@@ -104,5 +104,3 @@ pub fn process_new_releases(app: &mut App) {
         }
     }
 }
-
-

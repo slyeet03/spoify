@@ -45,11 +45,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     // library and new releases layout
     let content_sub_chunk = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage(25),
-            Constraint::Percentage(35),
-            Constraint::Percentage(40),
-        ])
+        .constraints([Constraint::Percentage(25), Constraint::Percentage(75)])
         .split(content_chunk[0]);
 
     let main_chunk = Layout::default()

@@ -1,7 +1,7 @@
 use ratatui::{
     layout::Rect,
     style::Style,
-    widgets::{block::Title, Block, Borders, List, Paragraph},
+    widgets::{block::Title, Block, Borders, Clear, List, Paragraph},
     Frame,
 };
 
@@ -81,6 +81,8 @@ pub fn render_search(
             );
         }
         InputMode::SearchResults if app.search_results_rendered => {
+            f.render_widget(Clear, main_chunk_upper[0]);
+
             let album_names_list = convert_to_list(&app.album_names);
             let track_names_list = convert_to_list(&app.track_names);
             let artist_names_list = convert_to_list(&app.artist_names);
