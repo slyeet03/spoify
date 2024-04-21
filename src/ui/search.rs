@@ -27,7 +27,7 @@ pub fn render_search(
     let album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
-        .border_style(if app.selected_album {
+        .border_style(if app.selected_album_in_search_result {
             Style::default().fg(app.border_color)
         } else {
             Style::default()
@@ -36,7 +36,7 @@ pub fn render_search(
     let artist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Artists"))
-        .border_style(if app.selected_artist {
+        .border_style(if app.selected_artist_in_search_result {
             Style::default().fg(app.border_color)
         } else {
             Style::default()
@@ -45,7 +45,7 @@ pub fn render_search(
     let song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Songs"))
-        .border_style(if app.selected_track {
+        .border_style(if app.selected_track_in_search_result {
             Style::default().fg(app.border_color)
         } else {
             Style::default()
@@ -54,7 +54,7 @@ pub fn render_search(
     let playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlists"))
-        .border_style(if app.selected_playlist {
+        .border_style(if app.selected_playlist_in_search_result {
             Style::default().fg(app.border_color)
         } else {
             Style::default()
@@ -87,10 +87,10 @@ pub fn render_search(
         InputMode::SearchResults if app.search_results_rendered => {
             f.render_widget(Clear, main_chunk_upper[0]);
 
-            let album_names_list = convert_to_list(&app.album_names);
-            let track_names_list = convert_to_list(&app.track_names);
-            let artist_names_list = convert_to_list(&app.artist_names);
-            let playlist_names_list = convert_to_list(&app.playlist_names);
+            let album_names_list = convert_to_list(&app.album_names_search_results);
+            let track_names_list = convert_to_list(&app.track_names_search_results);
+            let artist_names_list = convert_to_list(&app.artist_names_search_results);
+            let playlist_names_list = convert_to_list(&app.playlist_names_search_results);
 
             let album_list = List::new(album_names_list)
                 .block(album_block.clone())
@@ -108,10 +108,26 @@ pub fn render_search(
                 .block(artist_block.clone())
                 .highlight_style(Style::default().fg(app.highlight_color));
 
-            f.render_stateful_widget(song_list, main_chunk_upper[0], &mut app.track_state);
-            f.render_stateful_widget(artist_list, main_chunk_upper[1], &mut app.artist_state);
-            f.render_stateful_widget(album_list, main_chunk_lower[0], &mut app.album_state);
-            f.render_stateful_widget(playlist_list, main_chunk_lower[1], &mut app.playlist_state);
+            f.render_stateful_widget(
+                song_list,
+                main_chunk_upper[0],
+                &mut app.track_state_in_search_result,
+            );
+            f.render_stateful_widget(
+                artist_list,
+                main_chunk_upper[1],
+                &mut app.artist_state_in_search_result,
+            );
+            f.render_stateful_widget(
+                album_list,
+                main_chunk_lower[0],
+                &mut app.album_state_in_search_result,
+            );
+            f.render_stateful_widget(
+                playlist_list,
+                main_chunk_lower[1],
+                &mut app.playlist_state_in_search_result,
+            );
         }
         _ => {}
     }

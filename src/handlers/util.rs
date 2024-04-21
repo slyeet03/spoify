@@ -1,6 +1,6 @@
 use ratatui::widgets::{ListState, TableState};
 
-use crate::app::App;
+use crate::{app::App, enums::InputMode};
 
 // Helper functions for cursor movement and character deletion
 pub fn move_cursor_left(app: &mut App) {

@@ -1,32 +1,28 @@
-use crate::app::App;
-use crate::enums::{InputMode, Menu};
-use crate::spotify::library_section::liked_songs::{liked_tracks, process_liked_tracks};
-use crate::spotify::library_section::podcast::{process_podcasts, user_podcast};
-use crate::spotify::library_section::recently_played::{process_recently_played, recently_played};
-use crate::spotify::library_section::user_albums::{process_user_albums, user_albums};
-use crate::spotify::library_section::user_artists::{process_user_artists, user_artists};
-use crate::spotify::new_release_section::new_releases_tracks::{
-    new_releases_tracks, process_new_releases_tracks,
-};
-use crate::spotify::player::pause_playback::pause;
-use crate::spotify::player::play_playback::play;
-use crate::spotify::player::repeat::cycle_repeat;
-use crate::spotify::player::shuffle::toogle_shuffle;
-use crate::spotify::user_playlist::user_playlist_track::{
-    fetch_playlists_tracks, process_playlist_tracks,
-};
-use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
-
-use std::io::{self, Write};
-
-use crate::spotify::search::process_search;
-
 use super::util::{
     delete_char, down_key_for_list, down_key_for_table, move_cursor_left, move_cursor_right,
     reset_cursor, up_key_for_list, up_key_for_table,
 };
-
-// TODO: add a common back button(potentially q)
+use crate::app::App;
+use crate::enums::{InputMode, Menu};
+use crate::spotify::library_section::{
+    liked_songs::{liked_tracks, process_liked_tracks},
+    podcast::{process_podcasts, user_podcast},
+    recently_played::{process_recently_played, recently_played},
+    user_albums::{process_user_albums, user_albums},
+    user_artists::{process_user_artists, user_artists},
+};
+use crate::spotify::new_release_section::new_releases_tracks::{
+    new_releases_tracks, process_new_releases_tracks,
+};
+use crate::spotify::player::{
+    pause_playback::pause, play_playback::play, repeat::cycle_repeat, shuffle::toogle_shuffle,
+};
+use crate::spotify::search::process_search;
+use crate::spotify::user_playlist::user_playlist_track::{
+    fetch_playlists_tracks, process_playlist_tracks,
+};
+use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
+use std::io::{self, Write};
 
 /// Function to handle key events for the application
 pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
@@ -60,7 +56,10 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             {
                 app.exit()
             }
+
             // Navigate to different menus (Library, Playlists, Search) when 'l', 'p', or 's' is pressed
+
+            // Go to Library Menu
             code if code == KeyCode::Char(go_to_library_key)
                 && app.input_mode != InputMode::Editing =>
             {
@@ -77,6 +76,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
+
+            // Go to user playlist menu
             code if code == KeyCode::Char(go_to_user_playlists_key)
                 && app.input_mode != InputMode::Editing =>
             {
@@ -93,6 +94,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
+
+            // Go to search menu
             code if code == KeyCode::Char(go_to_search_key)
                 && app.input_mode != InputMode::Editing =>
             {
@@ -106,6 +109,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
+
+            // Go to help menu
             code if code == KeyCode::Char(help_key) && app.input_mode != InputMode::Editing => {
                 app.selected_menu = Menu::Help;
                 app.search_results_rendered = false;
@@ -119,6 +124,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
+
+            // Go to New Release Menu
             code if code == KeyCode::Char(new_release_key)
                 && app.input_mode != InputMode::Editing =>
             {
@@ -135,16 +142,15 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.podcast_display = false;
                 app.user_artist_display = false;
             }
+
             // Keys for Volume Control
             code if code == KeyCode::Char(volume_down_key)
                 && app.input_mode != InputMode::Editing => {}
+
             code if code == KeyCode::Char(volume_up_key)
                 && app.input_mode != InputMode::Editing => {}
 
-            KeyCode::Char('m') if app.input_mode != InputMode::Editing => {
-                app.selected_menu = Menu::Main
-            }
-
+            // Down keybinding for all the menus
             KeyCode::Down if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Library {
                     if app.library_state.selected() == Some(2) {
@@ -225,24 +231,28 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
                 if app.selected_menu == Menu::Search {
                     if app.selected_search {
-                        if app.selected_track {
-                            app.track_state =
-                                down_key_for_list(app.track_names.clone(), app.track_state.clone());
-                        }
-                        if app.selected_album {
-                            app.album_state =
-                                down_key_for_list(app.album_names.clone(), app.album_state.clone());
-                        }
-                        if app.selected_artist {
-                            app.artist_state = down_key_for_list(
-                                app.artist_names.clone(),
-                                app.artist_state.clone(),
+                        if app.selected_track_in_search_result {
+                            app.track_state_in_search_result = down_key_for_list(
+                                app.track_names_search_results.clone(),
+                                app.track_state_in_search_result.clone(),
                             );
                         }
-                        if app.selected_playlist {
-                            app.playlist_state = down_key_for_list(
-                                app.playlist_names.clone(),
-                                app.playlist_state.clone(),
+                        if app.selected_album_in_search_result {
+                            app.album_state_in_search_result = down_key_for_list(
+                                app.album_names_search_results.clone(),
+                                app.album_state_in_search_result.clone(),
+                            );
+                        }
+                        if app.selected_artist_in_search_result {
+                            app.artist_state_in_search_result = down_key_for_list(
+                                app.artist_names_search_results.clone(),
+                                app.artist_state_in_search_result.clone(),
+                            );
+                        }
+                        if app.selected_playlist_in_search_result {
+                            app.playlist_state_in_search_result = down_key_for_list(
+                                app.playlist_names_search_results.clone(),
+                                app.playlist_state_in_search_result.clone(),
                             );
                         }
                     }
@@ -259,6 +269,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
 
+            // Up keybinding for all the menus
             KeyCode::Up if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Library {
                     if app.library_state.selected() == Some(2) {
@@ -343,22 +354,28 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
                 if app.selected_menu == Menu::Search {
                     if app.selected_search {
-                        if app.selected_track {
-                            app.track_state =
-                                up_key_for_list(app.track_names.clone(), app.track_state.clone());
+                        if app.selected_track_in_search_result {
+                            app.track_state_in_search_result = up_key_for_list(
+                                app.track_names_search_results.clone(),
+                                app.track_state_in_search_result.clone(),
+                            );
                         }
-                        if app.selected_album {
-                            app.album_state =
-                                up_key_for_list(app.album_names.clone(), app.album_state.clone());
+                        if app.selected_album_in_search_result {
+                            app.album_state_in_search_result = up_key_for_list(
+                                app.album_names_search_results.clone(),
+                                app.album_state_in_search_result.clone(),
+                            );
                         }
-                        if app.selected_artist {
-                            app.artist_state =
-                                up_key_for_list(app.artist_names.clone(), app.artist_state.clone());
+                        if app.selected_artist_in_search_result {
+                            app.artist_state_in_search_result = up_key_for_list(
+                                app.artist_names_search_results.clone(),
+                                app.artist_state_in_search_result.clone(),
+                            );
                         }
-                        if app.selected_playlist {
-                            app.playlist_state = up_key_for_list(
-                                app.playlist_names.clone(),
-                                app.playlist_state.clone(),
+                        if app.selected_playlist_in_search_result {
+                            app.playlist_state_in_search_result = up_key_for_list(
+                                app.playlist_names_search_results.clone(),
+                                app.playlist_state_in_search_result.clone(),
                             );
                         }
                     }
@@ -378,6 +395,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.user_artist_display = false;
                 }
             }
+
+            // Enter keybinding for all the menus
             KeyCode::Enter if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Playlists {
                     if let Err(e) = fetch_playlists_tracks(app) {
@@ -427,6 +446,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                 }
             }
+
+            // Tab keybinding for all the menus
             KeyCode::Tab if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Playlists {
                     app.can_navigate_menu = !app.can_navigate_menu;
@@ -473,35 +494,37 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
                 if app.selected_search {
                     app.can_navigate_menu = false;
-                    app.track_state.select(None);
-                    app.artist_state.select(None);
-                    app.album_state.select(None);
-                    app.playlist_state.select(None);
+                    app.track_state_in_search_result.select(None);
+                    app.artist_state_in_search_result.select(None);
+                    app.album_state_in_search_result.select(None);
+                    app.playlist_state_in_search_result.select(None);
 
                     if app.search_state.selected() == Some(0) {
-                        app.track_state.select(Some(0));
-                        app.selected_track = !app.selected_track;
-                        app.selected_artist = false;
-                        app.selected_album = false;
-                        app.selected_playlist = false;
+                        app.track_state_in_search_result.select(Some(0));
+                        app.selected_track_in_search_result = !app.selected_track_in_search_result;
+                        app.selected_artist_in_search_result = false;
+                        app.selected_album_in_search_result = false;
+                        app.selected_playlist_in_search_result = false;
                     } else if app.search_state.selected() == Some(1) {
-                        app.artist_state.select(Some(0));
-                        app.selected_artist = !app.selected_artist;
-                        app.selected_track = false;
-                        app.selected_album = false;
-                        app.selected_playlist = false;
+                        app.artist_state_in_search_result.select(Some(0));
+                        app.selected_artist_in_search_result =
+                            !app.selected_artist_in_search_result;
+                        app.selected_track_in_search_result = false;
+                        app.selected_album_in_search_result = false;
+                        app.selected_playlist_in_search_result = false;
                     } else if app.search_state.selected() == Some(2) {
-                        app.album_state.select(Some(0));
-                        app.selected_album = !app.selected_album;
-                        app.selected_track = false;
-                        app.selected_artist = false;
-                        app.selected_playlist = false;
+                        app.album_state_in_search_result.select(Some(0));
+                        app.selected_album_in_search_result = !app.selected_album_in_search_result;
+                        app.selected_track_in_search_result = false;
+                        app.selected_artist_in_search_result = false;
+                        app.selected_playlist_in_search_result = false;
                     } else if app.search_state.selected() == Some(3) {
-                        app.playlist_state.select(Some(0));
-                        app.selected_playlist = !app.selected_playlist;
-                        app.selected_track = false;
-                        app.selected_artist = false;
-                        app.selected_album = false;
+                        app.playlist_state_in_search_result.select(Some(0));
+                        app.selected_playlist_in_search_result =
+                            !app.selected_playlist_in_search_result;
+                        app.selected_track_in_search_result = false;
+                        app.selected_artist_in_search_result = false;
+                        app.selected_album_in_search_result = false;
                     }
                     let length = 4;
                     let next_index = app.search_state.selected().unwrap_or(0) + 1;
@@ -521,9 +544,12 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                 }
             }
+
+            // Just exit from Search Menu
             KeyCode::Esc if app.input_mode != InputMode::Editing => {
                 app.selected_menu = Menu::Default;
             }
+
             // Handle character input in search mode
             KeyCode::Char(c) if app.input_mode == InputMode::Editing => {
                 // Handle character input in search mode
@@ -547,21 +573,25 @@ pub fn search_input(app: &mut App, key_event: KeyEvent) -> io::Result<()> {
                 submit_message(app);
                 std::io::sink().write_all(&[0])?;
             }
+
             // Delete a character when Backspace is pressed
             KeyCode::Backspace => {
                 delete_char(app);
                 std::io::sink().write_all(&[0])?;
             }
+
             // Move the cursor left when Left arrow is pressed
             KeyCode::Left => {
                 move_cursor_left(app);
                 std::io::sink().write_all(&[0])?;
             }
+
             // Move the cursor right when Right arrow is pressed
             KeyCode::Right => {
                 move_cursor_right(app);
                 std::io::sink().write_all(&[0])?;
             }
+
             // Exit search mode when Esc is pressed
             KeyCode::Esc => {
                 app.input_mode = InputMode::Normal;
@@ -579,11 +609,15 @@ pub fn search_input(app: &mut App, key_event: KeyEvent) -> io::Result<()> {
 // Submit the search query and process the search results
 fn submit_message(app: &mut App) {
     app.search_query = app.input.clone();
+
     let binding = app.search_query.clone();
     let query = binding.as_str();
+
     let _ = process_search(app, query);
+
     app.input.clear();
     reset_cursor(app);
+
     app.input_mode = InputMode::SearchResults;
     app.search_results_rendered = true;
     app.selected_search = true;

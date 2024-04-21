@@ -116,15 +116,15 @@ pub async fn search(user_query: &str) -> Result<(), std::io::Error> {
 
 // Function to process the search results and store them in the application state
 pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
-    app.album_names.clear();
-    app.artist_names.clear();
-    app.track_names.clear();
-    app.playlist_names.clear();
+    app.album_names_search_results.clear();
+    app.artist_names_search_results.clear();
+    app.track_names_search_results.clear();
+    app.playlist_names_search_results.clear();
 
-    app.album_links.clear();
-    app.artist_links.clear();
-    app.track_links.clear();
-    app.playlist_links.clear();
+    app.album_links_search_results.clear();
+    app.artist_links_search_results.clear();
+    app.track_links_search_results.clear();
+    app.playlist_links_search_results.clear();
 
     let mut spotify_cache_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     spotify_cache_path.push("..");
@@ -132,7 +132,10 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
     spotify_cache_path.push("spotify_cache");
 
     if search(query).is_ok() {
-        (app.album_names, app.album_links) = match album_storage(&spotify_cache_path) {
+        (
+            app.album_names_search_results,
+            app.album_links_search_results,
+        ) = match album_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
                 println!("Error reading album data: {}", err);
@@ -140,7 +143,10 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
             }
         };
 
-        (app.track_names, app.track_links) = match track_storage(&spotify_cache_path) {
+        (
+            app.track_names_search_results,
+            app.track_links_search_results,
+        ) = match track_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
                 println!("Error reading track data: {}", err);
@@ -148,7 +154,10 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
             }
         };
 
-        (app.artist_names, app.artist_links) = match artist_storage(&spotify_cache_path) {
+        (
+            app.artist_names_search_results,
+            app.artist_links_search_results,
+        ) = match artist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
                 println!("Error reading artist data: {}", err);
@@ -156,7 +165,10 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
             }
         };
 
-        (app.playlist_names, app.playlist_links) = match playlist_storage(&spotify_cache_path) {
+        (
+            app.playlist_names_search_results,
+            app.playlist_links_search_results,
+        ) = match playlist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
                 println!("Error reading playlist data: {}", err);
@@ -215,15 +227,15 @@ pub fn track_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Stri
 
     let tracks = &track_response.tracks.items;
 
-    let mut track_names: Vec<String> = Vec::new();
-    let mut track_links: Vec<String> = Vec::new();
+    let mut track_names_search_results: Vec<String> = Vec::new();
+    let mut track_links_search_results: Vec<String> = Vec::new();
 
     for track in tracks {
-        track_names.push(track.name.clone());
-        track_links.push(track.external_urls.spotify.clone());
+        track_names_search_results.push(track.name.clone());
+        track_links_search_results.push(track.external_urls.spotify.clone());
     }
 
-    Ok((track_names, track_links))
+    Ok((track_names_search_results, track_links_search_results))
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -274,15 +286,15 @@ pub fn playlist_storage(
 
     let playlists = &playlist_response.playlists.items;
 
-    let mut playlist_names: Vec<String> = Vec::new();
-    let mut playlist_links: Vec<String> = Vec::new();
+    let mut playlist_names_search_results: Vec<String> = Vec::new();
+    let mut playlist_links_search_results: Vec<String> = Vec::new();
 
     for playlist in playlists {
-        playlist_names.push(playlist.name.clone());
-        playlist_links.push(playlist.external_urls.spotify.clone());
+        playlist_names_search_results.push(playlist.name.clone());
+        playlist_links_search_results.push(playlist.external_urls.spotify.clone());
     }
 
-    Ok((playlist_names, playlist_links))
+    Ok((playlist_names_search_results, playlist_links_search_results))
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -331,15 +343,15 @@ pub fn artist_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Str
 
     let artists = &artist_response.artists.items;
 
-    let mut artist_names: Vec<String> = Vec::new();
-    let mut artist_links: Vec<String> = Vec::new();
+    let mut artist_names_search_results: Vec<String> = Vec::new();
+    let mut artist_links_search_results: Vec<String> = Vec::new();
 
     for artist in artists {
-        artist_names.push(artist.name.clone());
-        artist_links.push(artist.external_urls.spotify.clone());
+        artist_names_search_results.push(artist.name.clone());
+        artist_links_search_results.push(artist.external_urls.spotify.clone());
     }
 
-    Ok((artist_names, artist_links))
+    Ok((artist_names_search_results, artist_links_search_results))
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -392,13 +404,13 @@ pub fn album_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Stri
 
     let albums = &album_response.albums.items;
 
-    let mut album_names: Vec<String> = Vec::new();
-    let mut album_links: Vec<String> = Vec::new();
+    let mut album_names_search_results: Vec<String> = Vec::new();
+    let mut album_links_search_results: Vec<String> = Vec::new();
 
     for album in albums {
-        album_names.push(album.name.clone());
-        album_links.push(album.external_urls.spotify.clone());
+        album_names_search_results.push(album.name.clone());
+        album_links_search_results.push(album.external_urls.spotify.clone());
     }
 
-    Ok((album_names, album_links))
+    Ok((album_names_search_results, album_links_search_results))
 }
