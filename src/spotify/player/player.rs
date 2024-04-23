@@ -97,6 +97,7 @@ fn save_data_to_json(items: CurrentPlaybackContext) {
 
 // Function to process the currently playing track information and update the application state
 pub fn process_currently_playing(app: &mut App) {
+    // Clear any existing currently playing data in the app before processing new data
     app.currrent_timestamp = 0.0;
     app.ending_timestamp = 0.0;
     app.currently_playing_artist.clear();

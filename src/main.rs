@@ -17,7 +17,7 @@ mod util;
 fn main() -> io::Result<()> {
     let mut app: App = App::default();
 
-    // Fetch user's playlist
+    // Fetch user's playlists, new releases, set keybinds and themes before the main app starts
     startup(&mut app);
 
     let mut terminal = tui::init()?;
