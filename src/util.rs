@@ -3,8 +3,9 @@ extern crate serde_yaml;
 extern crate yaml_rust;
 
 use crate::app::App;
-use crate::handlers::keybindings::{parse_keybindings, read_keybindings, set_keybindings};
-use crate::handlers::theme::{read_theme, set_theme};
+use crate::settings::keybindings::{parse_keybindings, read_keybindings, set_keybindings};
+use crate::settings::theme::{read_theme, set_theme};
+use crate::settings::volume::{read_volume_values, set_volume_values};
 use crate::spotify::new_release_section::new_releases::{new_releases, process_new_releases};
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
@@ -39,6 +40,10 @@ pub fn startup(app: &mut App) {
     // Set the theme from the configure files
     read_theme();
     set_theme(app);
+
+    // Set the volume increament and decreament values
+    read_volume_values();
+    set_volume_values(app);
 
     // Fetch the new released albums from spotify
     let _ = new_releases();

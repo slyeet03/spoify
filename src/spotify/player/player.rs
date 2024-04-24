@@ -145,6 +145,7 @@ pub fn process_currently_playing(app: &mut App) {
             }
             if let Some(device_volume) = device.get("volume_percent").and_then(Value::as_u64) {
                 app.current_device_volume = device_volume.to_string();
+                app.volume_percent = device_volume as u8;
             }
         }
         if let Some(shuffle) = currently_playing

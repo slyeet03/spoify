@@ -4,3 +4,5 @@ pub mod player;
 pub mod repeat;
 pub mod shuffle;
 pub mod util;
+pub mod volume_decrease;
+pub mod volume_increase;

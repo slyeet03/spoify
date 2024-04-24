@@ -14,6 +14,8 @@ use crate::spotify::library_section::{
 use crate::spotify::new_release_section::new_releases_tracks::{
     new_releases_tracks, process_new_releases_tracks,
 };
+use crate::spotify::player::volume_decrease::volume_decreament;
+use crate::spotify::player::volume_increase::volume_increment;
 use crate::spotify::player::{
     pause_playback::pause, play_playback::play, repeat::cycle_repeat, shuffle::toogle_shuffle,
 };
@@ -145,10 +147,20 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
 
             // Keys for Volume Control
             code if code == KeyCode::Char(volume_down_key)
-                && app.input_mode != InputMode::Editing => {}
+                && app.input_mode != InputMode::Editing =>
+            {
+                if let Err(e) = volume_decreament(app) {
+                    println!("{}", e);
+                }
+            }
 
             code if code == KeyCode::Char(volume_up_key)
-                && app.input_mode != InputMode::Editing => {}
+                && app.input_mode != InputMode::Editing =>
+            {
+                if let Err(e) = volume_increment(app) {
+                    println!("{}", e);
+                }
+            }
 
             // Down keybinding for all the menus
             KeyCode::Down if app.input_mode != InputMode::Editing => {

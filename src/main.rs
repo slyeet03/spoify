@@ -10,6 +10,7 @@ use crate::app::App;
 mod app;
 mod enums;
 mod handlers;
+mod settings;
 mod spotify;
 mod ui;
 mod util;

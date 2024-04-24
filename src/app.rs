@@ -191,6 +191,11 @@ pub struct App {
     pub border_color: Color,
     pub highlight_color: Color,
     pub background_color: Color,
+
+    // Volume controls
+    pub volume_increment_value: u8,
+    pub volume_decreament_value: u8,
+    pub volume_percent: u8,
 }
 
 impl App {
@@ -396,6 +401,10 @@ impl Default for App {
             new_release_artist_names: Vec::new(),
             new_release_durations_ms: Vec::new(),
             new_release_spotify_urls: Vec::new(),
+
+            volume_increment_value: 0,
+            volume_decreament_value: 0,
+            volume_percent: 0,
         }
     }
 }
