@@ -1,5 +1,6 @@
 pub mod help;
 pub mod library;
+pub mod lyrics;
 pub mod main_area;
 pub mod new_release;
 pub mod player;

@@ -144,6 +144,7 @@ pub struct App {
     pub ending_timestamp: f64,
     pub currently_playing_artist: String,
     pub current_playing_name: String,
+    pub current_playing_id: String,
     pub current_playing_album: String,
     pub is_playing: bool,
     pub progress_bar_ratio: f64,
@@ -183,6 +184,7 @@ pub struct App {
     pub volume_up_key: char,
     pub volume_down_key: char,
     pub new_release_key: char,
+    pub lyrics_key: char,
 
     pub first_keys: Vec<String>,
     pub tasks: Vec<String>,
@@ -196,6 +198,10 @@ pub struct App {
     pub volume_increment_value: u8,
     pub volume_decreament_value: u8,
     pub volume_percent: u8,
+
+    // Lyrics
+    pub lyrics: Vec<String>,
+    pub argument_for_lyric: String,
 }
 
 impl App {
@@ -363,6 +369,7 @@ impl Default for App {
             ending_timestamp: f64::from(1),
             currently_playing_artist: String::new(),
             current_playing_name: String::new(),
+            current_playing_id: String::new(),
             current_playing_album: String::new(),
             is_playing: false,
             progress_bar_ratio: 0.0,
@@ -381,6 +388,7 @@ impl Default for App {
             volume_up_key: char::from(' '),
             volume_down_key: char::from(' '),
             new_release_key: char::from(' '),
+            lyrics_key: char::from(' '),
 
             first_keys: Vec::new(),
             tasks: Vec::new(),
@@ -405,6 +413,9 @@ impl Default for App {
             volume_increment_value: 0,
             volume_decreament_value: 0,
             volume_percent: 0,
+
+            lyrics: Vec::new(),
+            argument_for_lyric: String::new(),
         }
     }
 }

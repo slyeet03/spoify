@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 crossterm = "0.27.0"
-dotenv = "0.15.0"
 ratatui = "0.26.1"
 reqwest = "0.12.2"
 tokio = {version = "1.36.0", features = ["full"]}
@@ -24,8 +23,10 @@ url = "2.5.0"
 serde_yaml = "0.9.34"
 indoc = "2.0.5"
 itertools = "0.12.1"
-schemars = "0.8.16"
 yaml-rust = "0.4.5"
+anyhow = "1.0.82"
+lyric_finder = "0.1.6"
+lazy_static = "1.4.0"
 
 
 

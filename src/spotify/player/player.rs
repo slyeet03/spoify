@@ -1,5 +1,6 @@
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
+use crate::spotify::lyrics::lyric::lyric;
 use chrono::DateTime;
 use rspotify::model::{
     Actions, AdditionalType, CurrentPlaybackContext, CurrentlyPlayingType, Device, DeviceType,
@@ -41,7 +42,7 @@ pub async fn currently_playing() -> Result<(), ClientError> {
                 is_active: false,
                 is_private_session: false,
                 is_restricted: false,
-                name: "".to_string(),
+                name: "Loading...".to_string(),
                 _type: DeviceType::Computer,
                 volume_percent: Some(0),
             },
@@ -61,7 +62,7 @@ pub async fn currently_playing() -> Result<(), ClientError> {
                 is_active: false,
                 is_private_session: false,
                 is_restricted: false,
-                name: "".to_string(),
+                name: "Loading...".to_string(),
                 _type: DeviceType::Computer,
                 volume_percent: Some(0),
             },
@@ -185,6 +186,9 @@ pub fn process_currently_playing(app: &mut App) {
             if let Some(name) = item.get("name").and_then(Value::as_str) {
                 app.current_playing_name = name.to_string();
             }
+            if let Some(id) = item.get("id").and_then(Value::as_str) {
+                app.current_playing_id = id.to_string();
+            }
         }
     }
 
@@ -206,4 +210,10 @@ pub fn process_currently_playing(app: &mut App) {
     } else {
         app.repeat_status = "Off".to_string();
     }
+
+    app.argument_for_lyric = format!(
+        "{} {}",
+        app.current_playing_name.clone(),
+        app.currently_playing_artist.clone()
+    );
 }

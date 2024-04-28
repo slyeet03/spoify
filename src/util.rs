@@ -13,7 +13,7 @@ use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
 
-/// Function to update the player information in a seperate thread
+/// Function to update the player information in a separate thread
 pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
     loop {
         // Get the user's current playback

@@ -39,5 +39,6 @@ fn main() -> io::Result<()> {
     }
 
     tui::restore()?;
+
     Ok(())
 }

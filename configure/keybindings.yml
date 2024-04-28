@@ -2,6 +2,7 @@
 #Permanent key bindings
 Shuffle: "Ctrl+S"
 Repeat: "Ctrl+R"
+Show Lyrics: "Ctrl+L"
 Navigate between Menu: "Tab"
 Play/Pause: "Space"
 Exit Search menu or Help menu: "Esc"
