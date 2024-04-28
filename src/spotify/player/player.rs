@@ -1,6 +1,5 @@
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
-use crate::spotify::lyrics::lyric::lyric;
 use chrono::DateTime;
 use rspotify::model::{
     Actions, AdditionalType, CurrentPlaybackContext, CurrentlyPlayingType, Device, DeviceType,

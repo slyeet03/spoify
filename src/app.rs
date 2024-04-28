@@ -202,6 +202,8 @@ pub struct App {
     // Lyrics
     pub lyrics: Vec<String>,
     pub argument_for_lyric: String,
+    pub lyrics_selected: bool,
+    pub lyric_state: ListState,
 }
 
 impl App {
@@ -416,6 +418,8 @@ impl Default for App {
 
             lyrics: Vec::new(),
             argument_for_lyric: String::new(),
+            lyrics_selected: false,
+            lyric_state: ListState::default(),
         }
     }
 }

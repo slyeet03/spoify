@@ -63,6 +63,18 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 if let Err(e) = lyric(app) {
                     println!("{}", e);
                 }
+                app.selected_menu = Menu::Lyrics;
+                app.new_release_state.select(Some(0));
+                app.search_results_rendered = false;
+                app.input_mode = InputMode::Normal;
+                app.user_playlist_display = false;
+                app.liked_song_display = false;
+                app.selected_search = false;
+                app.user_album_display = false;
+                app.can_navigate_menu = false;
+                app.recently_played_display = false;
+                app.podcast_display = false;
+                app.user_artist_display = false;
             }
             // Navigate to different menus (Library, Playlists, Search) when 'l', 'p', or 's' is pressed
 
