@@ -68,10 +68,11 @@ pub fn instruction() {
         6. You are now ready to authenticate with Spotify!
         7. Go to the spoify folder, and inside 'configure' folder go to 'creds.yml'.
         8. Enter you 'Client ID' and 'Client Secret'.
-        9. Enter your custom port or leave it as the default port (8888).
-        10. Run spoify
-        11. You will be redirected to an official Spotify webpage to ask you for permissions.
-        12. After accepting the permissions, you'll be redirected to localhost. You'll be redirected to a blank webpage that might say something like 'Connection Refused' since no server is running. Regardless, copy the URL and paste into the prompt in the terminal.
+        9. Run spoify
+        10. You will be redirected to an official Spotify webpage to ask you for permissions.
+        11. After accepting the permissions, you'll be redirected to localhost.
+            You'll be redirected to a blank webpage that might say something like 'Connection Refused' since no server is running. 
+            Regardless, copy the URL and paste into the prompt in the terminal.
         
         There we go, now you can use spoify.
     ");
