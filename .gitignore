@@ -9,4 +9,4 @@ spotify_cache
 spotify.log
 .log
 /spoify_vault
-/configure/creds.yml
+configure/creds.yml
