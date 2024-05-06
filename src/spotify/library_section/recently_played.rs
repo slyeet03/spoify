@@ -10,9 +10,9 @@ use std::path::PathBuf;
 
 /// Fetches a user's recently played tracks from Spotify
 #[tokio::main]
-pub async fn recently_played() -> Result<(), ClientError> {
+pub async fn recently_played(app: &mut App) -> Result<(), ClientError> {
     // Get a Spotify client using an existing access token (if available)
-    let spotify_client = get_spotify_client().await.unwrap();
+    let spotify_client = get_spotify_client(app).await.unwrap();
 
     let spotify = match &spotify_client.token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),

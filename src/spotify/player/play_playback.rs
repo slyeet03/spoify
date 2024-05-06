@@ -10,7 +10,7 @@ use super::util::f64_to_duration;
 // Main function to toggle the shuffle mode
 #[tokio::main]
 pub async fn play(app: &mut App) -> Result<(), ClientError> {
-    let spotify_client = get_spotify_client().await.unwrap();
+    let spotify_client = get_spotify_client(app).await.unwrap();
 
     // Get the Spotify client instance based on the token
     let spotify = match &spotify_client.token {

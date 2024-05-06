@@ -1,7 +1,6 @@
 extern crate rspotify;
 
 use chrono::Utc;
-use dotenvy::dotenv;
 use rspotify::clients::BaseClient;
 use rspotify::prelude::OAuthClient;
 use rspotify::{scopes, AuthCodeSpotify, ClientError, Credentials, OAuth, Token};
@@ -13,6 +12,8 @@ use std::path::PathBuf;
 use url::Url;
 use webbrowser;
 
+use crate::app::App;
+
 // Defining a struct to hold the Spotify client and its token
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SpotifyClient {
@@ -20,11 +21,9 @@ pub struct SpotifyClient {
 }
 
 // Function to get the Spotify client, either from a cached token or through the authorization flow
-pub async fn get_spotify_client() -> Result<SpotifyClient, ClientError> {
-    dotenv().expect(".env file not found");
-    let client_id = env::var("CLIENT_ID").expect("You've not set the CLIENT_ID");
-    let client_secret_id =
-        env::var("CLIENT_SECRET_ID").expect("You've not set the CLIENT_SECRET_ID");
+pub async fn get_spotify_client(app: &mut App) -> Result<SpotifyClient, ClientError> {
+    let client_id = &app.client_id;
+    let client_secret_id = &app.client_secret;
 
     // Defining the scopes (permissions) required for the application
     let scopes = scopes!(

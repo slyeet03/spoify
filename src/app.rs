@@ -204,6 +204,10 @@ pub struct App {
     pub argument_for_lyric: String,
     pub lyrics_selected: bool,
     pub lyric_state: ListState,
+
+    // Creds
+    pub client_id: String,
+    pub client_secret: String,
 }
 
 impl App {
@@ -420,6 +424,9 @@ impl Default for App {
             argument_for_lyric: String::new(),
             lyrics_selected: false,
             lyric_state: ListState::default(),
+
+            client_id: String::new(),
+            client_secret: String::new(),
         }
     }
 }

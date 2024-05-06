@@ -7,7 +7,7 @@ use std::ops::Deref;
 // Main function to toggle the shuffle mode
 #[tokio::main]
 pub async fn volume_increment(app: &mut App) -> Result<(), ClientError> {
-    let spotify_client = get_spotify_client().await.unwrap();
+    let spotify_client = get_spotify_client(app).await.unwrap();
 
     // Get the Spotify client instance based on the token
     let spotify = match &spotify_client.token {

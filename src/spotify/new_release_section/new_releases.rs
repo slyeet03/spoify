@@ -2,7 +2,6 @@ extern crate rspotify;
 extern crate serde_json;
 
 use crate::app::App;
-use dotenvy::dotenv;
 use futures::{FutureExt, TryStreamExt};
 use rspotify::{model::SimplifiedAlbum, prelude::*, ClientCredsSpotify, ClientError, Credentials};
 use serde_json::{json, Value};
@@ -14,12 +13,9 @@ use std::path::PathBuf;
 
 /// Fetches a list of new releases from Spotify and stores them for later use
 #[tokio::main]
-pub async fn new_releases() -> Result<(), ClientError> {
-    dotenv().expect(".env file not found");
-
-    let client_id = env::var("CLIENT_ID").expect("You've not set the CLIENT_ID");
-    let client_secret_id =
-        env::var("CLIENT_SECRET_ID").expect("You've not set the CLIENT_SECRET_ID");
+pub async fn new_releases(app: &mut App) -> Result<(), ClientError> {
+    let client_id = &app.client_id;
+    let client_secret_id = &app.client_secret;
 
     // Create authentication credentials
     let creds = Credentials {

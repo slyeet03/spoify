@@ -10,9 +10,9 @@ use std::path::PathBuf;
 
 /// Fetches a user's followed artists from Spotify
 #[tokio::main]
-pub async fn user_artists() -> Result<(), ClientError> {
+pub async fn user_artists(app: &mut App) -> Result<(), ClientError> {
     // Get a Spotify client using an existing access token (if available)
-    let spotify_client = get_spotify_client().await.unwrap();
+    let spotify_client = get_spotify_client(app).await.unwrap();
 
     let spotify = match &spotify_client.token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),

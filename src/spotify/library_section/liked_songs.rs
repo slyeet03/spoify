@@ -13,9 +13,9 @@ use serde_json::{json, Value};
 
 /// Fetches a user's liked songs from Spotify
 #[tokio::main]
-pub async fn liked_tracks() -> Result<(), ClientError> {
+pub async fn liked_tracks(app: &mut App) -> Result<(), ClientError> {
     // Get a Spotify client using an existing access token (if available).
-    let spotify_client = get_spotify_client().await.unwrap();
+    let spotify_client = get_spotify_client(app).await.unwrap();
 
     let spotify = match &spotify_client.token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),

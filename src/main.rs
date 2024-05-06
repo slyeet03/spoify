@@ -2,8 +2,9 @@ use std::io;
 use std::sync::mpsc;
 use std::thread;
 
+use settings::creds::{read_creds, set_creds};
 use ui::tui;
-use util::{startup, update_player_info};
+use util::{instruction, startup, update_player_info};
 
 use crate::app::App;
 
@@ -18,27 +19,40 @@ mod util;
 fn main() -> io::Result<()> {
     let mut app: App = App::default();
 
-    // Fetch user's playlists, new releases, set keybinds and themes before the main app starts
-    startup(&mut app);
+    // Set the creds from the configure files
+    read_creds();
+    set_creds(&mut app);
 
-    let mut terminal = tui::init()?;
+    if app.client_id == "" {
+        let mut enter = String::new();
+        instruction();
+        io::stdin()
+            .read_line(&mut enter)
+            .expect("failed to readline");
+    } else {
+        // Fetch user's playlists, new releases, set keybinds and themes before the main app starts
+        startup(&mut app);
 
-    let (tx1, rx) = mpsc::channel();
+        let mut terminal = tui::init()?;
 
-    let mut player_info_app: App = app.clone();
+        let (tx1, rx) = mpsc::channel();
 
-    // Spawn a new thread to update player's current playback
-    let player_info_thread = thread::spawn(move || update_player_info(tx1, &mut player_info_app));
+        let mut player_info_app: App = app.clone();
 
-    // Run the main app loop
-    app.run(&mut terminal, rx)?;
+        // Spawn a new thread to update player's current playback
+        let player_info_thread =
+            thread::spawn(move || update_player_info(tx1, &mut player_info_app));
 
-    // Wait for the spawned threads to complete
-    if let Err(e) = player_info_thread.join() {
-        eprintln!("Error in player_info_thread: {:?}", e);
+        // Run the main app loop
+        app.run(&mut terminal, rx)?;
+
+        // Wait for the spawned threads to complete
+        if let Err(e) = player_info_thread.join() {
+            eprintln!("Error in player_info_thread: {:?}", e);
+        }
+
+        tui::restore()?;
     }
-
-    tui::restore()?;
 
     Ok(())
 }

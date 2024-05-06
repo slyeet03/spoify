@@ -18,7 +18,7 @@ use std::path::PathBuf;
 #[tokio::main]
 pub async fn fetch_playlists_tracks(app: &mut App) -> Result<(), ClientError> {
     // Obtain a Spotify client using the access token (if available)
-    let spotify_client = get_spotify_client().await;
+    let spotify_client = get_spotify_client(app).await;
     let spotify = match &spotify_client.unwrap().token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),
         None => return Err(ClientError::InvalidToken),

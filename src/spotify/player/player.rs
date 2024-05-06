@@ -14,8 +14,8 @@ use std::path::PathBuf;
 
 // Main function to fetch the currently playing track information
 #[tokio::main]
-pub async fn currently_playing() -> Result<(), ClientError> {
-    let spotify_client = get_spotify_client().await.unwrap();
+pub async fn currently_playing(app: &mut App) -> Result<(), ClientError> {
+    let spotify_client = get_spotify_client(app).await.unwrap();
     let spotify = match &spotify_client.token {
         Some(token) => AuthCodeSpotify::from_token(token.clone()),
         None => return Err(ClientError::InvalidToken),

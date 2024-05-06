@@ -443,31 +443,31 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
                 if app.selected_menu == Menu::Library {
                     if app.library_state.selected() == Some(2) {
-                        if let Err(e) = liked_tracks() {
+                        if let Err(e) = liked_tracks(app) {
                             println!("{}", e);
                         }
                         process_liked_tracks(app);
                         app.liked_song_display = true;
                     } else if app.library_state.selected() == Some(3) {
-                        if let Err(e) = user_albums() {
+                        if let Err(e) = user_albums(app) {
                             println!("{}", e);
                         }
                         process_user_albums(app);
                         app.user_album_display = true;
                     } else if app.library_state.selected() == Some(1) {
-                        if let Err(e) = recently_played() {
+                        if let Err(e) = recently_played(app) {
                             println!("{}", e);
                         }
                         process_recently_played(app);
                         app.recently_played_display = true;
                     } else if app.library_state.selected() == Some(5) {
-                        if let Err(e) = user_podcast() {
+                        if let Err(e) = user_podcast(app) {
                             println!("{}", e);
                         }
                         process_podcasts(app);
                         app.podcast_display = true;
                     } else if app.library_state.selected() == Some(4) {
-                        if let Err(e) = user_artists() {
+                        if let Err(e) = user_artists(app) {
                             println!("{}", e);
                         }
                         process_user_artists(app);

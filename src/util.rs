@@ -17,7 +17,7 @@ use std::time::Duration;
 pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
     loop {
         // Get the user's current playback
-        currently_playing().unwrap();
+        currently_playing(app).unwrap();
         process_currently_playing(app);
 
         // Send a message to the main thread to update the UI
@@ -46,10 +46,33 @@ pub fn startup(app: &mut App) {
     set_volume_values(app);
 
     // Fetch the new released albums from spotify
-    let _ = new_releases();
+    let _ = new_releases(app);
     process_new_releases(app);
 
     // Fetch user playlists from spotify
-    get_playlists();
+    get_playlists(app);
     process_user_playlists(app);
+}
+
+pub fn instruction() {
+    println!("
+    In order for spoify to work it needs to be connected to Spotify's API.
+
+    Instruction:
+        1. Go to the (https://developer.spotify.com/dashboard/applications)
+        2. Click 'Create an app'
+            - You now can see your 'Client ID' and 'Client Secret'
+        3. Now click 'Edit Settings'
+        4. Add 'http://localhost:8888/callback' to the Redirect URIs
+        5. Scroll down and click 'Save'
+        6. You are now ready to authenticate with Spotify!
+        7. Go to the spoify folder, and inside 'configure' folder go to 'creds.yml'.
+        8. Enter you 'Client ID' and 'Client Secret'.
+        9. Enter your custom port or leave it as the default port (8888).
+        10. Run spoify
+        11. You will be redirected to an official Spotify webpage to ask you for permissions.
+        12. After accepting the permissions, you'll be redirected to localhost. You'll be redirected to a blank webpage that might say something like 'Connection Refused' since no server is running. Regardless, copy the URL and paste into the prompt in the terminal.
+        
+        There we go, now you can use spoify.
+    ");
 }

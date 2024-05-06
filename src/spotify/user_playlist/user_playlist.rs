@@ -54,9 +54,9 @@ fn save_playlists_to_json(playlists: &[SimplifiedPlaylist]) {
 }
 
 #[tokio::main]
-pub async fn get_playlists() {
+pub async fn get_playlists(app: &mut App) {
     // Obtain a Spotify client using the access token (if available)
-    let spotify_client = get_spotify_client().await.unwrap();
+    let spotify_client = get_spotify_client(app).await.unwrap();
     match fetch_user_playlists(&spotify_client).await {
         Ok(playlists) => {
             save_playlists_to_json(&playlists);
