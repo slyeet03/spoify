@@ -69,6 +69,14 @@ pub fn set_keybindings(app: &mut App) {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
+    app.next_track_key = match keybindings.get("Play next track") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
+    app.previous_track_key = match keybindings.get("Play previous track") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
 }
 
 /// Parses the keybindings from the configuration file and populates the tasks and first_keys fields in the App struct

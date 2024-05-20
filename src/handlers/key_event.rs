@@ -15,6 +15,8 @@ use crate::spotify::lyrics::lyric::lyric;
 use crate::spotify::new_release_section::new_releases_tracks::{
     new_releases_tracks, process_new_releases_tracks,
 };
+use crate::spotify::player::next_track::next_track;
+use crate::spotify::player::previous_track::previous_track;
 use crate::spotify::player::volume_decrease::volume_decreament;
 use crate::spotify::player::volume_increase::volume_increment;
 use crate::spotify::player::{
@@ -37,6 +39,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     let volume_up_key: char = app.volume_up_key;
     let volume_down_key: char = app.volume_down_key;
     let new_release_key: char = app.new_release_key;
+    let next_track_key: char = app.next_track_key;
+    let previous_track_key: char = app.previous_track_key;
 
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
@@ -175,6 +179,22 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 && app.input_mode != InputMode::Editing =>
             {
                 if let Err(e) = volume_increment(app) {
+                    println!("{}", e);
+                }
+            }
+
+            // Keys for next and previous track
+            code if code == KeyCode::Char(next_track_key)
+                && app.input_mode != InputMode::Editing =>
+            {
+                if let Err(e) = next_track(app) {
+                    println!("{}", e);
+                }
+            }
+            code if code == KeyCode::Char(previous_track_key)
+                && app.input_mode != InputMode::Editing =>
+            {
+                if let Err(e) = previous_track(app) {
                     println!("{}", e);
                 }
             }

@@ -185,6 +185,8 @@ pub struct App {
     pub volume_down_key: char,
     pub new_release_key: char,
     pub lyrics_key: char,
+    pub next_track_key: char,
+    pub previous_track_key: char,
 
     pub first_keys: Vec<String>,
     pub tasks: Vec<String>,
@@ -395,6 +397,8 @@ impl Default for App {
             volume_down_key: char::from(' '),
             new_release_key: char::from(' '),
             lyrics_key: char::from(' '),
+            next_track_key: char::from(' '),
+            previous_track_key: char::from(' '),
 
             first_keys: Vec::new(),
             tasks: Vec::new(),
