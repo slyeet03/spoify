@@ -16,11 +16,11 @@ pub fn render_main_area(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
     let content_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"))
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.main_background_color));
 
     let logo = Paragraph::new(logo())
         .block(content_block)
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.main_background_color));
 
     f.render_widget(logo, content_chunk[1]);
 }

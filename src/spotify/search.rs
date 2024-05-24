@@ -7,7 +7,6 @@ reads the json file and store the data in required variables
 extern crate rspotify;
 extern crate serde_json;
 
-use dotenvy::dotenv;
 use rspotify::{
     model::{Country, Market, SearchType},
     prelude::*,
@@ -25,12 +24,9 @@ use crate::app::App;
 
 // Main function to perform the search and store the results in JSON files
 #[tokio::main]
-pub async fn search(user_query: &str) -> Result<(), std::io::Error> {
-    dotenv().expect(".env file not found");
-
-    let client_id = env::var("CLIENT_ID").expect("You've not set the CLIENT_ID");
-    let client_secret_id =
-        env::var("CLIENT_SECRET_ID").expect("You've not set the CLIENT_SECRET_ID");
+pub async fn search(user_query: &str, app: &mut App) -> Result<(), std::io::Error> {
+    let client_id = &app.client_id;
+    let client_secret_id = &app.client_secret;
 
     let creds = Credentials {
         id: client_id.to_string(),
@@ -131,7 +127,7 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
     spotify_cache_path.push("spoify-tui");
     spotify_cache_path.push("spotify_cache");
 
-    if search(query).is_ok() {
+    if search(query, app).is_ok() {
         (
             app.album_names_search_results,
             app.album_links_search_results,

@@ -18,58 +18,58 @@ pub fn render_library(
     let library_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Library"))
-        .border_style(Style::new().fg(app.border_color))
-        .style(Style::default().bg(app.background_color));
+        .border_style(Style::new().fg(app.library_border_color))
+        .style(Style::default().bg(app.library_background_color));
 
     let liked_song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Liked Songs"))
         .border_style(if app.liked_songs_selected {
-            Style::default().fg(app.border_color)
+            Style::default().fg(app.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.main_background_color));
 
     let recently_played_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Recently Played"))
         .border_style(if app.recently_played_selected {
-            Style::default().fg(app.border_color)
+            Style::default().fg(app.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.main_background_color));
 
     let user_album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
         .border_style(if app.user_album_selected {
-            Style::default().fg(app.border_color)
+            Style::default().fg(app.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.main_background_color));
 
     let podcast_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Podcasts"))
         .border_style(if app.podcast_selected {
-            Style::default().fg(app.border_color)
+            Style::default().fg(app.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.main_background_color));
 
     let user_artist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Podcasts"))
         .border_style(if app.user_artist_selected {
-            Style::default().fg(app.border_color)
+            Style::default().fg(app.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.main_background_color));
 
     let library_items = vec![
         String::from("Made For You"),
@@ -82,7 +82,7 @@ pub fn render_library(
     // Rendering currently selected menu
     let library_list = List::new(library_items)
         .block(library_block)
-        .highlight_style(Style::default().fg(app.highlight_color));
+        .highlight_style(Style::default().fg(app.library_highlight_color));
 
     f.render_stateful_widget(library_list, content_sub_chunk[0], &mut app.library_state);
 
@@ -96,8 +96,8 @@ pub fn render_library(
             app.liked_song_album_names.clone(),
             app.liked_song_duration.clone(),
             liked_song_block,
-            app.highlight_color.clone(),
-            app.background_color.clone(),
+            app.main_highlight_color.clone(),
+            app.main_background_color.clone(),
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -118,8 +118,8 @@ pub fn render_library(
             app.recently_played_album_names.clone(),
             app.recently_played_duration.clone(),
             recently_played_block,
-            app.highlight_color.clone(),
-            app.background_color.clone(),
+            app.main_highlight_color.clone(),
+            app.main_background_color.clone(),
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -138,8 +138,8 @@ pub fn render_library(
             app.podcast_names.clone(),
             app.podcast_publisher.clone(),
             podcast_block,
-            app.highlight_color.clone(),
-            app.background_color.clone(),
+            app.main_highlight_color.clone(),
+            app.main_background_color.clone(),
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -153,8 +153,8 @@ pub fn render_library(
         let artist_table = artist_table_ui(
             app.user_artist_names.clone(),
             user_artist_block,
-            app.highlight_color.clone(),
-            app.background_color.clone(),
+            app.main_highlight_color.clone(),
+            app.main_background_color.clone(),
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -170,8 +170,8 @@ pub fn render_library(
             app.user_album_artist_names.clone(),
             app.user_album_tracks.clone(),
             user_album_block,
-            app.highlight_color.clone(),
-            app.background_color.clone(),
+            app.main_highlight_color.clone(),
+            app.main_background_color.clone(),
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -199,7 +199,7 @@ pub fn render_default_library(f: &mut Frame, content_sub_chunk: &[Rect], app: &m
     let library_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Library"))
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.library_background_color));
 
     let library_list = List::new(library_items.clone()).block(library_block);
     f.render_widget(library_list, content_sub_chunk[0]);

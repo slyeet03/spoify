@@ -6,6 +6,37 @@
 # Note: Only put RGB values
 #
 
-Border Color: Color::Rgb(29, 185, 84)
-Background Color: Color::Rgb(33, 33, 33)
-Highlight Color: Color::Rgb(0, 255, 146)
+# Player Theme
+Player Border Color: Color::Rgb(29, 185, 84)
+Player Background Color: Color::Rgb(33, 33, 33)
+Player Highlight Color: Color::Rgb(0, 255, 146)
+
+# Library Theme
+Library Border Color: Color::Rgb(29, 185, 84)
+Library Background Color: Color::Rgb(33, 33, 33)
+Library Highlight Color: Color::Rgb(0, 255, 146)
+
+# Playlist Theme
+Playlist Border Color: Color::Rgb(29, 185, 84)
+Playlist Background Color: Color::Rgb(33, 33, 33)
+Playlist Highlight Color: Color::Rgb(0, 255, 146)
+
+# New Release Theme
+New Release Border Color: Color::Rgb(29, 185, 84)
+New Release Background Color: Color::Rgb(33, 33, 33)
+New Release Highlight Color: Color::Rgb(0, 255, 146)
+
+# Main Section Theme
+Main Section Border Color: Color::Rgb(29, 185, 84)
+Main Section Background Color: Color::Rgb(33, 33, 33)
+Main Section Highlight Color: Color::Rgb(0, 255, 146)
+
+# Search Theme
+Search Border Color: Color::Rgb(29, 185, 84)
+Search Background Color: Color::Rgb(33, 33, 33)
+Search Highlight Color: Color::Rgb(0, 255, 146)
+
+# Help Theme
+Help Border Color: Color::Rgb(29, 185, 84)
+Help Background Color: Color::Rgb(33, 33, 33)
+Help Highlight Color: Color::Rgb(0, 255, 146)

@@ -16,7 +16,7 @@ pub fn render_default_help(f: &mut Frame, header_chunk: &[Rect], app: &mut App) 
         .borders(Borders::ALL)
         .title(Title::from("Help"))
         .border_style(Style::default())
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.help_background_color));
 
     let mut help_panel_vec = Vec::new();
     let _var = help_panel_vec;
@@ -37,15 +37,15 @@ pub fn render_help(f: &mut Frame, app: &mut App) {
     let help_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Help"))
-        .border_style(Style::new().fg(app.border_color))
-        .style(Style::default().bg(app.background_color));
+        .border_style(Style::new().fg(app.help_border_color))
+        .style(Style::default().bg(app.help_background_color));
 
     let help_table = help_table_ui(
         app.tasks.clone(),
         app.first_keys.clone(),
         help_block,
-        app.highlight_color.clone(),
-        app.background_color.clone(),
+        app.help_highlight_color.clone(),
+        app.help_background_color.clone(),
     );
 
     f.render_widget(help_table, f.size());

@@ -22,7 +22,7 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
             app.repeat_status,
             app.current_device_volume
         ))
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.player_background_color));
 
     let mut player_info_vec = Vec::new();
     let _var = player_info_vec;
@@ -32,7 +32,7 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
         player_info_vec = vec![Line::from(vec![
             Span::styled(
                 app.current_playing_name.clone(),
-                Style::default().fg(app.highlight_color),
+                Style::default().fg(app.player_highlight_color),
             ),
             Span::raw(", "),
             Span::styled(app.current_playing_album.clone(), Style::default()),
@@ -41,7 +41,7 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
         player_info_vec = vec![Line::from(vec![
             Span::styled(
                 app.current_playing_name.clone(),
-                Style::default().fg(app.highlight_color),
+                Style::default().fg(app.player_highlight_color),
             ),
             Span::raw(", "),
             Span::styled(app.currently_playing_artist.clone(), Style::default()),
@@ -64,12 +64,12 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
         .block(
             Block::default()
                 .borders(Borders::BOTTOM | Borders::RIGHT | Borders::LEFT)
-                .style(Style::default().bg(app.background_color)),
+                .style(Style::default().bg(app.player_background_color)),
         )
         .gauge_style(
             Style::default()
-                .fg(app.highlight_color)
-                .bg(app.background_color),
+                .fg(app.player_highlight_color)
+                .bg(app.player_background_color),
         )
         .label(label)
         .ratio(app.progress_bar_ratio);

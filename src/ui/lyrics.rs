@@ -16,16 +16,16 @@ pub fn render_lyrics(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
         .borders(Borders::ALL)
         .title(Title::from(song_name))
         .border_style(if app.lyrics_selected {
-            Style::default().fg(app.border_color)
+            Style::default().fg(app.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.main_background_color));
 
     let lyric_item = convert_to_list(&app.lyrics);
     let lyric_item_list = List::new(lyric_item)
         .block(lyric_block.clone())
-        .highlight_style(Style::default().fg(app.highlight_color));
+        .highlight_style(Style::default().fg(app.main_highlight_color));
 
     f.render_widget(Clear, content_chunk[1]);
     f.render_stateful_widget(lyric_item_list, content_chunk[1], &mut app.lyric_state);

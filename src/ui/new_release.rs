@@ -14,12 +14,12 @@ pub fn render_default_new_releases(f: &mut Frame, content_sub_chunk: &[Rect], ap
     let new_release_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("New Releases"))
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.new_release_background_color));
 
     let new_releases_name = convert_to_list(&app.new_release_name);
     let new_releases_list = List::new(new_releases_name)
         .block(new_release_block.clone())
-        .highlight_style(Style::default().fg(app.highlight_color));
+        .highlight_style(Style::default().fg(app.new_release_highlight_color));
 
     f.render_widget(new_releases_list, content_sub_chunk[1]);
 }
@@ -36,23 +36,23 @@ pub fn render_new_releases(
     let new_release_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("New Releases"))
-        .border_style(Style::default().fg(app.border_color))
-        .style(Style::default().bg(app.background_color));
+        .border_style(Style::default().fg(app.new_release_border_color))
+        .style(Style::default().bg(app.new_release_background_color));
 
     let current_new_release_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(current_new_release_name))
         .border_style(if app.new_release_album_selected {
-            Style::default().fg(app.border_color)
+            Style::default().fg(app.new_release_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.background_color));
+        .style(Style::default().bg(app.new_release_background_color));
 
     let new_releases_name = convert_to_list(&app.new_release_name);
     let new_releases_list = List::new(new_releases_name)
         .block(new_release_block.clone())
-        .highlight_style(Style::default().fg(app.highlight_color));
+        .highlight_style(Style::default().fg(app.new_release_highlight_color));
 
     f.render_widget(Clear, content_sub_chunk[1]);
     f.render_stateful_widget(
@@ -70,8 +70,8 @@ pub fn render_new_releases(
             app.new_release_artist_names.clone(),
             app.new_release_durations_ms.clone(),
             current_new_release_block,
-            app.highlight_color.clone(),
-            app.background_color.clone(),
+            app.new_release_highlight_color.clone(),
+            app.new_release_background_color.clone(),
         );
         f.render_widget(Clear, content_chunk[1]);
 

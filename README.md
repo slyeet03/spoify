@@ -32,3 +32,5 @@ If you want to play tracks, Spotify requires that you have a Premium account.
 ## Libraries used
 - [rspotify](https://github.com/ramsayleung/rspotify)
 - [ratatui](https://github.com/ratatui-org/ratatui)
+
+

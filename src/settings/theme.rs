@@ -32,26 +32,44 @@ pub fn read_theme() -> HashMap<String, Value> {
 pub fn set_theme(app: &mut App) {
     let theme = read_theme();
 
-    // Try to get the theme color values from the configuration.
-    // If a value is not found or invalid, use default values.
-    if let Some(border_color) = theme.get("Border Color") {
-        if let Some(rgb) = border_color.as_str() {
+    // Iterate over all entries in the theme HashMap
+    for (key, value) in theme.iter() {
+        if let Some(rgb) = value.as_str() {
             let (r, g, b) = parse_color(rgb);
-            app.border_color = Color::Rgb(r, g, b);
-        }
-    }
+            match key.as_str() {
+                "Player Border Color" => app.player_border_color = Color::Rgb(r, g, b),
+                "Player Background Color" => app.player_background_color = Color::Rgb(r, g, b),
+                "Player Highlight Color" => app.player_highlight_color = Color::Rgb(r, g, b),
 
-    if let Some(highlight_color) = theme.get("Highlight Color") {
-        if let Some(rgb) = highlight_color.as_str() {
-            let (r, g, b) = parse_color(rgb);
-            app.highlight_color = Color::Rgb(r, g, b);
-        }
-    }
+                "Library Border Color" => app.library_border_color = Color::Rgb(r, g, b),
+                "Library Background Color" => app.library_background_color = Color::Rgb(r, g, b),
+                "Library Highlight Color" => app.library_highlight_color = Color::Rgb(r, g, b),
 
-    if let Some(background_color) = theme.get("Background Color") {
-        if let Some(rgb) = background_color.as_str() {
-            let (r, g, b) = parse_color(rgb);
-            app.background_color = Color::Rgb(r, g, b);
+                "Playlist Border Color" => app.playlist_border_color = Color::Rgb(r, g, b),
+                "Playlist Background Color" => app.playlist_background_color = Color::Rgb(r, g, b),
+                "Playlist Highlight Color" => app.playlist_highlight_color = Color::Rgb(r, g, b),
+
+                "New Release Border Color" => app.new_release_border_color = Color::Rgb(r, g, b),
+                "New Release Background Color" => {
+                    app.new_release_background_color = Color::Rgb(r, g, b)
+                }
+                "New Release Highlight Color" => {
+                    app.new_release_highlight_color = Color::Rgb(r, g, b)
+                }
+
+                "Main Section Border Color" => app.main_border_color = Color::Rgb(r, g, b),
+                "Main Section Background Color" => app.main_background_color = Color::Rgb(r, g, b),
+                "Main Section Highlight Color" => app.main_highlight_color = Color::Rgb(r, g, b),
+
+                "Search Border Color" => app.search_border_color = Color::Rgb(r, g, b),
+                "Search Background Color" => app.search_background_color = Color::Rgb(r, g, b),
+                "Search Highlight Color" => app.search_highlight_color = Color::Rgb(r, g, b),
+
+                "Help Border Color" => app.help_border_color = Color::Rgb(r, g, b),
+                "Help Background Color" => app.help_background_color = Color::Rgb(r, g, b),
+                "Help Highlight Color" => app.help_highlight_color = Color::Rgb(r, g, b),
+                _ => (),
+            }
         }
     }
 }
