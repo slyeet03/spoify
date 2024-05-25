@@ -9,7 +9,7 @@
 # Player Theme
 Player Border Color: Color::Rgb(29, 185, 84)
 Player Background Color: Color::Rgb(33, 33, 33)
-Player Highlight Color: Color::Rgb(0, 255, 146)
+Player Highlight Color: Color::Rgb(79, 169, 210)
 
 # Library Theme
 Library Border Color: Color::Rgb(29, 185, 84)

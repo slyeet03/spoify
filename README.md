@@ -2,10 +2,6 @@
 This is a Rust project that implements a Spotify client within your terminal. It allows you to browse and interact with your Spotify playlists, liked songs, saved albums, podcasts, recently played songs, and saved artists directly from the command line.
 `GIF of how it works`
 
-## Installation
-### Windows
-For windows, just install the `.exe` from the Release Tab
-
 ## Connecting to Spotify's API
 In order for `spoify` to work it needs to be connected to Spotify's API.
 ### Instruction
