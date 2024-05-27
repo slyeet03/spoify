@@ -38,23 +38,23 @@ pub fn reset_cursor(app: &mut App) {
     app.cursor_position = 0;
 }
 
-pub fn down_key_for_table(names: Vec<String>, mut state: TableState) -> TableState {
+pub fn down_key_for_table(names: Vec<String>, mut state: TableState) -> (TableState, usize) {
     let length: usize = names.len();
     let next_index: usize = state.selected().unwrap_or(0) + 1;
     state.select(Some(next_index % length));
 
-    state
+    (state, next_index)
 }
 
-pub fn down_key_for_list(names: Vec<String>, mut state: ListState) -> ListState {
+pub fn down_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, usize) {
     let length: usize = names.len();
     let next_index: usize = state.selected().unwrap_or(0) + 1;
     state.select(Some(next_index % length));
 
-    state
+    (state, next_index)
 }
 
-pub fn up_key_for_table(names: Vec<String>, mut state: TableState) -> TableState {
+pub fn up_key_for_table(names: Vec<String>, mut state: TableState) -> (TableState, usize) {
     let length: usize = names.len();
     let prev_index: usize = if state.selected().unwrap_or(0) == 0 {
         length - 1
@@ -63,17 +63,17 @@ pub fn up_key_for_table(names: Vec<String>, mut state: TableState) -> TableState
     };
     state.select(Some(prev_index));
 
-    state
+    (state, prev_index)
 }
 
-pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> ListState {
+pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, usize) {
     let length: usize = names.len();
-    let prev_index: usize = if state.selected().unwrap_or(0) == 0 {
+    let prev_index: usize = if state.selected().unwrap_or(length) == 0 {
         length - 1
     } else {
-        state.selected().unwrap_or(0) - 1
+        state.selected().unwrap_or(length) - 1
     };
     state.select(Some(prev_index));
 
-    state
+    (state, prev_index)
 }

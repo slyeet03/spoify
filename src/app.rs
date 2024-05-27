@@ -37,10 +37,15 @@ pub struct App {
     pub playlist_names_search_results: Vec<String>,
     pub artist_names_search_results: Vec<String>,
 
-    pub album_id_search_results: Vec<String>,
-    pub track_id_search_results: Vec<String>,
-    pub playlist_id_search_results: Vec<String>,
-    pub artist_id_search_results: Vec<String>,
+    pub album_links_search_results: Vec<String>,
+    pub track_links_search_results: Vec<String>,
+    pub playlist_links_search_results: Vec<String>,
+    pub artist_links_search_results: Vec<String>,
+
+    pub album_index: usize,
+    pub track_index: usize,
+    pub playlist_index: usize,
+    pub artist_index: usize,
 
     pub selected_album_in_search_result: bool,
     pub selected_track_in_search_result: bool,
@@ -53,6 +58,24 @@ pub struct App {
     pub track_state_in_search_result: ListState,
     pub playlist_state_in_search_result: ListState,
     pub artist_state_in_search_result: ListState,
+
+    pub selected_album_tracks_names: Vec<String>,
+    pub selected_album_tracks_artists: Vec<String>,
+    pub selected_album_tracks_duration: Vec<i64>,
+    pub selected_album_tracks_links: Vec<String>,
+
+    pub selected_playlist_tracks_names: Vec<String>,
+    pub selected_playlist_tracks_artists: Vec<String>,
+    pub selected_playlist_tracks_duration: Vec<i64>,
+    pub selected_playlist_tracks_albums: Vec<String>,
+    pub selected_playlist_tracks_links: Vec<String>,
+
+    pub selected_artist_albums_names: Vec<String>,
+    pub selected_artist_albums_links: Vec<String>,
+    pub selected_artist_albums_total_tracks: Vec<usize>,
+    pub selected_artist_tracks_names: Vec<String>,
+    pub selected_artist_tracks_duration: Vec<i64>,
+    pub selected_artist_tracks_links: Vec<String>,
 
     // Handles User's playlists
     pub user_playlist_names: Vec<String>,
@@ -74,6 +97,7 @@ pub struct App {
 
     pub user_playlist_state: ListState,
     pub user_playlist_tracks_state: TableState,
+    pub user_playlist_index: usize,
 
     // Handles User's Liked Songs
     pub liked_song_names: Vec<String>,
@@ -86,6 +110,7 @@ pub struct App {
     pub liked_song_display: bool,
     pub selected_liked_song_uri: String,
     pub liked_songs_state: TableState,
+    pub liked_songs_index: usize,
 
     // Handles User's Saved Albums
     pub user_album_names: Vec<String>,
@@ -98,6 +123,7 @@ pub struct App {
     pub user_album_state: TableState,
     pub user_album_selected_uri: String,
     pub current_user_album: String,
+    pub user_album_index: usize,
 
     // Handles User's Saved Podcasts
     pub podcast_names: Vec<String>,
@@ -108,6 +134,7 @@ pub struct App {
     pub podcast_state: TableState,
     pub podcast_selected_uri: String,
     pub current_podcast: String,
+    pub podcast_index: usize,
 
     // Handles User's Recently Played Songs
     pub recently_played_names: Vec<String>,
@@ -120,6 +147,7 @@ pub struct App {
     pub recently_played_display: bool,
     pub selected_recently_played_uri: String,
     pub recently_played_state: TableState,
+    pub recently_played_index: usize,
 
     // Handles User's Saved Artists
     pub user_artist_names: Vec<String>,
@@ -129,6 +157,7 @@ pub struct App {
     pub user_artist_state: TableState,
     pub user_artist_selected_uri: String,
     pub current_user_artist: String,
+    pub user_artist_index: usize,
 
     // Handles User's currently playing device
     pub current_device_name: String,
@@ -168,6 +197,7 @@ pub struct App {
     pub new_release_album_links: Vec<String>,
     pub current_new_release_album: String,
     pub current_new_release_album_link: String,
+    pub new_release_index: usize,
 
     pub new_release_track_names: Vec<String>,
     pub new_release_artist_names: Vec<String>,
@@ -298,13 +328,13 @@ impl Default for App {
             cursor_position: 0,
 
             album_names_search_results: Vec::new(),
-            album_id_search_results: Vec::new(),
+            album_links_search_results: Vec::new(),
             track_names_search_results: Vec::new(),
-            track_id_search_results: Vec::new(),
+            track_links_search_results: Vec::new(),
             playlist_names_search_results: Vec::new(),
-            playlist_id_search_results: Vec::new(),
+            playlist_links_search_results: Vec::new(),
             artist_names_search_results: Vec::new(),
-            artist_id_search_results: Vec::new(),
+            artist_links_search_results: Vec::new(),
             album_state_in_search_result: ListState::default(),
             track_state_in_search_result: ListState::default(),
             playlist_state_in_search_result: ListState::default(),
@@ -478,6 +508,34 @@ impl Default for App {
             help_border_color: Color::Rgb(0, 0, 0),
             help_highlight_color: Color::Rgb(0, 0, 0),
             help_background_color: Color::Rgb(0, 0, 0),
+
+            album_index: 0,
+            track_index: 0,
+            playlist_index: 0,
+            artist_index: 0,
+            user_playlist_index: 0,
+            liked_songs_index: 0,
+            user_album_index: 0,
+            podcast_index: 0,
+            recently_played_index: 0,
+            user_artist_index: 0,
+            new_release_index: 0,
+
+            selected_album_tracks_names: Vec::new(),
+            selected_album_tracks_artists: Vec::new(),
+            selected_album_tracks_duration: Vec::new(),
+            selected_playlist_tracks_names: Vec::new(),
+            selected_playlist_tracks_artists: Vec::new(),
+            selected_playlist_tracks_duration: Vec::new(),
+            selected_playlist_tracks_albums: Vec::new(),
+            selected_artist_tracks_names: Vec::new(),
+            selected_artist_tracks_duration: Vec::new(),
+            selected_artist_albums_names: Vec::new(),
+            selected_album_tracks_links: Vec::new(),
+            selected_playlist_tracks_links: Vec::new(),
+            selected_artist_tracks_links: Vec::new(),
+            selected_artist_albums_links: Vec::new(),
+            selected_artist_albums_total_tracks: Vec::new(),
         }
     }
 }
