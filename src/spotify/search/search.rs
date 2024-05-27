@@ -117,10 +117,10 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
     app.track_names_search_results.clear();
     app.playlist_names_search_results.clear();
 
-    app.album_links_search_results.clear();
-    app.artist_links_search_results.clear();
-    app.track_links_search_results.clear();
-    app.playlist_links_search_results.clear();
+    app.album_id_search_results.clear();
+    app.artist_id_search_results.clear();
+    app.track_id_search_results.clear();
+    app.playlist_id_search_results.clear();
 
     let mut spotify_cache_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     spotify_cache_path.push("..");
@@ -128,31 +128,27 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
     spotify_cache_path.push("spotify_cache");
 
     if search(query, app).is_ok() {
-        (
-            app.album_names_search_results,
-            app.album_links_search_results,
-        ) = match album_storage(&spotify_cache_path) {
-            Ok(result) => result,
-            Err(err) => {
-                println!("Error reading album data: {}", err);
-                return Err(err);
-            }
-        };
+        (app.album_names_search_results, app.album_id_search_results) =
+            match album_storage(&spotify_cache_path) {
+                Ok(result) => result,
+                Err(err) => {
+                    println!("Error reading album data: {}", err);
+                    return Err(err);
+                }
+            };
 
-        (
-            app.track_names_search_results,
-            app.track_links_search_results,
-        ) = match track_storage(&spotify_cache_path) {
-            Ok(result) => result,
-            Err(err) => {
-                println!("Error reading track data: {}", err);
-                return Err(err);
-            }
-        };
+        (app.track_names_search_results, app.track_id_search_results) =
+            match track_storage(&spotify_cache_path) {
+                Ok(result) => result,
+                Err(err) => {
+                    println!("Error reading track data: {}", err);
+                    return Err(err);
+                }
+            };
 
         (
             app.artist_names_search_results,
-            app.artist_links_search_results,
+            app.artist_id_search_results,
         ) = match artist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
@@ -163,7 +159,7 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
 
         (
             app.playlist_names_search_results,
-            app.playlist_links_search_results,
+            app.playlist_id_search_results,
         ) = match playlist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
@@ -224,14 +220,14 @@ pub fn track_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Stri
     let tracks = &track_response.tracks.items;
 
     let mut track_names_search_results: Vec<String> = Vec::new();
-    let mut track_links_search_results: Vec<String> = Vec::new();
+    let mut track_id_search_results: Vec<String> = Vec::new();
 
     for track in tracks {
         track_names_search_results.push(track.name.clone());
-        track_links_search_results.push(track.external_urls.spotify.clone());
+        track_id_search_results.push(track.id.clone());
     }
 
-    Ok((track_names_search_results, track_links_search_results))
+    Ok((track_names_search_results, track_id_search_results))
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -283,14 +279,14 @@ pub fn playlist_storage(
     let playlists = &playlist_response.playlists.items;
 
     let mut playlist_names_search_results: Vec<String> = Vec::new();
-    let mut playlist_links_search_results: Vec<String> = Vec::new();
+    let mut playlist_id_search_results: Vec<String> = Vec::new();
 
     for playlist in playlists {
         playlist_names_search_results.push(playlist.name.clone());
-        playlist_links_search_results.push(playlist.external_urls.spotify.clone());
+        playlist_id_search_results.push(playlist.id.clone());
     }
 
-    Ok((playlist_names_search_results, playlist_links_search_results))
+    Ok((playlist_names_search_results, playlist_id_search_results))
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -340,14 +336,14 @@ pub fn artist_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Str
     let artists = &artist_response.artists.items;
 
     let mut artist_names_search_results: Vec<String> = Vec::new();
-    let mut artist_links_search_results: Vec<String> = Vec::new();
+    let mut artist_id_search_results: Vec<String> = Vec::new();
 
     for artist in artists {
         artist_names_search_results.push(artist.name.clone());
-        artist_links_search_results.push(artist.external_urls.spotify.clone());
+        artist_id_search_results.push(artist.id.clone());
     }
 
-    Ok((artist_names_search_results, artist_links_search_results))
+    Ok((artist_names_search_results, artist_id_search_results))
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -401,12 +397,12 @@ pub fn album_storage(spotify_cache_path: &Path) -> Result<(Vec<String>, Vec<Stri
     let albums = &album_response.albums.items;
 
     let mut album_names_search_results: Vec<String> = Vec::new();
-    let mut album_links_search_results: Vec<String> = Vec::new();
+    let mut album_id_search_results: Vec<String> = Vec::new();
 
     for album in albums {
         album_names_search_results.push(album.name.clone());
-        album_links_search_results.push(album.external_urls.spotify.clone());
+        album_id_search_results.push(album.id.clone());
     }
 
-    Ok((album_names_search_results, album_links_search_results))
+    Ok((album_names_search_results, album_id_search_results))
 }

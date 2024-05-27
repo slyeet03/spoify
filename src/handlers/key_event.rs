@@ -22,7 +22,7 @@ use crate::spotify::player::volume_increase::volume_increment;
 use crate::spotify::player::{
     pause_playback::pause, play_playback::play, repeat::cycle_repeat, shuffle::toogle_shuffle,
 };
-use crate::spotify::search::process_search;
+use crate::spotify::search::search::process_search;
 use crate::spotify::user_playlist::user_playlist_track::{
     fetch_playlists_tracks, process_playlist_tracks,
 };
