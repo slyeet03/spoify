@@ -27,7 +27,7 @@ use crate::spotify::search::search_albums::{
     process_selected_album_tracks, search_selected_album_tracks,
 };
 use crate::spotify::search::search_artists::{
-    process_selected_artist_albums, search_selected_artist_tracks,
+    process_selected_artist_tracks, search_selected_artist_tracks,
 };
 use crate::spotify::user_playlist::user_playlist_track::{
     fetch_playlists_tracks, process_playlist_tracks,
@@ -85,6 +85,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.recently_played_display = false;
                 app.podcast_display = false;
                 app.user_artist_display = false;
+                app.searched_album_selected = false;
+                app.searched_artist_selected = false;
             }
             // Navigate to different menus (Library, Playlists, Search) when 'l', 'p', or 's' is pressed
 
@@ -104,6 +106,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.can_navigate_menu = true;
                 app.podcast_display = false;
                 app.user_artist_display = false;
+                app.searched_album_selected = false;
+                app.searched_artist_selected = false;
             }
 
             // Go to user playlist menu
@@ -122,6 +126,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.recently_played_display = false;
                 app.podcast_display = false;
                 app.user_artist_display = false;
+                app.searched_album_selected = false;
+                app.searched_artist_selected = false;
             }
 
             // Go to search menu
@@ -137,6 +143,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.can_navigate_menu = true;
                 app.podcast_display = false;
                 app.user_artist_display = false;
+                app.searched_album_selected = false;
+                app.searched_artist_selected = false;
             }
 
             // Go to help menu
@@ -152,6 +160,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.recently_played_display = false;
                 app.podcast_display = false;
                 app.user_artist_display = false;
+                app.searched_album_selected = false;
+                app.searched_artist_selected = false;
             }
 
             // Go to New Release Menu
@@ -170,6 +180,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.recently_played_display = false;
                 app.podcast_display = false;
                 app.user_artist_display = false;
+                app.searched_album_selected = false;
+                app.searched_artist_selected = false;
             }
 
             // Keys for Volume Control
@@ -316,6 +328,22 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         }
                     }
                 }
+                if app.selected_menu == Menu::SearchedAlbum {
+                    if app.searched_album_selected {
+                        (app.searched_album_state, app.searched_album_index) = down_key_for_table(
+                            app.selected_album_tracks_names.clone(),
+                            app.searched_album_state.clone(),
+                        );
+                    }
+                }
+                if app.selected_menu == Menu::SearchedArtist {
+                    if app.searched_artist_selected {
+                        (app.searched_artist_state, app.searched_artist_index) = down_key_for_table(
+                            app.selected_artist_tracks_names.clone(),
+                            app.searched_artist_state.clone(),
+                        );
+                    }
+                }
                 if app.can_navigate_menu {
                     let next_index: usize = app.library_state.selected().unwrap_or(0) + 1;
                     app.library_state.select(Some(next_index % 6)); //wrapping around the last option
@@ -442,6 +470,22 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         }
                     }
                 }
+                if app.selected_menu == Menu::SearchedAlbum {
+                    if app.searched_album_selected {
+                        (app.searched_album_state, app.searched_album_index) = up_key_for_table(
+                            app.selected_album_tracks_names.clone(),
+                            app.searched_album_state.clone(),
+                        );
+                    }
+                }
+                if app.selected_menu == Menu::SearchedArtist {
+                    if app.searched_artist_selected {
+                        (app.searched_artist_state, app.searched_artist_index) = up_key_for_table(
+                            app.selected_artist_tracks_names.clone(),
+                            app.searched_artist_state.clone(),
+                        );
+                    }
+                }
                 if app.can_navigate_menu {
                     let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
                         5 //wrapping to the last option when user presses up at the first option
@@ -512,12 +556,31 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         println!("{}", e);
                     }
                     process_selected_album_tracks(app);
+                    app.search_results_rendered = false;
+                    app.liked_song_display = false;
+                    app.user_album_display = false;
+                    app.recently_played_display = false;
+                    app.can_navigate_menu = true;
+                    app.podcast_display = false;
+                    app.user_artist_display = false;
+                    app.selected_menu = Menu::SearchedAlbum;
+                    app.searched_album_selected = true;
                 }
                 if app.selected_artist_in_search_result {
                     if let Err(e) = search_selected_artist_tracks(app) {
                         println!("{}", e);
                     }
-                    process_selected_artist_albums(app);
+                    process_selected_artist_tracks(app);
+                    app.search_results_rendered = false;
+                    app.liked_song_display = false;
+                    app.user_album_display = false;
+                    app.recently_played_display = false;
+                    app.can_navigate_menu = true;
+                    app.podcast_display = false;
+                    app.user_artist_display = false;
+                    app.searched_album_selected = false;
+                    app.selected_menu = Menu::SearchedArtist;
+                    app.searched_artist_selected = true;
                 }
             }
 

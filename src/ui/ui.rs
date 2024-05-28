@@ -10,6 +10,8 @@ use super::main_area::render_main_area;
 use super::new_release::{render_default_new_releases, render_new_releases};
 use super::player::render_player;
 use super::search::{render_default_search, render_search};
+use super::search_album::render_searched_album;
+use super::search_artist::render_searched_artist;
 use super::user_playlist::{render_default_user_playlist, render_user_playlist};
 
 /// Renders the main frame of the application's user interface
@@ -103,6 +105,12 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         }
         Menu::Lyrics => {
             render_lyrics(f, &content_chunk, app);
+        }
+        Menu::SearchedAlbum => {
+            render_searched_album(f, &content_chunk, app);
+        }
+        Menu::SearchedArtist => {
+            render_searched_artist(f, &content_chunk, app);
         }
     }
 }

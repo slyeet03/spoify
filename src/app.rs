@@ -63,6 +63,9 @@ pub struct App {
     pub selected_album_tracks_artists: Vec<String>,
     pub selected_album_tracks_duration: Vec<i64>,
     pub selected_album_tracks_links: Vec<String>,
+    pub searched_album_selected: bool,
+    pub searched_album_state: TableState,
+    pub searched_album_index: usize,
 
     pub selected_playlist_tracks_names: Vec<String>,
     pub selected_playlist_tracks_artists: Vec<String>,
@@ -70,12 +73,13 @@ pub struct App {
     pub selected_playlist_tracks_albums: Vec<String>,
     pub selected_playlist_tracks_links: Vec<String>,
 
-    pub selected_artist_albums_names: Vec<String>,
-    pub selected_artist_albums_links: Vec<String>,
-    pub selected_artist_albums_total_tracks: Vec<usize>,
     pub selected_artist_tracks_names: Vec<String>,
     pub selected_artist_tracks_duration: Vec<i64>,
     pub selected_artist_tracks_links: Vec<String>,
+    pub selected_artist_track_album_names: Vec<String>,
+    pub searched_artist_selected: bool,
+    pub searched_artist_state: TableState,
+    pub searched_artist_index: usize,
 
     // Handles User's playlists
     pub user_playlist_names: Vec<String>,
@@ -530,12 +534,16 @@ impl Default for App {
             selected_playlist_tracks_albums: Vec::new(),
             selected_artist_tracks_names: Vec::new(),
             selected_artist_tracks_duration: Vec::new(),
-            selected_artist_albums_names: Vec::new(),
             selected_album_tracks_links: Vec::new(),
             selected_playlist_tracks_links: Vec::new(),
             selected_artist_tracks_links: Vec::new(),
-            selected_artist_albums_links: Vec::new(),
-            selected_artist_albums_total_tracks: Vec::new(),
+            searched_album_selected: false,
+            searched_album_state: TableState::default(),
+            searched_album_index: 0,
+            selected_artist_track_album_names: Vec::new(),
+            searched_artist_selected: false,
+            searched_artist_state: TableState::default(),
+            searched_artist_index: 0,
         }
     }
 }

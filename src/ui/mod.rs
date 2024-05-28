@@ -5,6 +5,8 @@ pub mod main_area;
 pub mod new_release;
 pub mod player;
 pub mod search;
+pub mod search_album;
+pub mod search_artist;
 pub mod tui;
 pub mod ui;
 pub mod user_playlist;
