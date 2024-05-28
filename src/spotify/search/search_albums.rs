@@ -11,7 +11,6 @@ use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
-/// Fetches the tracks from a new release album and stores them for later use
 #[tokio::main]
 pub async fn search_selected_album_tracks(app: &mut App) -> Result<(), ClientError> {
     let client_id = &app.client_id;
@@ -65,7 +64,6 @@ fn save_tracks_to_json(items: Vec<SimplifiedTrack>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
-/// Processes the new releases tracks data stored in the cache file and populates the app's data structures
 pub fn process_selected_album_tracks(app: &mut App) {
     app.selected_album_tracks_names.clear();
     app.selected_album_tracks_artists.clear();

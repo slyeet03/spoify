@@ -2,8 +2,7 @@ extern crate rspotify;
 extern crate serde_json;
 
 use crate::app::App;
-use futures::{FutureExt, TryStreamExt};
-use rspotify::model::{ArtistId, FullArtist, FullTrack, SimplifiedAlbum};
+use rspotify::model::{ArtistId, FullTrack};
 use rspotify::{prelude::*, ClientCredsSpotify, ClientError, Credentials};
 use serde_json::{json, Value};
 use std::env;
@@ -11,7 +10,6 @@ use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
-/// Fetches the tracks from a new release album and stores them for later use
 #[tokio::main]
 pub async fn search_selected_artist_tracks(app: &mut App) -> Result<(), ClientError> {
     let client_id = &app.client_id;
@@ -60,7 +58,6 @@ fn save_tracks_to_json(items: Vec<FullTrack>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
-/// Processes the saved albums data stored in the cache file and populates the app's data structures
 pub fn process_selected_artist_tracks(app: &mut App) {
     // Clear any existing user track data in the app before processing
     app.selected_artist_tracks_names.clear();
