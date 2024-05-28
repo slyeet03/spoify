@@ -5,8 +5,8 @@ use ratatui::{
     Frame,
 };
 
+use super::util::searched_track_table_for_artist_ui;
 use crate::app::App;
-use crate::ui::util::searched_track_table_for_artist_ui;
 
 pub fn render_searched_artist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
     let current_artist = &app.artist_names_search_results[app.artist_index];

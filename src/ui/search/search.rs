@@ -5,9 +5,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::{app::App, enums::InputMode};
-
-use super::util::convert_to_list;
+use crate::{app::App, enums::InputMode, ui::util::convert_to_list};
 
 /// Renders the search UI section, including search input, category blocks, and search results
 pub fn render_search(

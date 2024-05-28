@@ -72,6 +72,9 @@ pub struct App {
     pub selected_playlist_tracks_duration: Vec<i64>,
     pub selected_playlist_tracks_albums: Vec<String>,
     pub selected_playlist_tracks_links: Vec<String>,
+    pub searched_playlist_selected: bool,
+    pub searched_playlist_state: TableState,
+    pub searched_playlist_index: usize,
 
     pub selected_artist_tracks_names: Vec<String>,
     pub selected_artist_tracks_duration: Vec<i64>,
@@ -544,6 +547,9 @@ impl Default for App {
             searched_artist_selected: false,
             searched_artist_state: TableState::default(),
             searched_artist_index: 0,
+            searched_playlist_selected: false,
+            searched_playlist_state: TableState::default(),
+            searched_playlist_index: 0,
         }
     }
 }

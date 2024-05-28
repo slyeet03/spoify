@@ -19,6 +19,7 @@ pub enum Menu {
     Lyrics,
     SearchedAlbum,
     SearchedArtist,
+    SearchedPlaylist,
 }
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum InputMode {
@@ -40,6 +41,7 @@ impl From<Menu> for usize {
             Menu::Lyrics => 7,
             Menu::SearchedAlbum => 8,
             Menu::SearchedArtist => 9,
+            Menu::SearchedPlaylist => 10,
         }
     }
 }

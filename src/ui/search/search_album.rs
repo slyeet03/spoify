@@ -6,7 +6,8 @@ use ratatui::{
 };
 
 use crate::app::App;
-use crate::ui::util::searched_track_table_for_album_ui;
+
+use super::util::searched_track_table_for_album_ui;
 
 pub fn render_searched_album(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
     let current_album = &app.album_names_search_results[app.album_index];

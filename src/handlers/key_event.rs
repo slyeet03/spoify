@@ -29,6 +29,9 @@ use crate::spotify::search::search_albums::{
 use crate::spotify::search::search_artists::{
     process_selected_artist_tracks, search_selected_artist_tracks,
 };
+use crate::spotify::search::search_playlists::{
+    process_selected_playlist_tracks, search_selected_playlist_tracks,
+};
 use crate::spotify::user_playlist::user_playlist_track::{
     fetch_playlists_tracks, process_playlist_tracks,
 };
@@ -344,6 +347,15 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         );
                     }
                 }
+                if app.selected_menu == Menu::SearchedPlaylist {
+                    if app.searched_playlist_selected {
+                        (app.searched_playlist_state, app.searched_playlist_index) =
+                            down_key_for_table(
+                                app.selected_playlist_tracks_names.clone(),
+                                app.searched_playlist_state.clone(),
+                            );
+                    }
+                }
                 if app.can_navigate_menu {
                     let next_index: usize = app.library_state.selected().unwrap_or(0) + 1;
                     app.library_state.select(Some(next_index % 6)); //wrapping around the last option
@@ -486,6 +498,15 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         );
                     }
                 }
+                if app.selected_menu == Menu::SearchedPlaylist {
+                    if app.searched_playlist_selected {
+                        (app.searched_playlist_state, app.searched_playlist_index) =
+                            up_key_for_table(
+                                app.selected_playlist_tracks_names.clone(),
+                                app.searched_playlist_state.clone(),
+                            );
+                    }
+                }
                 if app.can_navigate_menu {
                     let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
                         5 //wrapping to the last option when user presses up at the first option
@@ -581,6 +602,23 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.searched_album_selected = false;
                     app.selected_menu = Menu::SearchedArtist;
                     app.searched_artist_selected = true;
+                }
+                if app.selected_playlist_in_search_result {
+                    if let Err(e) = search_selected_playlist_tracks(app) {
+                        println!("{}", e);
+                    }
+                    process_selected_playlist_tracks(app);
+                    app.search_results_rendered = false;
+                    app.liked_song_display = false;
+                    app.user_album_display = false;
+                    app.recently_played_display = false;
+                    app.can_navigate_menu = true;
+                    app.podcast_display = false;
+                    app.user_artist_display = false;
+                    app.searched_album_selected = false;
+                    app.selected_menu = Menu::SearchedPlaylist;
+                    app.searched_artist_selected = false;
+                    app.searched_playlist_selected = true;
                 }
             }
 
