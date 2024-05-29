@@ -220,6 +220,10 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
 
+            KeyCode::Char('e') if app.input_mode != InputMode::Editing => {
+                app.selected_menu = Menu::Error
+            }
+
             // Down keybinding for all the menus
             KeyCode::Down if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Library {

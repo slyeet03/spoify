@@ -257,6 +257,9 @@ pub struct App {
     pub help_highlight_color: Color,
     pub help_background_color: Color,
 
+    pub error_border_color: Color,
+    pub error_background_color: Color,
+
     // Volume controls
     pub volume_increment_value: u8,
     pub volume_decreament_value: u8,
@@ -271,6 +274,9 @@ pub struct App {
     // Creds
     pub client_id: String,
     pub client_secret: String,
+
+    // Error
+    pub error_text: String,
 }
 
 impl App {
@@ -516,6 +522,9 @@ impl Default for App {
             help_highlight_color: Color::Rgb(0, 0, 0),
             help_background_color: Color::Rgb(0, 0, 0),
 
+            error_border_color: Color::Rgb(0, 0, 0),
+            error_background_color: Color::Rgb(0, 0, 0),
+
             album_index: 0,
             track_index: 0,
             playlist_index: 0,
@@ -550,6 +559,7 @@ impl Default for App {
             searched_playlist_selected: false,
             searched_playlist_state: TableState::default(),
             searched_playlist_index: 0,
+            error_text: String::new(),
         }
     }
 }

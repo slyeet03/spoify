@@ -25,7 +25,7 @@ pub async fn recently_played(app: &mut App) -> Result<(), ClientError> {
     let recently_played_tracks: Vec<PlayHistory> = match recently_played_result {
         Ok(page) => page.items.into_iter().collect(),
         Err(err) => {
-            eprintln!("Error fetching recently played tracks: {}", err);
+            app.error_text = format!("Error fetching recently played tracks: {}", err);
             Vec::new()
         }
     };

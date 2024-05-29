@@ -40,3 +40,7 @@ Search Highlight Color: Color::Rgb(79, 169, 210)
 Help Border Color: Color::Rgb(79, 169, 210)
 Help Background Color: Color::Rgb(33, 33, 33)
 Help Highlight Color: Color::Rgb(79, 169, 210)
+
+# Error Screen Theme
+Error Border Color: Color::Rgb(204, 0, 0)
+Error Background Color: Color::Rgb(33, 33, 33)

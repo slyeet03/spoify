@@ -1,3 +1,4 @@
+pub mod error_screen;
 pub mod help;
 pub mod library;
 pub mod lyrics;

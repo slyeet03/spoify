@@ -25,7 +25,7 @@ pub async fn user_artists(app: &mut App) -> Result<(), ClientError> {
     let artist_tracks: Vec<FullArtist> = match artist_result {
         Ok(page) => page.items.into_iter().collect(),
         Err(err) => {
-            eprintln!("Error fetching recently played tracks: {}", err);
+            app.error_text = format!("Error fetching recently played tracks: {}", err);
             Vec::new()
         }
     };

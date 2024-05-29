@@ -68,6 +68,9 @@ pub fn set_theme(app: &mut App) {
                 "Help Border Color" => app.help_border_color = Color::Rgb(r, g, b),
                 "Help Background Color" => app.help_background_color = Color::Rgb(r, g, b),
                 "Help Highlight Color" => app.help_highlight_color = Color::Rgb(r, g, b),
+
+                "Error Border Color" => app.error_border_color = Color::Rgb(r, g, b),
+                "Error Background Color" => app.error_background_color = Color::Rgb(r, g, b),
                 _ => (),
             }
         }

@@ -54,9 +54,13 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App) {
     let current_timestamp = format_duration(app.currrent_timestamp.round() as i64);
     let ending_timestamp = format_duration(app.ending_timestamp.round() as i64);
 
-    app.progress_bar_ratio = app.currrent_timestamp / app.ending_timestamp;
-
     let label = &format!("{}/{}", current_timestamp, ending_timestamp);
+
+    if app.ending_timestamp == 0.0 {
+        app.ending_timestamp = 1.0;
+    }
+
+    app.progress_bar_ratio = app.currrent_timestamp / app.ending_timestamp;
 
     let player_info = Paragraph::new(player_info_vec).wrap(Wrap { trim: true });
 

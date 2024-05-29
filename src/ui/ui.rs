@@ -3,6 +3,7 @@ use crate::enums::Menu;
 
 use ratatui::prelude::*;
 
+use super::error_screen::render_error;
 use super::help::{render_default_help, render_help};
 use super::library::{render_default_library, render_library};
 use super::lyrics::render_lyrics;
@@ -115,6 +116,9 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         }
         Menu::SearchedPlaylist => {
             render_searched_playlist(f, &content_chunk, app);
+        }
+        Menu::Error => {
+            render_error(f, app);
         }
     }
 }

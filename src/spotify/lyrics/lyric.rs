@@ -43,6 +43,7 @@ fn save_data_to_json(app: &mut App, items: String) {
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("lyrics.txt");
+
     let mut file: File = File::create(&path).unwrap();
     let _ = file.write_all(json_data.to_string().as_bytes());
     process_lyrics(app);
@@ -54,17 +55,26 @@ fn process_lyrics(app: &mut App) {
     path.push("spoify-tui");
     path.push("spotify_cache");
     path.push("lyrics.txt");
+
     let mut file_contents = String::new();
+    let mut err: Option<std::io::Error> = None;
 
     if let Ok(mut file) = fs::File::open(&path) {
-        file.read_to_string(&mut file_contents)
-            .expect("Failed to read the file");
+        if let Err(e) = file.read_to_string(&mut file_contents) {
+            err = Some(e);
+        }
     } else {
-        eprintln!("Failed to open the file");
-        return;
+        err = Some(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "Failed to open the file",
+        ));
     }
 
-    render_lyrics_data(app, file_contents);
+    if let Some(e) = err {
+        app.error_text = format!("Error: {}", e);
+    } else {
+        render_lyrics_data(app, file_contents);
+    }
 }
 
 fn render_lyrics_data(app: &mut App, text: String) {
