@@ -19,12 +19,16 @@ pub async fn volume_decreament(app: &mut App) -> Result<(), ClientError> {
     let device_id: Option<&str> = app.current_device_id.as_ref().map(Deref::deref);
 
     // Decreament the current device volume by the configured volume decreament value
-    app.volume_percent -= app.volume_decreament_value;
+    if app.volume_percent != 0 {
+        app.volume_percent -= app.volume_decreament_value;
 
-    // Set the new volume on the current device
-    let result = spotify.volume(app.volume_percent, device_id);
+        // Set the new volume on the current device
+        let result = spotify.volume(app.volume_percent, device_id);
 
-    result.await?;
+        result.await?;
+    } else {
+        app.error_text = format!("Volume is already at 0%");
+    }
 
     Ok(())
 }

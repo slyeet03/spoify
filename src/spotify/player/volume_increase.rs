@@ -19,12 +19,16 @@ pub async fn volume_increment(app: &mut App) -> Result<(), ClientError> {
     let device_id: Option<&str> = app.current_device_id.as_ref().map(Deref::deref);
 
     // Increment the current device volume by the configured volume increment value
-    app.volume_percent += app.volume_increment_value;
+    if app.volume_percent != 100 {
+        app.volume_percent += app.volume_increment_value;
 
-    // Set the new volume on the current device
-    let result = spotify.volume(app.volume_percent, device_id);
+        // Set the new volume on the current device
+        let result = spotify.volume(app.volume_percent, device_id);
 
-    result.await?;
+        result.await?;
+    } else {
+        app.error_text = format!("Volume is already at 100%");
+    }
 
     Ok(())
 }

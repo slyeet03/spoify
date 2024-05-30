@@ -226,8 +226,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
 
+            // Key for Error Screen
             KeyCode::Char('e') if app.input_mode != InputMode::Editing => {
-                app.selected_menu = Menu::Error
+                if app.selected_menu == Menu::Error {
+                    app.selected_menu = Menu::Default;
+                } else {
+                    app.selected_menu = Menu::Error;
+                }
             }
 
             // Down keybinding for all the menus
