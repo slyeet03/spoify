@@ -9,11 +9,12 @@ use crate::app::App;
 
 /// Renders the error screen
 pub fn render_error(f: &mut Frame, app: &mut App) {
+    let error_label = format!("Error (press {} to exit the error screen)", app.error_key);
     f.render_widget(Clear, f.size());
 
     let error_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Error (press e to exit the error screen)"))
+        .title(Title::from(error_label))
         .border_style(Style::new().fg(app.error_border_color))
         .style(Style::default().bg(app.error_background_color));
 

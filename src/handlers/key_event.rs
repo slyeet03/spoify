@@ -50,6 +50,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     let new_release_key: char = app.new_release_key;
     let next_track_key: char = app.next_track_key;
     let previous_track_key: char = app.previous_track_key;
+    let error_key: char = app.error_key;
 
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
@@ -156,20 +157,11 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
 
             // Go to help menu
             code if code == KeyCode::Char(help_key) && app.input_mode != InputMode::Editing => {
-                app.selected_menu = Menu::Help;
-                app.search_results_rendered = false;
-                app.input_mode = InputMode::Normal;
-                app.user_playlist_display = false;
-                app.liked_song_display = false;
-                app.selected_search = false;
-                app.user_album_display = false;
-                app.can_navigate_menu = false;
-                app.recently_played_display = false;
-                app.podcast_display = false;
-                app.user_artist_display = false;
-                app.searched_album_selected = false;
-                app.searched_artist_selected = false;
-                app.searched_playlist_selected = false;
+                if app.selected_menu == Menu::Help {
+                    app.selected_menu = Menu::Default;
+                } else {
+                    app.selected_menu = Menu::Help;
+                }
             }
 
             // Go to New Release Menu
@@ -227,7 +219,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             }
 
             // Key for Error Screen
-            KeyCode::Char('e') if app.input_mode != InputMode::Editing => {
+            code if code == KeyCode::Char(error_key) && app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Error {
                     app.selected_menu = Menu::Default;
                 } else {

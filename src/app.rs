@@ -225,6 +225,7 @@ pub struct App {
     pub lyrics_key: char,
     pub next_track_key: char,
     pub previous_track_key: char,
+    pub error_key: char,
 
     pub first_keys: Vec<String>,
     pub tasks: Vec<String>,
@@ -463,6 +464,7 @@ impl Default for App {
             lyrics_key: char::from(' '),
             next_track_key: char::from(' '),
             previous_track_key: char::from(' '),
+            error_key: char::from(' '),
 
             first_keys: Vec::new(),
             tasks: Vec::new(),

@@ -32,11 +32,12 @@ pub fn render_default_help(f: &mut Frame, header_chunk: &[Rect], app: &mut App) 
 
 /// Renders the full help UI with a table of available commands and keybindings
 pub fn render_help(f: &mut Frame, app: &mut App) {
+    let help_label = format!("Help (press {} to go back)", app.help_key);
     f.render_widget(Clear, f.size());
 
     let help_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Help"))
+        .title(Title::from(help_label))
         .border_style(Style::new().fg(app.help_border_color))
         .style(Style::default().bg(app.help_background_color));
 
