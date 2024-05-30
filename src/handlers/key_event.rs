@@ -70,10 +70,20 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             code if code == KeyCode::Char(exit_application_key)
                 && app.input_mode != InputMode::Editing =>
             {
-                app.exit()
+                if app.selected_menu == Menu::Search {
+                    app.selected_menu = Menu::Default;
+                } else if app.selected_menu == Menu::Library {
+                    app.selected_menu = Menu::Default;
+                } else if app.selected_menu == Menu::Playlists {
+                    app.selected_menu = Menu::Default;
+                } else if app.selected_menu == Menu::NewRelease {
+                    app.selected_menu = Menu::Default;
+                } else {
+                    app.exit();
+                }
             }
 
-            // Navigate to different menus (Library, Playlists, Search) when 'l', 'p', or 's' is pressed
+            // Navigate to different menus (Library, Playlists, Search, New Releases) when 'l', 'p', 's' or 'n' is pressed
 
             // Go to Library Menu
             code if code == KeyCode::Char(go_to_library_key)
