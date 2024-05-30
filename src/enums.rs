@@ -17,10 +17,14 @@ pub enum Menu {
     Help,
     NewRelease,
     Lyrics,
+    Error,
+}
+#[derive(Copy, Clone, Debug, PartialEq)]
+pub enum SearchMenu {
+    Default,
     SearchedAlbum,
     SearchedArtist,
     SearchedPlaylist,
-    Error,
 }
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum InputMode {
@@ -40,10 +44,7 @@ impl From<Menu> for usize {
             Menu::Help => 5,
             Menu::NewRelease => 6,
             Menu::Lyrics => 7,
-            Menu::SearchedAlbum => 8,
-            Menu::SearchedArtist => 9,
-            Menu::SearchedPlaylist => 10,
-            Menu::Error => 11,
+            Menu::Error => 8,
         }
     }
 }
@@ -56,6 +57,16 @@ impl From<Library> for usize {
             Library::Albums => 3,
             Library::Artists => 4,
             Library::Podcasts => 5,
+        }
+    }
+}
+impl From<SearchMenu> for usize {
+    fn from(input: SearchMenu) -> usize {
+        match input {
+            SearchMenu::Default => 0,
+            SearchMenu::SearchedAlbum => 1,
+            SearchMenu::SearchedArtist => 2,
+            SearchMenu::SearchedPlaylist => 3,
         }
     }
 }

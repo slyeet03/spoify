@@ -10,6 +10,7 @@ use crate::app::App;
 use super::util::searched_track_table_for_album_ui;
 
 pub fn render_searched_album(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
+    f.render_widget(Clear, content_chunk[1]);
     let current_album = &app.album_names_search_results[app.album_index];
 
     let album_block = Block::default()

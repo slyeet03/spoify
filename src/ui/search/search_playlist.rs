@@ -8,6 +8,7 @@ use ratatui::{
 use crate::{app::App, ui::util::track_table_ui};
 
 pub fn render_searched_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
+    f.render_widget(Clear, content_chunk[1]);
     let current_playlist = &app.playlist_names_search_results[app.playlist_index];
 
     let playlist_block = Block::default()

@@ -5,7 +5,16 @@ use ratatui::{
     Frame,
 };
 
-use crate::{app::App, enums::InputMode, ui::util::convert_to_list};
+use crate::{
+    app::App,
+    enums::{InputMode, SearchMenu},
+    ui::util::convert_to_list,
+};
+
+use super::{
+    search_album::render_searched_album, search_artist::render_searched_artist,
+    search_playlist::render_searched_playlist,
+};
 
 /// Renders the search UI section, including search input, category blocks, and search results
 pub fn render_search(
@@ -13,6 +22,7 @@ pub fn render_search(
     header_chunk: &[Rect],
     main_chunk_upper: &[Rect],
     main_chunk_lower: &[Rect],
+    content_chunk: &[Rect],
     app: &mut App,
 ) {
     let search_block = Block::default()
@@ -129,6 +139,19 @@ pub fn render_search(
         }
         _ => {}
     }
+    match app.search_menu {
+        SearchMenu::Default => {}
+        SearchMenu::SearchedAlbum => {
+            render_searched_album(f, &content_chunk, app);
+        }
+        SearchMenu::SearchedArtist => {
+            render_searched_artist(f, &content_chunk, app);
+        }
+        SearchMenu::SearchedPlaylist => {
+            render_searched_playlist(f, &content_chunk, app);
+        }
+    }
+    {}
 }
 
 /// Renders a simplified search bar

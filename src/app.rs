@@ -1,4 +1,4 @@
-use crate::enums::{InputMode, Library, Menu};
+use crate::enums::{InputMode, Library, Menu, SearchMenu};
 use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
 use crate::spotify::player::player::process_currently_playing;
@@ -31,6 +31,7 @@ pub struct App {
     pub cursor_position: usize,
     pub input_mode: InputMode,
     pub search_results_rendered: bool,
+    pub search_menu: SearchMenu,
 
     pub album_names_search_results: Vec<String>,
     pub track_names_search_results: Vec<String>,
@@ -339,6 +340,7 @@ impl Default for App {
             input: String::new(),
             input_mode: InputMode::Normal,
             cursor_position: 0,
+            search_menu: SearchMenu::Default,
 
             album_names_search_results: Vec::new(),
             album_links_search_results: Vec::new(),

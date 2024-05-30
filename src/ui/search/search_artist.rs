@@ -9,6 +9,7 @@ use super::util::searched_track_table_for_artist_ui;
 use crate::app::App;
 
 pub fn render_searched_artist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
+    f.render_widget(Clear, content_chunk[1]);
     let current_artist = &app.artist_names_search_results[app.artist_index];
 
     let artist_block = Block::default()

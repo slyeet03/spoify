@@ -34,7 +34,9 @@ pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App
     let user_playlist_list = List::new(user_playlist_names)
         .block(playlist_block_user.clone())
         .highlight_style(Style::default().fg(app.playlist_highlight_color));
+
     f.render_widget(Clear, content_chunk[2]);
+
     f.render_stateful_widget(
         user_playlist_list,
         content_chunk[2],
@@ -44,6 +46,7 @@ pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App
     // Conditionally render the user playlist track table
     if app.user_playlist_display {
         f.render_widget(Clear, content_chunk[1]);
+
         let user_playlist_tracks_table = track_table_ui(
             app.user_playlist_track_names.clone(),
             app.user_playlist_artist_names.clone(),
@@ -53,6 +56,7 @@ pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App
             app.playlist_highlight_color.clone(),
             app.playlist_background_color.clone(),
         );
+
         f.render_widget(Clear, content_chunk[1]);
 
         f.render_stateful_widget(
