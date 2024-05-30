@@ -1,4 +1,5 @@
 use crate::app::App;
+use crate::enums::Menu;
 use crate::spotify::auth::get_spotify_client;
 use rspotify::clients::OAuthClient;
 use rspotify::{AuthCodeSpotify, ClientError};
@@ -28,6 +29,7 @@ pub async fn volume_decreament(app: &mut App) -> Result<(), ClientError> {
         result.await?;
     } else {
         app.error_text = format!("Volume is already at 0%");
+        app.selected_menu = Menu::Error;
     }
 
     Ok(())
