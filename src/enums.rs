@@ -16,7 +16,6 @@ pub enum Menu {
     Default,
     Help,
     NewRelease,
-    Lyrics,
     Error,
 }
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -43,8 +42,7 @@ impl From<Menu> for usize {
             Menu::Default => 4,
             Menu::Help => 5,
             Menu::NewRelease => 6,
-            Menu::Lyrics => 7,
-            Menu::Error => 8,
+            Menu::Error => 7,
         }
     }
 }

@@ -6,7 +6,6 @@ use ratatui::prelude::*;
 use super::error_screen::render_error;
 use super::help::{render_default_help, render_help};
 use super::library::{render_default_library, render_library};
-use super::lyrics::render_lyrics;
 use super::main_area::render_main_area;
 use super::new_release::{render_default_new_releases, render_new_releases};
 use super::player::render_player;
@@ -108,9 +107,6 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         }
         Menu::NewRelease => {
             render_new_releases(f, &content_sub_chunk, &content_chunk, app);
-        }
-        Menu::Lyrics => {
-            render_lyrics(f, &content_chunk, app);
         }
         Menu::Error => {
             render_error(f, app);

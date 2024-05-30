@@ -11,7 +11,6 @@ use crate::spotify::library_section::{
     user_albums::{process_user_albums, user_albums},
     user_artists::{process_user_artists, user_artists},
 };
-use crate::spotify::lyrics::lyric::lyric;
 use crate::spotify::new_release_section::new_releases_tracks::{
     new_releases_tracks, process_new_releases_tracks,
 };
@@ -73,26 +72,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             {
                 app.exit()
             }
-            KeyCode::Char('l') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
-                if let Err(e) = lyric(app) {
-                    println!("{}", e);
-                }
-                app.selected_menu = Menu::Lyrics;
-                app.new_release_state.select(Some(0));
-                app.search_results_rendered = false;
-                app.input_mode = InputMode::Normal;
-                app.user_playlist_display = false;
-                app.liked_song_display = false;
-                app.selected_search = false;
-                app.user_album_display = false;
-                app.can_navigate_menu = false;
-                app.recently_played_display = false;
-                app.podcast_display = false;
-                app.user_artist_display = false;
-                app.searched_album_selected = false;
-                app.searched_artist_selected = false;
-                app.searched_playlist_selected = false;
-            }
+
             // Navigate to different menus (Library, Playlists, Search) when 'l', 'p', or 's' is pressed
 
             // Go to Library Menu
