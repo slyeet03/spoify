@@ -167,6 +167,15 @@ pub struct App {
     pub current_user_artist: String,
     pub user_artist_index: usize,
 
+    // Hnadles Made For You
+    pub made_fy_playlist_names: Vec<String>,
+    pub made_fy_playlist_links: Vec<String>,
+    pub made_fy_selected: bool,
+    pub made_fy_display: bool,
+    pub made_fy_state: TableState,
+    pub made_fy_index: usize,
+    pub made_fy_playlist_track_total: Vec<i64>,
+
     // Handles User's currently playing device
     pub current_device_name: String,
     pub current_device_volume: String,
@@ -564,6 +573,14 @@ impl Default for App {
             searched_playlist_state: TableState::default(),
             searched_playlist_index: 0,
             error_text: String::new(),
+
+            made_fy_playlist_names: Vec::new(),
+            made_fy_playlist_links: Vec::new(),
+            made_fy_selected: false,
+            made_fy_display: false,
+            made_fy_state: TableState::default(),
+            made_fy_index: 0,
+            made_fy_playlist_track_total: Vec::new(),
         }
     }
 }

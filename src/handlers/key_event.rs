@@ -4,6 +4,7 @@ use super::util::{
 };
 use crate::app::App;
 use crate::enums::{InputMode, Menu, SearchMenu};
+use crate::spotify::library_section::made_fy::{made_fy, process_made_fy};
 use crate::spotify::library_section::{
     liked_songs::{liked_tracks, process_liked_tracks},
     podcast::{process_podcasts, user_podcast},
@@ -220,6 +221,14 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             // Down keybinding for all the menus
             KeyCode::Down if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Library {
+                    if app.library_state.selected() == Some(0) {
+                        if app.made_fy_selected {
+                            (app.made_fy_state, app.made_fy_index) = down_key_for_table(
+                                app.made_fy_playlist_names.clone(),
+                                app.made_fy_state.clone(),
+                            );
+                        }
+                    }
                     if app.library_state.selected() == Some(2) {
                         if app.liked_songs_selected {
                             (app.liked_songs_state, app.liked_songs_index) = down_key_for_table(
@@ -371,6 +380,14 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             // Up keybinding for all the menus
             KeyCode::Up if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Library {
+                    if app.library_state.selected() == Some(0) {
+                        if app.made_fy_selected {
+                            (app.made_fy_state, app.made_fy_index) = up_key_for_table(
+                                app.made_fy_playlist_names.clone(),
+                                app.made_fy_state.clone(),
+                            );
+                        }
+                    }
                     if app.library_state.selected() == Some(2) {
                         if app.liked_songs_selected {
                             (app.liked_songs_state, app.liked_songs_index) = up_key_for_table(
@@ -551,6 +568,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.searched_album_selected = false;
                     app.searched_artist_selected = false;
                     app.searched_playlist_selected = false;
+                    if app.library_state.selected() == Some(0) {
+                        if let Err(e) = made_fy(app) {
+                            println!("{}", e);
+                        }
+                        process_made_fy(app);
+                        app.made_fy_display = true;
+                    }
                     if app.library_state.selected() == Some(2) {
                         if let Err(e) = liked_tracks(app) {
                             println!("{}", e);
@@ -662,6 +686,12 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
                 if app.selected_menu == Menu::Library {
                     app.can_navigate_menu = !app.can_navigate_menu;
+                    if app.library_state.selected() == Some(0) {
+                        if app.made_fy_display {
+                            app.made_fy_state.select(Some(0));
+                            app.made_fy_selected = !app.made_fy_selected;
+                        }
+                    }
                     if app.library_state.selected() == Some(2) {
                         if app.liked_song_display {
                             app.liked_songs_state.select(Some(0));

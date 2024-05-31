@@ -8,6 +8,8 @@ use ratatui::{
 use crate::app::App;
 use crate::ui::util::{album_table_ui, artist_table_ui, podcast_table_ui, track_table_ui};
 
+use super::util::made_fy_table_ui;
+
 /// Renders the library view of the application, including the list of library sections and content for the selected section
 pub fn render_library(
     f: &mut Frame,
@@ -71,6 +73,16 @@ pub fn render_library(
         })
         .style(Style::default().bg(app.main_background_color));
 
+    let made_fy_block = Block::default()
+        .borders(Borders::ALL)
+        .title(Title::from("Made For You"))
+        .border_style(if app.made_fy_selected {
+            Style::default().fg(app.main_border_color)
+        } else {
+            Style::default()
+        })
+        .style(Style::default().bg(app.main_background_color));
+
     let library_items = vec![
         String::from("Made For You"),
         String::from("Recently Played"),
@@ -87,6 +99,26 @@ pub fn render_library(
     f.render_stateful_widget(library_list, content_sub_chunk[0], &mut app.library_state);
 
     // Render content for the selected library section based on app state.
+    if app.made_fy_display {
+        f.render_widget(Clear, content_chunk[1]);
+
+        let made_fy_playlist_table = made_fy_table_ui(
+            app.made_fy_playlist_names.clone(),
+            app.made_fy_playlist_track_total.clone(),
+            made_fy_block,
+            app.main_highlight_color,
+            app.main_background_color,
+        );
+
+        f.render_widget(Clear, content_chunk[1]);
+
+        f.render_stateful_widget(
+            made_fy_playlist_table,
+            content_chunk[1],
+            &mut app.made_fy_state,
+        );
+    }
+
     if app.liked_song_display {
         f.render_widget(Clear, content_chunk[1]);
 

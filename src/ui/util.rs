@@ -323,3 +323,49 @@ pub fn new_release_table_ui(
 
     table
 }
+
+pub fn made_fy_table_ui(
+    names: Vec<String>,
+    track_total: Vec<i64>,
+    block: Block,
+    highlight_color: Color,
+    background_color: Color,
+) -> Table {
+    let tracks: Vec<(usize, String, i64)> = names
+        .iter()
+        .enumerate()
+        .zip(track_total.iter())
+        .map(|((index, name), track_total)| (index + 1, name.clone(), track_total.clone()))
+        .collect();
+
+    let table = Table::new(
+        tracks
+            .iter()
+            .map(|(index, name, track_total)| {
+                Row::new(vec![
+                    Cell::from(format!("{}", index)),
+                    Cell::from(name.clone()),
+                    Cell::from(format!("{}", track_total)),
+                ])
+            })
+            .collect::<Vec<_>>(),
+        [
+            Constraint::Percentage(5),
+            Constraint::Percentage(80),
+            Constraint::Percentage(15),
+        ],
+    )
+    .header(
+        Row::new(vec![
+            Cell::from("#"),
+            Cell::from("Title"),
+            Cell::from("Total Tracks"),
+        ])
+        .bold(),
+    )
+    .block(block.clone())
+    .highlight_style(Style::default().fg(highlight_color))
+    .style(Style::default().bg(background_color));
+
+    table
+}
