@@ -68,7 +68,7 @@ pub fn render_library(
 
     let user_artist_block = Block::default()
         .borders(Borders::ALL)
-        .title(Title::from("Podcasts"))
+        .title(Title::from("Artists"))
         .border_style(if app.user_artist_selected {
             Style::default().fg(app.main_border_color)
         } else {

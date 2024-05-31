@@ -1,6 +1,6 @@
 use super::util::{
-    delete_char, down_key_for_list, down_key_for_table, move_cursor_left, move_cursor_right,
-    reset_cursor, up_key_for_list, up_key_for_table,
+    default, delete_char, down_key_for_list, down_key_for_table, move_cursor_left,
+    move_cursor_right, reset_cursor, up_key_for_list, up_key_for_table,
 };
 use crate::app::App;
 use crate::enums::{InputMode, Library, Menu, SearchMenu};
@@ -98,6 +98,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             app.user_album_track_display = false;
                             app.user_album_current_album_selected = true;
                             app.user_album_display = true;
+                            app.user_album_selected = true;
                         } else {
                             app.selected_menu = Menu::Default;
                         }
@@ -107,6 +108,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             app.user_artist_track_display = false;
                             app.user_artist_current_artist_selected = true;
                             app.user_artist_display = true;
+                            app.user_artist_selected = true;
                         } else {
                             app.selected_menu = Menu::Default;
                         }
@@ -130,29 +132,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             {
                 app.selected_menu = Menu::Library;
                 app.library_state.select(Some(0)); //reseting the library state
-                app.search_results_rendered = false;
-                app.input_mode = InputMode::Normal;
-                app.user_playlist_display = false;
-                app.liked_song_display = false;
-                app.selected_search = false;
-                app.user_album_display = false;
-                app.recently_played_display = false;
-                app.can_navigate_menu = true;
-                app.podcast_display = false;
-                app.user_artist_display = false;
-                app.searched_album_selected = false;
-                app.searched_artist_selected = false;
-                app.searched_playlist_selected = false;
-                app.made_fy_display = false;
-                app.made_fy_track_display = false;
-                app.made_fy_track_selected = false;
-                app.made_fy_current_playlist_selected = false;
-                app.user_album_current_album_selected = false;
-                app.user_album_track_selected = false;
-                app.user_album_track_display = false;
-                app.user_artist_current_artist_selected = false;
-                app.user_artist_track_selected = false;
-                app.user_artist_track_display = false;
+                default(app);
             }
 
             // Go to user playlist menu
@@ -161,29 +141,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             {
                 app.selected_menu = Menu::Playlists;
                 app.user_playlist_state.select(Some(0));
-                app.search_results_rendered = false;
-                app.input_mode = InputMode::Normal;
-                app.user_playlist_display = false;
-                app.liked_song_display = false;
-                app.selected_search = false;
-                app.user_album_display = false;
-                app.can_navigate_menu = true;
-                app.recently_played_display = false;
-                app.podcast_display = false;
-                app.user_artist_display = false;
-                app.searched_album_selected = false;
-                app.searched_artist_selected = false;
-                app.searched_playlist_selected = false;
-                app.made_fy_display = false;
-                app.made_fy_track_display = false;
-                app.made_fy_track_selected = false;
-                app.made_fy_current_playlist_selected = false;
-                app.user_album_current_album_selected = false;
-                app.user_album_track_selected = false;
-                app.user_album_track_display = false;
-                app.user_artist_current_artist_selected = false;
-                app.user_artist_track_selected = false;
-                app.user_artist_track_display = false;
+                default(app);
             }
 
             // Go to search menu
@@ -191,27 +149,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 && app.input_mode != InputMode::Editing =>
             {
                 app.selected_menu = Menu::Search;
+                default(app);
                 app.input_mode = InputMode::Editing;
-                app.search_results_rendered = false;
-                app.liked_song_display = false;
-                app.user_album_display = false;
-                app.recently_played_display = false;
-                app.can_navigate_menu = true;
-                app.podcast_display = false;
-                app.user_artist_display = false;
-                app.searched_album_selected = false;
-                app.searched_artist_selected = false;
-                app.searched_playlist_selected = false;
-                app.made_fy_display = false;
-                app.made_fy_track_display = false;
-                app.made_fy_track_selected = false;
-                app.made_fy_current_playlist_selected = false;
-                app.user_album_current_album_selected = false;
-                app.user_album_track_selected = false;
-                app.user_album_track_display = false;
-                app.user_artist_current_artist_selected = false;
-                app.user_artist_track_selected = false;
-                app.user_artist_track_display = false;
             }
 
             // Go to help menu
@@ -229,29 +168,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             {
                 app.selected_menu = Menu::NewRelease;
                 app.new_release_state.select(Some(0));
-                app.search_results_rendered = false;
-                app.input_mode = InputMode::Normal;
-                app.user_playlist_display = false;
-                app.liked_song_display = false;
-                app.selected_search = false;
-                app.user_album_display = false;
-                app.can_navigate_menu = true;
-                app.recently_played_display = false;
-                app.podcast_display = false;
-                app.user_artist_display = false;
-                app.searched_album_selected = false;
-                app.searched_artist_selected = false;
-                app.searched_playlist_selected = false;
-                app.made_fy_display = false;
-                app.made_fy_track_display = false;
-                app.made_fy_track_selected = false;
-                app.made_fy_current_playlist_selected = false;
-                app.user_album_current_album_selected = false;
-                app.user_album_track_selected = false;
-                app.user_album_track_display = false;
-                app.user_artist_current_artist_selected = false;
-                app.user_artist_track_selected = false;
-                app.user_artist_track_display = false;
+                default(app);
             }
 
             // Keys for Volume Control

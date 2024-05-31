@@ -1,6 +1,6 @@
 use ratatui::widgets::{ListState, TableState};
 
-use crate::app::App;
+use crate::{app::App, enums::InputMode};
 
 // Helper functions for cursor movement and character deletion
 pub fn move_cursor_left(app: &mut App) {
@@ -76,4 +76,30 @@ pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, 
     state.select(Some(prev_index));
 
     (state, prev_index)
+}
+
+pub fn default(app: &mut App) {
+    app.search_results_rendered = false;
+    app.input_mode = InputMode::Normal;
+    app.user_playlist_display = false;
+    app.liked_song_display = false;
+    app.selected_search = false;
+    app.user_album_display = false;
+    app.recently_played_display = false;
+    app.can_navigate_menu = true;
+    app.podcast_display = false;
+    app.user_artist_display = false;
+    app.searched_album_selected = false;
+    app.searched_artist_selected = false;
+    app.searched_playlist_selected = false;
+    app.made_fy_display = false;
+    app.made_fy_track_display = false;
+    app.made_fy_track_selected = false;
+    app.made_fy_current_playlist_selected = false;
+    app.user_album_current_album_selected = false;
+    app.user_album_track_selected = false;
+    app.user_album_track_display = false;
+    app.user_artist_current_artist_selected = false;
+    app.user_artist_track_selected = false;
+    app.user_artist_track_display = false;
 }

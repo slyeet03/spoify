@@ -43,7 +43,7 @@ pub fn set_keybindings(app: &mut App) {
         None => ' ',
     };
 
-    app.exit_application_key = match keybindings.get("Exit Application") {
+    app.exit_application_key = match keybindings.get("Exit Application/Go Back") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
