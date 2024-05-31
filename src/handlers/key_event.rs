@@ -84,8 +84,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.selected_menu = Menu::Default;
                 } else if app.selected_menu == Menu::Library {
                     if app.selected_library == Library::MadeFY {
-                        if app.made_fy_current_track_selected {
-                            app.made_fy_current_track_selected = false;
+                        if app.made_fy_track_selected {
+                            app.made_fy_track_selected = false;
                             app.made_fy_track_display = false;
                             app.made_fy_selected = true;
                             app.made_fy_display = true;
@@ -145,8 +145,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.searched_playlist_selected = false;
                 app.made_fy_display = false;
                 app.made_fy_track_display = false;
-                app.made_fy_current_track_selected = false;
-                app.made_fy_track_select = false;
+                app.made_fy_track_selected = false;
+                app.made_fy_current_playlist_selected = false;
                 app.user_album_current_album_selected = false;
                 app.user_album_track_selected = false;
                 app.user_album_track_display = false;
@@ -176,8 +176,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.searched_playlist_selected = false;
                 app.made_fy_display = false;
                 app.made_fy_track_display = false;
-                app.made_fy_current_track_selected = false;
-                app.made_fy_track_select = false;
+                app.made_fy_track_selected = false;
+                app.made_fy_current_playlist_selected = false;
                 app.user_album_current_album_selected = false;
                 app.user_album_track_selected = false;
                 app.user_album_track_display = false;
@@ -204,8 +204,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.searched_playlist_selected = false;
                 app.made_fy_display = false;
                 app.made_fy_track_display = false;
-                app.made_fy_current_track_selected = false;
-                app.made_fy_track_select = false;
+                app.made_fy_track_selected = false;
+                app.made_fy_current_playlist_selected = false;
                 app.user_album_current_album_selected = false;
                 app.user_album_track_selected = false;
                 app.user_album_track_display = false;
@@ -244,8 +244,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.searched_playlist_selected = false;
                 app.made_fy_display = false;
                 app.made_fy_track_display = false;
-                app.made_fy_current_track_selected = false;
-                app.made_fy_track_select = false;
+                app.made_fy_track_selected = false;
+                app.made_fy_current_playlist_selected = false;
                 app.user_album_current_album_selected = false;
                 app.user_album_track_selected = false;
                 app.user_album_track_display = false;
@@ -306,7 +306,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                                 app.made_fy_state.clone(),
                             );
                         }
-                        if app.made_fy_current_track_selected {
+                        if app.made_fy_track_selected {
                             (app.made_fy_track_state, app.made_fy_track_index) = down_key_for_table(
                                 app.made_fy_track_names.clone(),
                                 app.made_fy_track_state.clone(),
@@ -474,7 +474,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.user_artist_display = false;
                     app.made_fy_display = false;
                     app.made_fy_track_display = false;
-                    app.made_fy_current_track_selected = false;
+                    app.made_fy_track_selected = false;
                     app.user_album_current_album_selected = false;
                     app.user_album_track_selected = false;
                     app.user_album_track_display = false;
@@ -494,7 +494,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                                 app.made_fy_state.clone(),
                             );
                         }
-                        if app.made_fy_current_track_selected {
+                        if app.made_fy_track_selected {
                             (app.made_fy_track_state, app.made_fy_track_index) = up_key_for_table(
                                 app.made_fy_track_names.clone(),
                                 app.made_fy_track_state.clone(),
@@ -668,7 +668,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.user_artist_display = false;
                     app.made_fy_display = false;
                     app.made_fy_track_display = false;
-                    app.made_fy_current_track_selected = false;
+                    app.made_fy_track_selected = false;
                     app.user_album_current_album_selected = false;
                     app.user_album_track_selected = false;
                     app.user_album_track_display = false;
@@ -706,15 +706,15 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.searched_playlist_selected = false;
                     if app.library_state.selected() == Some(0) {
                         app.selected_library = Library::MadeFY;
-                        if app.made_fy_track_select {
+                        if app.made_fy_current_playlist_selected {
                             if let Err(e) = fetch_made_fy_tracks(app) {
                                 println!("{}", e);
                             }
                             process_made_fy_tracks(app);
                             app.made_fy_track_display = true;
                             app.made_fy_display = false;
-                            app.made_fy_current_track_selected = true;
-                            app.made_fy_track_select = false;
+                            app.made_fy_track_selected = true;
+                            app.made_fy_current_playlist_selected = false;
                             app.made_fy_selected = false;
                         } else {
                             if let Err(e) = made_fy(app) {
@@ -722,7 +722,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             }
                             process_made_fy(app);
                             app.made_fy_display = true;
-                            app.made_fy_track_select = true;
+                            app.made_fy_current_playlist_selected = true;
                         }
                     } else if app.library_state.selected() == Some(2) {
                         app.selected_library = Library::LikedSongs;

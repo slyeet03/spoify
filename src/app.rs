@@ -200,11 +200,11 @@ pub struct App {
     pub made_fy_track_duration: Vec<i64>,
     pub made_fy_artist_names: Vec<String>,
     pub made_fy_album_names: Vec<String>,
-    pub made_fy_track_select: bool,
     pub made_fy_track_display: bool,
     pub made_fy_track_state: TableState,
-    pub made_fy_current_track_selected: bool,
     pub made_fy_track_index: usize,
+    pub made_fy_track_selected: bool, // for a track list that is selected
+    pub made_fy_current_playlist_selected: bool, // for a playlist that is selected
 
     // Handles User's currently playing device
     pub current_device_name: String,
@@ -616,10 +616,10 @@ impl Default for App {
             made_fy_track_duration: Vec::new(),
             made_fy_artist_names: Vec::new(),
             made_fy_album_names: Vec::new(),
-            made_fy_track_select: false,
+            made_fy_current_playlist_selected: false,
             made_fy_track_display: false,
             made_fy_track_state: TableState::default(),
-            made_fy_current_track_selected: false,
+            made_fy_track_selected: false,
             made_fy_track_index: 0,
 
             user_album_track_names: Vec::new(),

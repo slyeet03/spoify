@@ -128,7 +128,7 @@ pub fn render_library(
         let made_fy_track_block = Block::default()
             .borders(Borders::ALL)
             .title(Title::from(made_fy_track_label))
-            .border_style(if app.made_fy_current_track_selected {
+            .border_style(if app.made_fy_track_selected {
                 Style::default().fg(app.main_border_color)
             } else {
                 Style::default()
