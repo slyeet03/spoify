@@ -8,7 +8,7 @@ use ratatui::{
 use crate::app::App;
 use crate::ui::util::{album_table_ui, artist_table_ui, podcast_table_ui, track_table_ui};
 
-use super::util::made_fy_table_ui;
+use super::{search::util::searched_track_table_for_album_ui, util::made_fy_table_ui};
 
 /// Renders the library view of the application, including the list of library sections and content for the selected section
 pub fn render_library(
@@ -246,6 +246,38 @@ pub fn render_library(
             user_album_table,
             content_chunk[1],
             &mut app.user_album_state,
+        );
+    }
+    if app.user_album_track_display {
+        let user_album_track_label = format!("{}", app.user_album_names[app.user_album_index]);
+
+        let user_album_track_block = Block::default()
+            .borders(Borders::ALL)
+            .title(Title::from(user_album_track_label))
+            .border_style(if app.user_album_track_selected {
+                Style::default().fg(app.main_border_color)
+            } else {
+                Style::default()
+            })
+            .style(Style::default().bg(app.main_background_color));
+
+        f.render_widget(Clear, content_chunk[1]);
+
+        let user_album_track_table = searched_track_table_for_album_ui(
+            app.user_album_track_names.clone(),
+            app.user_album_track_artist.clone(),
+            app.user_album_track_duration.clone(),
+            user_album_track_block,
+            app.main_highlight_color.clone(),
+            app.main_background_color.clone(),
+        );
+
+        f.render_widget(Clear, content_chunk[1]);
+
+        f.render_stateful_widget(
+            user_album_track_table,
+            content_chunk[1],
+            &mut app.user_album_track_state,
         );
     }
 }

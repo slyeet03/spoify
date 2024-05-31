@@ -3,5 +3,7 @@ pub mod made_fy;
 pub mod made_fy_tracks;
 pub mod podcast;
 pub mod recently_played;
+pub mod user_album_tracks;
 pub mod user_albums;
+pub mod user_artist_tracks;
 pub mod user_artists;
