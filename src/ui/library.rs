@@ -119,6 +119,40 @@ pub fn render_library(
         );
     }
 
+    if app.made_fy_track_display {
+        let made_fy_track_label = format!("{}", app.made_fy_playlist_names[app.made_fy_index]);
+
+        let made_fy_track_block = Block::default()
+            .borders(Borders::ALL)
+            .title(Title::from(made_fy_track_label))
+            .border_style(if app.made_fy_current_track_selected {
+                Style::default().fg(app.main_border_color)
+            } else {
+                Style::default()
+            })
+            .style(Style::default().bg(app.main_background_color));
+
+        f.render_widget(Clear, content_chunk[1]);
+
+        let made_fy_track_table = track_table_ui(
+            app.made_fy_track_names.clone(),
+            app.made_fy_artist_names.clone(),
+            app.made_fy_album_names.clone(),
+            app.made_fy_track_duration.clone(),
+            made_fy_track_block,
+            app.main_highlight_color.clone(),
+            app.main_background_color.clone(),
+        );
+
+        f.render_widget(Clear, content_chunk[1]);
+
+        f.render_stateful_widget(
+            made_fy_track_table,
+            content_chunk[1],
+            &mut app.made_fy_track_state,
+        );
+    }
+
     if app.liked_song_display {
         f.render_widget(Clear, content_chunk[1]);
 
