@@ -11,6 +11,9 @@ use crate::spotify::library_section::made_fy_tracks::{
 use crate::spotify::library_section::user_album_tracks::{
     process_user_album_tracks, user_album_tracks,
 };
+use crate::spotify::library_section::user_artist_tracks::{
+    process_user_artist_tracks, user_artist_tracks,
+};
 use crate::spotify::library_section::{
     liked_songs::{liked_tracks, process_liked_tracks},
     podcast::{process_podcasts, user_podcast},
@@ -98,6 +101,15 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         } else {
                             app.selected_menu = Menu::Default;
                         }
+                    } else if app.selected_library == Library::Artists {
+                        if app.user_artist_track_selected {
+                            app.user_artist_track_selected = false;
+                            app.user_artist_track_display = false;
+                            app.user_artist_current_artist_selected = true;
+                            app.user_artist_display = true;
+                        } else {
+                            app.selected_menu = Menu::Default;
+                        }
                     } else {
                         app.selected_menu = Menu::Default;
                     }
@@ -138,6 +150,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_album_current_album_selected = false;
                 app.user_album_track_selected = false;
                 app.user_album_track_display = false;
+                app.user_artist_current_artist_selected = false;
+                app.user_artist_track_selected = false;
+                app.user_artist_track_display = false;
             }
 
             // Go to user playlist menu
@@ -166,6 +181,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_album_current_album_selected = false;
                 app.user_album_track_selected = false;
                 app.user_album_track_display = false;
+                app.user_artist_current_artist_selected = false;
+                app.user_artist_track_selected = false;
+                app.user_artist_track_display = false;
             }
 
             // Go to search menu
@@ -191,6 +209,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_album_current_album_selected = false;
                 app.user_album_track_selected = false;
                 app.user_album_track_display = false;
+                app.user_artist_current_artist_selected = false;
+                app.user_artist_track_selected = false;
+                app.user_artist_track_display = false;
             }
 
             // Go to help menu
@@ -228,6 +249,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.user_album_current_album_selected = false;
                 app.user_album_track_selected = false;
                 app.user_album_track_display = false;
+                app.user_artist_current_artist_selected = false;
+                app.user_artist_track_selected = false;
+                app.user_artist_track_display = false;
             }
 
             // Keys for Volume Control
@@ -331,6 +355,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                                 app.user_artist_names.clone(),
                                 app.user_artist_state.clone(),
                             );
+                        }
+                        if app.user_artist_track_selected {
+                            (app.user_artist_track_state, app.user_artist_track_index) =
+                                down_key_for_table(
+                                    app.user_artist_track_names.clone(),
+                                    app.user_artist_track_state.clone(),
+                                );
                         }
                     }
                 }
@@ -447,6 +478,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.user_album_current_album_selected = false;
                     app.user_album_track_selected = false;
                     app.user_album_track_display = false;
+                    app.user_artist_current_artist_selected = false;
+                    app.user_artist_track_selected = false;
+                    app.user_artist_track_display = false;
                 }
             }
 
@@ -509,6 +543,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                                 app.user_artist_names.clone(),
                                 app.user_artist_state.clone(),
                             );
+                        }
+                        if app.user_artist_track_selected {
+                            (app.user_artist_track_state, app.user_artist_track_index) =
+                                up_key_for_table(
+                                    app.user_artist_track_names.clone(),
+                                    app.user_artist_track_state.clone(),
+                                );
                         }
                     }
                 }
@@ -631,6 +672,9 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.user_album_current_album_selected = false;
                     app.user_album_track_selected = false;
                     app.user_album_track_display = false;
+                    app.user_artist_current_artist_selected = false;
+                    app.user_artist_track_selected = false;
+                    app.user_artist_track_display = false;
                 }
             }
 
@@ -723,11 +767,24 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         app.podcast_display = true;
                     } else if app.library_state.selected() == Some(4) {
                         app.selected_library = Library::Artists;
-                        if let Err(e) = user_artists(app) {
-                            println!("{}", e);
+                        if app.user_artist_current_artist_selected {
+                            if let Err(e) = user_artist_tracks(app) {
+                                println!("{}", e);
+                            }
+                            process_user_artist_tracks(app);
+                            app.user_artist_track_display = true;
+                            app.user_artist_display = false;
+                            app.user_artist_track_selected = true;
+                            app.user_artist_current_artist_selected = false;
+                            app.user_artist_selected = false;
+                        } else {
+                            if let Err(e) = user_artists(app) {
+                                println!("{}", e);
+                            }
+                            process_user_artists(app);
+                            app.user_artist_display = true;
+                            app.user_artist_current_artist_selected = true;
                         }
-                        process_user_artists(app);
-                        app.user_artist_display = true;
                     }
                 }
                 if app.selected_menu == Menu::Search {

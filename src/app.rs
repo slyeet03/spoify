@@ -177,6 +177,16 @@ pub struct App {
     pub current_user_artist: String,
     pub user_artist_index: usize,
 
+    pub user_artist_track_names: Vec<String>,
+    pub user_artist_track_album: Vec<String>,
+    pub user_artist_track_duration: Vec<i64>,
+    pub user_artist_track_index: usize,
+    pub user_artist_track_state: TableState,
+    pub user_artist_track_display: bool,
+    pub user_artist_track_selected: bool, // for a track list that is selected
+    pub user_artist_current_artist_selected: bool, // for an artist that is selected
+    pub user_artist_track_links: Vec<String>,
+
     // Handles Made For You
     pub made_fy_playlist_names: Vec<String>,
     pub made_fy_playlist_links: Vec<String>,
@@ -621,6 +631,16 @@ impl Default for App {
             user_album_track_selected: false,
             user_album_track_links: Vec::new(),
             user_album_current_album_selected: false,
+
+            user_artist_track_names: Vec::new(),
+            user_artist_track_album: Vec::new(),
+            user_artist_track_duration: Vec::new(),
+            user_artist_track_index: 0,
+            user_artist_track_state: TableState::default(),
+            user_artist_track_display: false,
+            user_artist_track_selected: false,
+            user_artist_current_artist_selected: false,
+            user_artist_track_links: Vec::new(),
         }
     }
 }
