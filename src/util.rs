@@ -73,7 +73,5 @@ pub fn instruction() {
         11. After accepting the permissions, you'll be redirected to localhost.
             You'll be redirected to a blank webpage that might say something like 'Connection Refused' since no server is running. 
             Regardless, copy the URL and paste into the prompt in the terminal.
-        
-        There we go, now you can use spoify.
     ");
 }

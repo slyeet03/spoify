@@ -901,43 +901,40 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
 
 /// Function to handle search input and related key events
 pub fn search_input(app: &mut App, key_event: KeyEvent) -> io::Result<()> {
-    match app.input_mode {
-        InputMode::Editing => match key_event.code {
-            // Submit the search query when Enter is pressed
-            KeyCode::Enter => {
-                submit_message(app);
-                std::io::sink().write_all(&[0])?;
-            }
-
-            // Delete a character when Backspace is pressed
-            KeyCode::Backspace => {
-                delete_char(app);
-                std::io::sink().write_all(&[0])?;
-            }
-
-            // Move the cursor left when Left arrow is pressed
-            KeyCode::Left => {
-                move_cursor_left(app);
-                std::io::sink().write_all(&[0])?;
-            }
-
-            // Move the cursor right when Right arrow is pressed
-            KeyCode::Right => {
-                move_cursor_right(app);
-                std::io::sink().write_all(&[0])?;
-            }
-
-            // Exit search mode when Esc is pressed
-            KeyCode::Esc => {
-                app.input_mode = InputMode::Normal;
-                app.search_results_rendered = false;
-                std::io::sink().write_all(&[0])?;
-            }
+    if key_event.kind == KeyEventKind::Press {
+        match app.input_mode {
+            InputMode::Editing => match key_event.code {
+                // Submit the search query when Enter is pressed
+                KeyCode::Enter => {
+                    submit_message(app);
+                    std::io::sink().write_all(&[0])?;
+                }
+                // Delete a character when Backspace is pressed
+                KeyCode::Backspace => {
+                    delete_char(app);
+                    std::io::sink().write_all(&[0])?;
+                }
+                // Move the cursor left when Left arrow is pressed
+                KeyCode::Left => {
+                    move_cursor_left(app);
+                    std::io::sink().write_all(&[0])?;
+                }
+                // Move the cursor right when Right arrow is pressed
+                KeyCode::Right => {
+                    move_cursor_right(app);
+                    std::io::sink().write_all(&[0])?;
+                }
+                // Exit search mode when Esc is pressed
+                KeyCode::Esc => {
+                    app.input_mode = InputMode::Normal;
+                    app.search_results_rendered = false;
+                    std::io::sink().write_all(&[0])?;
+                }
+                _ => {}
+            },
             _ => {}
-        },
-        _ => {}
+        }
     }
-
     Ok(())
 }
 
