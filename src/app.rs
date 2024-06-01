@@ -265,6 +265,7 @@ pub struct App {
     pub next_track_key: char,
     pub previous_track_key: char,
     pub error_key: char,
+    pub player_fullscreen_key: char,
 
     pub first_keys: Vec<String>,
     pub tasks: Vec<String>,
@@ -504,6 +505,7 @@ impl Default for App {
             next_track_key: char::from(' '),
             previous_track_key: char::from(' '),
             error_key: char::from(' '),
+            player_fullscreen_key: char::from(' '),
 
             first_keys: Vec::new(),
             tasks: Vec::new(),

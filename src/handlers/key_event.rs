@@ -60,6 +60,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
     let next_track_key: char = app.next_track_key;
     let previous_track_key: char = app.previous_track_key;
     let error_key: char = app.error_key;
+    let player_fullscreen_key: char = app.player_fullscreen_key;
 
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
@@ -162,8 +163,14 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
 
-            code if code == KeyCode::Char('u') && app.input_mode != InputMode::Editing => {
-                app.selected_menu = Menu::Player;
+            code if code == KeyCode::Char(player_fullscreen_key)
+                && app.input_mode != InputMode::Editing =>
+            {
+                if app.selected_menu == Menu::Player {
+                    app.selected_menu = Menu::Default;
+                } else {
+                    app.selected_menu = Menu::Player;
+                }
             }
 
             // Go to New Release Menu

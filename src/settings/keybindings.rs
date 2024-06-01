@@ -81,6 +81,10 @@ pub fn set_keybindings(app: &mut App) {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
+    app.player_fullscreen_key = match keybindings.get("Player in fullscreen") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
 }
 
 /// Parses the keybindings from the configuration file and populates the tasks and first_keys fields in the App struct

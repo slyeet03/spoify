@@ -3,7 +3,9 @@ use crate::enums::Menu;
 
 use ratatui::prelude::*;
 
+use super::blank_screen::render_blank_screen;
 use super::error_screen::render_error;
+use super::fullscreen_player::render_player_in_fullscreen;
 use super::help::{render_default_help, render_help};
 use super::library::{render_default_library, render_library};
 use super::main_area::render_main_area;
@@ -73,6 +75,19 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[2]);
 
+    let player_fullscreen_chunk = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage(44),
+            Constraint::Percentage(12),
+            Constraint::Percentage(44),
+        ])
+        .split(size);
+    let player_fullscreen_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(player_fullscreen_chunk[1]);
+
     // Render the default UI
     render_default_search(f, &header_chunk, app);
     render_default_library(f, &content_sub_chunk, app);
@@ -110,6 +125,10 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
         }
         Menu::Error => {
             render_error(f, app);
+        }
+        Menu::Player => {
+            render_blank_screen(f, &player_fullscreen_chunk, app);
+            render_player_in_fullscreen(f, &player_fullscreen_layout, app);
         }
     }
 }
