@@ -8,12 +8,13 @@ use ratatui::{
 
 use crate::app::App;
 
-use super::util::format_duration;
+use super::{blank_screen::render_blank_screen, util::format_duration};
 
 /// Renders the player UI section, including playback info, progress bar, and current media details
 pub fn render_player_in_fullscreen(
     f: &mut Frame,
     player_fullscreen_layout: &[Rect],
+    player_fullscreen_vertical_chunk: &[Rect],
     app: &mut App,
 ) {
     f.render_widget(Clear, f.size());
@@ -84,6 +85,7 @@ pub fn render_player_in_fullscreen(
         .label(label)
         .ratio(app.progress_bar_ratio);
 
+    render_blank_screen(f, &player_fullscreen_vertical_chunk, app);
     f.render_widget(player_info_block.clone(), player_fullscreen_layout[0]);
     f.render_widget(
         player_info,

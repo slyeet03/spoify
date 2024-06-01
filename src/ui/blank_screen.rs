@@ -8,7 +8,11 @@ use ratatui::{
 use crate::app::App;
 
 /// Renders the error screen
-pub fn render_blank_screen(f: &mut Frame, player_fullscreen_chunk: &[Rect], app: &mut App) {
+pub fn render_blank_screen(
+    f: &mut Frame,
+    player_fullscreen_vertical_chunk: &[Rect],
+    app: &mut App,
+) {
     f.render_widget(Clear, f.size());
     let upper_block = Block::default()
         .borders(Borders::NONE)
@@ -18,6 +22,6 @@ pub fn render_blank_screen(f: &mut Frame, player_fullscreen_chunk: &[Rect], app:
         .borders(Borders::NONE)
         .style(Style::default().bg(app.main_background_color));
 
-    f.render_widget(upper_block, player_fullscreen_chunk[0]);
-    f.render_widget(lower_block, player_fullscreen_chunk[2]);
+    f.render_widget(upper_block.clone(), player_fullscreen_vertical_chunk[0]);
+    f.render_widget(lower_block.clone(), player_fullscreen_vertical_chunk[2]);
 }
