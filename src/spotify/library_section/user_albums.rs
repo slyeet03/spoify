@@ -4,7 +4,7 @@ use futures::FutureExt;
 use futures_util::TryStreamExt;
 use rspotify::model::SavedAlbum;
 use rspotify::prelude::OAuthClient;
-use rspotify::{AuthCodeSpotify, ClientError};
+use rspotify::ClientError;
 use serde_json::{json, Value};
 use std::fs::File;
 use std::io::{BufReader, Write};
@@ -13,13 +13,8 @@ use std::path::PathBuf;
 /// Fetches a user's saved albums from Spotify
 #[tokio::main]
 pub async fn user_albums(app: &mut App) -> Result<(), ClientError> {
-    // Get a Spotify client using an existing access token (if available)
-    let spotify_client = get_spotify_client(app).await.unwrap();
-
-    let spotify = match &spotify_client.token {
-        Some(token) => AuthCodeSpotify::from_token(token.clone()),
-        None => return Err(ClientError::InvalidToken),
-    };
+    // Get a Spotify client using an existing access token (if available).
+    let spotify = get_spotify_client(app).await?;
 
     // Collect all the user's saved albums from Spotify
     let mut albums = Vec::new();

@@ -7,7 +7,7 @@ use futures_util::TryStreamExt;
 use regex::Regex;
 use rspotify::model::{PlaylistId, PlaylistItem};
 use rspotify::prelude::BaseClient;
-use rspotify::{AuthCodeSpotify, ClientError};
+use rspotify::ClientError;
 use serde_json::{json, Value};
 use std::env;
 use std::fs::File;
@@ -17,12 +17,8 @@ use std::path::PathBuf;
 /// Fetches playlist tracks from Spotify
 #[tokio::main]
 pub async fn fetch_playlists_tracks(app: &mut App) -> Result<(), ClientError> {
-    // Obtain a Spotify client using the access token (if available)
-    let spotify_client = get_spotify_client(app).await;
-    let spotify = match &spotify_client.unwrap().token {
-        Some(token) => AuthCodeSpotify::from_token(token.clone()),
-        None => return Err(ClientError::InvalidToken),
-    };
+    // Get a Spotify client using an existing access token (if available).
+    let spotify = get_spotify_client(app).await?;
 
     // Extract the playlist URI from the app's selected playlist URL
     let playlist_url = app.selected_playlist_uri.as_str();

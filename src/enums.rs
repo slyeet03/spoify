@@ -17,6 +17,7 @@ pub enum Menu {
     Help,
     NewRelease,
     Error,
+    Player,
 }
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub enum SearchMenu {
@@ -43,6 +44,7 @@ impl From<Menu> for usize {
             Menu::Help => 5,
             Menu::NewRelease => 6,
             Menu::Error => 7,
+            Menu::Player => 8,
         }
     }
 }

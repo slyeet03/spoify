@@ -8,19 +8,14 @@ use futures::FutureExt;
 use futures_util::TryStreamExt;
 use rspotify::clients::BaseClient;
 use rspotify::model::SimplifiedPlaylist;
-use rspotify::{AuthCodeSpotify, ClientError};
+use rspotify::ClientError;
 use serde_json::{json, Value};
 
 /// Fetches a user's liked songs from Spotify
 #[tokio::main]
 pub async fn made_fy(app: &mut App) -> Result<(), ClientError> {
     // Get a Spotify client using an existing access token (if available).
-    let spotify_client = get_spotify_client(app).await.unwrap();
-
-    let spotify = match &spotify_client.token {
-        Some(token) => AuthCodeSpotify::from_token(token.clone()),
-        None => return Err(ClientError::InvalidToken),
-    };
+    let spotify = get_spotify_client(app).await?;
 
     let category_id = "0JQ5DAt0tbjZptfcdMSKl3";
     // Collect all the user's liked songs from Spotify.

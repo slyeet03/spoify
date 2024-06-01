@@ -6,7 +6,7 @@ use rspotify::model::{
     Market, RepeatState,
 };
 use rspotify::prelude::OAuthClient;
-use rspotify::{AuthCodeSpotify, ClientError};
+use rspotify::ClientError;
 use serde_json::{json, Value};
 use std::fs::File;
 use std::io::{BufReader, Write};
@@ -15,11 +15,8 @@ use std::path::PathBuf;
 // Main function to fetch the currently playing track information
 #[tokio::main]
 pub async fn currently_playing(app: &mut App) -> Result<(), ClientError> {
-    let spotify_client = get_spotify_client(app).await.unwrap();
-    let spotify = match &spotify_client.token {
-        Some(token) => AuthCodeSpotify::from_token(token.clone()),
-        None => return Err(ClientError::InvalidToken),
-    };
+    // Get a Spotify client using an existing access token (if available).
+    let spotify = get_spotify_client(app).await?;
 
     // Fetch the currently playing track information from the Spotify API
     let currently_playing_result = spotify

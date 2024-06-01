@@ -1,7 +1,6 @@
 // This section handles fetching and processing the user's Spotify playlists
-
 use crate::app::App;
-use crate::spotify::auth::{get_spotify_client, SpotifyClient};
+use crate::spotify::auth::get_spotify_client;
 use futures_util::TryStreamExt;
 use rspotify::clients::OAuthClient;
 use rspotify::model::SimplifiedPlaylist;
@@ -15,26 +14,17 @@ use std::path::PathBuf;
 
 /// Fetches user playlists from Spotify
 pub async fn fetch_user_playlists(
-    spotify_client: &SpotifyClient,
+    spotify: &AuthCodeSpotify,
 ) -> Result<Vec<SimplifiedPlaylist>, ClientError> {
-    // Extract the access token from the provided Spotify client
-    let spotify = match &spotify_client.token {
-        Some(token) => AuthCodeSpotify::from_token(token.clone()),
-        None => return Err(ClientError::InvalidToken),
-    };
-
     // Collect information about the user playlists
     let mut playlists = Vec::new();
     let mut stream = spotify.current_user_playlists();
-
     while let Ok(Some(playlist)) = stream.try_next().await {
         playlists.push(playlist);
     }
-
     if playlists.is_empty() {
         println!("No playlists found. Check if the authorization code is valid and has the required scopes.");
     }
-
     Ok(playlists)
 }
 
@@ -56,8 +46,8 @@ fn save_playlists_to_json(playlists: &[SimplifiedPlaylist]) {
 #[tokio::main]
 pub async fn get_playlists(app: &mut App) {
     // Obtain a Spotify client using the access token (if available)
-    let spotify_client = get_spotify_client(app).await.unwrap();
-    match fetch_user_playlists(&spotify_client).await {
+    let spotify = get_spotify_client(app).await.unwrap();
+    match fetch_user_playlists(&spotify).await {
         Ok(playlists) => {
             save_playlists_to_json(&playlists);
         }

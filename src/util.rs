@@ -26,7 +26,7 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
         }
 
         // Wait one second before fetching playback again
-        thread::sleep(Duration::from_millis(1000));
+        thread::sleep(Duration::from_millis(900));
     }
 }
 

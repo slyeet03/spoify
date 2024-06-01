@@ -2,7 +2,7 @@ use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
 use rspotify::model::PlayHistory;
 use rspotify::prelude::OAuthClient;
-use rspotify::{AuthCodeSpotify, ClientError};
+use rspotify::ClientError;
 use serde_json::{json, Value};
 use std::fs::File;
 use std::io::{BufReader, Write};
@@ -11,13 +11,8 @@ use std::path::PathBuf;
 /// Fetches a user's recently played tracks from Spotify
 #[tokio::main]
 pub async fn recently_played(app: &mut App) -> Result<(), ClientError> {
-    // Get a Spotify client using an existing access token (if available)
-    let spotify_client = get_spotify_client(app).await.unwrap();
-
-    let spotify = match &spotify_client.token {
-        Some(token) => AuthCodeSpotify::from_token(token.clone()),
-        None => return Err(ClientError::InvalidToken),
-    };
+    // Get a Spotify client using an existing access token (if available).
+    let spotify = get_spotify_client(app).await?;
 
     // Retrieve up to 50 of the user's recently played tracks
     let recently_played_result = spotify.current_user_recently_played(Some(50), None).await;

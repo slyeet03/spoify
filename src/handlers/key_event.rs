@@ -162,6 +162,10 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
 
+            code if code == KeyCode::Char('u') && app.input_mode != InputMode::Editing => {
+                app.selected_menu = Menu::Player;
+            }
+
             // Go to New Release Menu
             code if code == KeyCode::Char(new_release_key)
                 && app.input_mode != InputMode::Editing =>
