@@ -1,5 +1,5 @@
 use super::util::{
-    default, delete_char, down_key_for_list, down_key_for_table, move_cursor_left,
+    default, default_nav, delete_char, down_key_for_list, down_key_for_table, move_cursor_left,
     move_cursor_right, reset_cursor, up_key_for_list, up_key_for_table,
 };
 use crate::app::App;
@@ -26,6 +26,7 @@ use crate::spotify::new_release_section::new_releases_tracks::{
 };
 use crate::spotify::player::next_track::next_track;
 use crate::spotify::player::previous_track::previous_track;
+use crate::spotify::player::start_playback::start_playback;
 use crate::spotify::player::volume_decrease::volume_decreament;
 use crate::spotify::player::volume_increase::volume_increment;
 use crate::spotify::player::{
@@ -143,6 +144,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 app.selected_menu = Menu::Playlists;
                 app.user_playlist_state.select(Some(0));
                 default(app);
+                app.selected_playlist_uri = app.user_playlist_links[0].clone();
+                app.current_user_playlist = app.user_playlist_names[0].clone();
             }
 
             // Go to search menu
@@ -394,21 +397,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 if app.can_navigate_menu {
                     let next_index: usize = app.library_state.selected().unwrap_or(0) + 1;
                     app.library_state.select(Some(next_index % 6)); //wrapping around the last option
-                    app.search_results_rendered = false;
-                    app.liked_song_display = false;
-                    app.user_album_display = false;
-                    app.recently_played_display = false;
-                    app.podcast_display = false;
-                    app.user_artist_display = false;
-                    app.made_fy_display = false;
-                    app.made_fy_track_display = false;
-                    app.made_fy_track_selected = false;
-                    app.user_album_current_album_selected = false;
-                    app.user_album_track_selected = false;
-                    app.user_album_track_display = false;
-                    app.user_artist_current_artist_selected = false;
-                    app.user_artist_track_selected = false;
-                    app.user_artist_track_display = false;
+                    default_nav(app);
                 }
             }
 
@@ -588,45 +577,49 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         app.library_state.selected().unwrap_or(0) - 1
                     };
                     app.library_state.select(Some(prev_index));
-                    app.search_results_rendered = false;
-                    app.liked_song_display = false;
-                    app.user_album_display = false;
-                    app.recently_played_display = false;
-                    app.podcast_display = false;
-                    app.user_artist_display = false;
-                    app.made_fy_display = false;
-                    app.made_fy_track_display = false;
-                    app.made_fy_track_selected = false;
-                    app.user_album_current_album_selected = false;
-                    app.user_album_track_selected = false;
-                    app.user_album_track_display = false;
-                    app.user_artist_current_artist_selected = false;
-                    app.user_artist_track_selected = false;
-                    app.user_artist_track_display = false;
+                    default_nav(app);
                 }
             }
 
             // Enter keybinding for all the menus
             KeyCode::Enter if app.input_mode != InputMode::Editing => {
                 if app.selected_menu == Menu::Playlists {
-                    if let Err(e) = fetch_playlists_tracks(app) {
-                        println!("{}", e);
+                    if app.enter_for_playback_in_user_playlist {
+                        app.selected_link_for_playback =
+                            app.user_playlist_track_links[app.user_playlist_index].clone();
+                        if let Err(e) = start_playback(app) {
+                            println!("{}", e);
+                        }
+                    } else {
+                        if let Err(e) = fetch_playlists_tracks(app) {
+                            println!("{}", e);
+                        }
+                        process_playlist_tracks(app);
+                        app.user_playlist_display = true;
+                        app.searched_album_selected = false;
+                        app.searched_artist_selected = false;
+                        app.searched_playlist_selected = false;
+                        app.enter_for_playback_in_user_playlist = true;
                     }
-                    process_playlist_tracks(app);
-                    app.user_playlist_display = true;
-                    app.searched_album_selected = false;
-                    app.searched_artist_selected = false;
-                    app.searched_playlist_selected = false;
                 }
                 if app.selected_menu == Menu::NewRelease {
-                    if let Err(e) = new_releases_tracks(app) {
-                        println!("{}", e);
+                    if app.enter_for_playback_in_new_release {
+                        app.selected_link_for_playback =
+                            app.new_release_spotify_urls[app.new_release_index].clone();
+                        if let Err(e) = start_playback(app) {
+                            println!("{}", e);
+                        }
+                    } else {
+                        if let Err(e) = new_releases_tracks(app) {
+                            println!("{}", e);
+                        }
+                        process_new_releases_tracks(app);
+                        app.new_release_display = true;
+                        app.searched_album_selected = false;
+                        app.searched_artist_selected = false;
+                        app.searched_playlist_selected = false;
+                        app.enter_for_playback_in_new_release = true;
                     }
-                    process_new_releases_tracks(app);
-                    app.new_release_display = true;
-                    app.searched_album_selected = false;
-                    app.searched_artist_selected = false;
-                    app.searched_playlist_selected = false;
                 }
                 if app.selected_menu == Menu::Library {
                     app.searched_album_selected = false;
@@ -644,6 +637,14 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             app.made_fy_track_selected = true;
                             app.made_fy_current_playlist_selected = false;
                             app.made_fy_selected = false;
+                            app.enter_for_playback_in_made_fy = true;
+                            app.made_fy_track_state.select(Some(0));
+                        } else if app.enter_for_playback_in_made_fy {
+                            app.selected_link_for_playback =
+                                app.made_fy_track_links[app.made_fy_track_index].clone();
+                            if let Err(e) = start_playback(app) {
+                                println!("{}", e);
+                            }
                         } else {
                             if let Err(e) = made_fy(app) {
                                 println!("{}", e);
@@ -654,11 +655,20 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         }
                     } else if app.library_state.selected() == Some(2) {
                         app.selected_library = Library::LikedSongs;
-                        if let Err(e) = liked_tracks(app) {
-                            println!("{}", e);
+                        if app.enter_for_playback_in_liked_song {
+                            app.selected_link_for_playback =
+                                app.liked_song_links[app.liked_songs_index].clone();
+                            if let Err(e) = start_playback(app) {
+                                println!("{}", e);
+                            }
+                        } else {
+                            if let Err(e) = liked_tracks(app) {
+                                println!("{}", e);
+                            }
+                            process_liked_tracks(app);
+                            app.liked_song_display = true;
+                            app.enter_for_playback_in_liked_song = true;
                         }
-                        process_liked_tracks(app);
-                        app.liked_song_display = true;
                     } else if app.library_state.selected() == Some(3) {
                         app.selected_library = Library::Albums;
                         if app.user_album_current_album_selected {
@@ -671,6 +681,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             app.user_album_track_selected = true;
                             app.user_album_current_album_selected = false;
                             app.user_album_selected = false;
+                            app.user_album_track_state.select(Some(0));
+                        } else if app.enter_for_playback_in_user_album {
+                            app.selected_link_for_playback =
+                                app.user_album_track_links[app.user_album_track_index].clone();
+                            if let Err(e) = start_playback(app) {
+                                println!("{}", e);
+                            }
                         } else {
                             if let Err(e) = user_albums(app) {
                                 println!("{}", e);
@@ -678,14 +695,24 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             process_user_albums(app);
                             app.user_album_display = true;
                             app.user_album_current_album_selected = true;
+                            app.enter_for_playback_in_user_album = true;
                         }
                     } else if app.library_state.selected() == Some(1) {
                         app.selected_library = Library::RecentlyPlayed;
-                        if let Err(e) = recently_played(app) {
-                            println!("{}", e);
+                        if app.enter_for_playback_in_recently_played {
+                            app.selected_link_for_playback =
+                                app.recently_played_links[app.recently_played_index].clone();
+                            if let Err(e) = start_playback(app) {
+                                println!("{}", e);
+                            }
+                        } else {
+                            if let Err(e) = recently_played(app) {
+                                println!("{}", e);
+                            }
+                            process_recently_played(app);
+                            app.recently_played_display = true;
+                            app.enter_for_playback_in_recently_played = true;
                         }
-                        process_recently_played(app);
-                        app.recently_played_display = true;
                     } else if app.library_state.selected() == Some(5) {
                         app.selected_library = Library::Podcasts;
                         if let Err(e) = user_podcast(app) {
@@ -705,6 +732,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             app.user_artist_track_selected = true;
                             app.user_artist_current_artist_selected = false;
                             app.user_artist_selected = false;
+                            app.user_artist_track_state.select(Some(0));
+                        } else if app.enter_for_playback_in_saved_artist {
+                            app.selected_link_for_playback =
+                                app.user_artist_track_links[app.user_artist_track_index].clone();
+                            if let Err(e) = start_playback(app) {
+                                println!("{}", e);
+                            }
                         } else {
                             if let Err(e) = user_artists(app) {
                                 println!("{}", e);
@@ -712,6 +746,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                             process_user_artists(app);
                             app.user_artist_display = true;
                             app.user_artist_current_artist_selected = true;
+                            app.enter_for_playback_in_saved_artist = true;
                         }
                     }
                 }
@@ -953,4 +988,5 @@ fn submit_message(app: &mut App) {
     app.input_mode = InputMode::SearchResults;
     app.search_results_rendered = true;
     app.selected_search = true;
+    app.search_state.select(Some(0));
 }

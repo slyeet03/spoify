@@ -102,4 +102,36 @@ pub fn default(app: &mut App) {
     app.user_artist_current_artist_selected = false;
     app.user_artist_track_selected = false;
     app.user_artist_track_display = false;
+    app.enter_for_playback_in_made_fy = false;
+    app.enter_for_playback_in_liked_song = false;
+    app.enter_for_playback_in_user_album = false;
+    app.enter_for_playback_in_recently_played = false;
+    app.enter_for_playback_in_saved_artist = false;
+    app.enter_for_playback_in_user_playlist = false;
+    app.enter_for_playback_in_new_release = false;
+}
+
+pub fn default_nav(app: &mut App) {
+    app.search_results_rendered = false;
+    app.liked_song_display = false;
+    app.user_album_display = false;
+    app.recently_played_display = false;
+    app.podcast_display = false;
+    app.user_artist_display = false;
+    app.made_fy_display = false;
+    app.made_fy_track_display = false;
+    app.made_fy_track_selected = false;
+    app.user_album_current_album_selected = false;
+    app.user_album_track_selected = false;
+    app.user_album_track_display = false;
+    app.user_artist_current_artist_selected = false;
+    app.user_artist_track_selected = false;
+    app.user_artist_track_display = false;
+    app.enter_for_playback_in_made_fy = false;
+    app.enter_for_playback_in_liked_song = false;
+    app.enter_for_playback_in_user_album = false;
+    app.enter_for_playback_in_recently_played = false;
+    app.enter_for_playback_in_saved_artist = false;
+    app.enter_for_playback_in_user_playlist = false;
+    app.enter_for_playback_in_new_release = false;
 }

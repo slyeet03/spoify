@@ -85,6 +85,11 @@ pub struct App {
     pub searched_artist_state: TableState,
     pub searched_artist_index: usize,
 
+    pub enter_playback_for_searched_artist: bool,
+    pub enter_playback_for_searched_album: bool,
+    pub enter_playback_for_searched_track: bool,
+    pub enter_playback_for_searched_playlist: bool,
+
     // Handles User's playlists
     pub user_playlist_names: Vec<String>,
     pub user_playlist_artist_names: Vec<String>,
@@ -107,6 +112,8 @@ pub struct App {
     pub user_playlist_tracks_state: TableState,
     pub user_playlist_index: usize,
 
+    pub enter_for_playback_in_user_playlist: bool,
+
     // Handles User's Liked Songs
     pub liked_song_names: Vec<String>,
     pub liked_song_links: Vec<String>,
@@ -119,6 +126,7 @@ pub struct App {
     pub selected_liked_song_uri: String,
     pub liked_songs_state: TableState,
     pub liked_songs_index: usize,
+    pub enter_for_playback_in_liked_song: bool,
 
     // Handles User's Saved Albums
     pub user_album_names: Vec<String>,
@@ -142,6 +150,7 @@ pub struct App {
     pub user_album_track_selected: bool, // for a track list that is selected
     pub user_album_current_album_selected: bool, // for a album that is selected
     pub user_album_track_links: Vec<String>,
+    pub enter_for_playback_in_user_album: bool,
 
     // Handles User's Saved Podcasts
     pub podcast_names: Vec<String>,
@@ -166,6 +175,7 @@ pub struct App {
     pub selected_recently_played_uri: String,
     pub recently_played_state: TableState,
     pub recently_played_index: usize,
+    pub enter_for_playback_in_recently_played: bool,
 
     // Handles User's Saved Artists
     pub user_artist_names: Vec<String>,
@@ -176,6 +186,7 @@ pub struct App {
     pub user_artist_selected_uri: String,
     pub current_user_artist: String,
     pub user_artist_index: usize,
+    pub enter_for_playback_in_saved_artist: bool,
 
     pub user_artist_track_names: Vec<String>,
     pub user_artist_track_album: Vec<String>,
@@ -205,6 +216,7 @@ pub struct App {
     pub made_fy_track_index: usize,
     pub made_fy_track_selected: bool, // for a track list that is selected
     pub made_fy_current_playlist_selected: bool, // for a playlist that is selected
+    pub enter_for_playback_in_made_fy: bool,
 
     // Handles User's currently playing device
     pub current_device_name: String,
@@ -250,6 +262,7 @@ pub struct App {
     pub new_release_artist_names: Vec<String>,
     pub new_release_durations_ms: Vec<i64>,
     pub new_release_spotify_urls: Vec<String>,
+    pub enter_for_playback_in_new_release: bool,
 
     // Keybindings
     pub go_to_search_key: char,
@@ -307,18 +320,15 @@ pub struct App {
     pub volume_decreament_value: u8,
     pub volume_percent: u8,
 
-    // Lyrics
-    pub lyrics: Vec<String>,
-    pub argument_for_lyric: String,
-    pub lyrics_selected: bool,
-    pub lyric_state: ListState,
-
     // Creds
     pub client_id: String,
     pub client_secret: String,
 
     // Error
     pub error_text: String,
+
+    // Playback
+    pub selected_link_for_playback: String,
 }
 
 impl App {
@@ -531,11 +541,6 @@ impl Default for App {
             volume_decreament_value: 0,
             volume_percent: 0,
 
-            lyrics: Vec::new(),
-            argument_for_lyric: String::new(),
-            lyrics_selected: false,
-            lyric_state: ListState::default(),
-
             client_id: String::new(),
             client_secret: String::new(),
 
@@ -646,6 +651,20 @@ impl Default for App {
             user_artist_track_selected: false,
             user_artist_current_artist_selected: false,
             user_artist_track_links: Vec::new(),
+
+            selected_link_for_playback: String::new(),
+
+            enter_for_playback_in_user_playlist: false,
+            enter_for_playback_in_liked_song: false,
+            enter_for_playback_in_user_album: false,
+            enter_for_playback_in_recently_played: false,
+            enter_for_playback_in_saved_artist: false,
+            enter_for_playback_in_made_fy: false,
+            enter_for_playback_in_new_release: false,
+            enter_playback_for_searched_artist: false,
+            enter_playback_for_searched_album: false,
+            enter_playback_for_searched_track: false,
+            enter_playback_for_searched_playlist: false,
         }
     }
 }

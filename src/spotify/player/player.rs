@@ -206,10 +206,4 @@ pub fn process_currently_playing(app: &mut App) {
     } else {
         app.repeat_status = "Off".to_string();
     }
-
-    app.argument_for_lyric = format!(
-        "{} {}",
-        app.current_playing_name.clone(),
-        app.currently_playing_artist.clone()
-    );
 }
