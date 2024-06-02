@@ -24,8 +24,6 @@ pub async fn start_playback(app: &mut App) -> Result<(), ClientError> {
         track_uri = format!("spotify:track:{}", track_id);
     }
 
-    println!("track_uri: {}", track_uri);
-
     let playable_id = PlayableId::Track(TrackId::from_uri(&track_uri).unwrap());
     let position = Duration::milliseconds(0);
     let result = spotify.start_uris_playback(vec![playable_id], device_id, None, Some(position));
