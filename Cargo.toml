@@ -17,7 +17,6 @@ futures = "0.3.30"
 futures-util = "0.3.30"
 chrono = "0.4.37"
 webbrowser = "0.8.13"
-dotenvy = "0.15.7"
 regex = "1.10.4"
 url = "2.5.0"
 serde_yaml = "0.9.34"
@@ -25,8 +24,7 @@ indoc = "2.0.5"
 itertools = "0.12.1"
 yaml-rust = "0.4.5"
 anyhow = "1.0.82"
-lyric_finder = "0.1.6"
-lazy_static = "1.4.0"
+
 
 
 
