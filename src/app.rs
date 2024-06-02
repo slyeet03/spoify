@@ -85,11 +85,6 @@ pub struct App {
     pub searched_artist_state: TableState,
     pub searched_artist_index: usize,
 
-    pub enter_playback_for_searched_artist: bool,
-    pub enter_playback_for_searched_album: bool,
-    pub enter_playback_for_searched_track: bool,
-    pub enter_playback_for_searched_playlist: bool,
-
     // Handles User's playlists
     pub user_playlist_names: Vec<String>,
     pub user_playlist_artist_names: Vec<String>,
@@ -329,6 +324,8 @@ pub struct App {
 
     // Playback
     pub selected_link_for_playback: String,
+    pub is_only_id: bool,
+    pub is_in_track: bool,
 }
 
 impl App {
@@ -661,10 +658,9 @@ impl Default for App {
             enter_for_playback_in_saved_artist: false,
             enter_for_playback_in_made_fy: false,
             enter_for_playback_in_new_release: false,
-            enter_playback_for_searched_artist: false,
-            enter_playback_for_searched_album: false,
-            enter_playback_for_searched_track: false,
-            enter_playback_for_searched_playlist: false,
+
+            is_only_id: false,
+            is_in_track: false,
         }
     }
 }

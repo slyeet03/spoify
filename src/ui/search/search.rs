@@ -141,6 +141,7 @@ pub fn render_search(
     }
     match app.search_menu {
         SearchMenu::Default => {}
+        SearchMenu::SearchedTrack => {}
         SearchMenu::SearchedAlbum => {
             render_searched_album(f, &content_chunk, app);
         }

@@ -1,6 +1,6 @@
 use super::util::{
-    default, default_nav, delete_char, down_key_for_list, down_key_for_table, move_cursor_left,
-    move_cursor_right, reset_cursor, up_key_for_list, up_key_for_table,
+    default, default_nav, default_search, delete_char, down_key_for_list, down_key_for_table,
+    move_cursor_left, move_cursor_right, reset_cursor, up_key_for_list, up_key_for_table,
 };
 use crate::app::App;
 use crate::enums::{InputMode, Library, Menu, SearchMenu};
@@ -751,62 +751,64 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     }
                 }
                 if app.selected_menu == Menu::Search {
-                    if app.selected_album_in_search_result {
+                    if app.is_in_track {
+                        app.is_only_id = true;
+                        app.selected_link_for_playback =
+                            app.track_links_search_results[app.track_index].clone();
+                        if let Err(e) = start_playback(app) {
+                            println!("{}", e);
+                        }
+                    }
+
+                    if app.search_menu == SearchMenu::SearchedAlbum {
+                        app.is_only_id = false;
+                        app.selected_link_for_playback =
+                            app.selected_album_tracks_links[app.searched_album_index].clone();
+                        if let Err(e) = start_playback(app) {
+                            println!("{}", e);
+                        }
+                    } else if app.selected_album_in_search_result {
                         if let Err(e) = search_selected_album_tracks(app) {
                             println!("{}", e);
                         }
                         process_selected_album_tracks(app);
-                        app.search_results_rendered = false;
-                        app.liked_song_display = false;
-                        app.user_album_display = false;
-                        app.recently_played_display = false;
-                        app.can_navigate_menu = true;
-                        app.podcast_display = false;
-                        app.user_artist_display = false;
+                        default_search(app);
                         app.search_menu = SearchMenu::SearchedAlbum;
                         app.searched_album_selected = true;
-                        app.searched_artist_selected = false;
-                        app.searched_playlist_selected = false;
-                        app.selected_search = false;
                     }
-                    if app.selected_artist_in_search_result {
+
+                    if app.search_menu == SearchMenu::SearchedArtist {
+                        app.is_only_id = false;
+                        app.selected_link_for_playback =
+                            app.selected_artist_tracks_links[app.searched_artist_index].clone();
+                        if let Err(e) = start_playback(app) {
+                            println!("{}", e);
+                        }
+                    } else if app.selected_artist_in_search_result {
                         if let Err(e) = search_selected_artist_tracks(app) {
                             println!("{}", e);
                         }
                         process_selected_artist_tracks(app);
-                        app.search_results_rendered = false;
-                        app.liked_song_display = false;
-                        app.user_album_display = false;
-                        app.recently_played_display = false;
-                        app.can_navigate_menu = true;
-                        app.podcast_display = false;
-                        app.user_artist_display = false;
-                        app.searched_album_selected = false;
+                        default_search(app);
                         app.search_menu = SearchMenu::SearchedArtist;
                         app.searched_artist_selected = true;
-                        app.searched_album_selected = false;
-                        app.searched_playlist_selected = false;
-                        app.selected_search = false;
                     }
-                    if app.selected_playlist_in_search_result {
+
+                    if app.search_menu == SearchMenu::SearchedPlaylist {
+                        app.is_only_id = false;
+                        app.selected_link_for_playback =
+                            app.selected_playlist_tracks_links[app.searched_playlist_index].clone();
+                        if let Err(e) = start_playback(app) {
+                            println!("{}", e);
+                        }
+                    } else if app.selected_playlist_in_search_result {
                         if let Err(e) = search_selected_playlist_tracks(app) {
                             println!("{}", e);
                         }
                         process_selected_playlist_tracks(app);
-                        app.search_results_rendered = false;
-                        app.liked_song_display = false;
-                        app.user_album_display = false;
-                        app.recently_played_display = false;
-                        app.can_navigate_menu = true;
-                        app.podcast_display = false;
-                        app.user_artist_display = false;
-                        app.searched_album_selected = false;
+                        default_search(app);
                         app.search_menu = SearchMenu::SearchedPlaylist;
-                        app.searched_artist_selected = false;
                         app.searched_playlist_selected = true;
-                        app.searched_album_selected = false;
-                        app.searched_artist_selected = false;
-                        app.selected_search = false;
                     }
                 }
             }
@@ -875,6 +877,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         app.selected_artist_in_search_result = false;
                         app.selected_album_in_search_result = false;
                         app.selected_playlist_in_search_result = false;
+                        app.is_in_track = true;
                     } else if app.search_state.selected() == Some(1) {
                         app.artist_state_in_search_result.select(Some(0));
                         app.selected_artist_in_search_result =
@@ -882,12 +885,14 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         app.selected_track_in_search_result = false;
                         app.selected_album_in_search_result = false;
                         app.selected_playlist_in_search_result = false;
+                        app.is_in_track = false;
                     } else if app.search_state.selected() == Some(2) {
                         app.album_state_in_search_result.select(Some(0));
                         app.selected_album_in_search_result = !app.selected_album_in_search_result;
                         app.selected_track_in_search_result = false;
                         app.selected_artist_in_search_result = false;
                         app.selected_playlist_in_search_result = false;
+                        app.is_in_track = false;
                     } else if app.search_state.selected() == Some(3) {
                         app.playlist_state_in_search_result.select(Some(0));
                         app.selected_playlist_in_search_result =
@@ -895,6 +900,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         app.selected_track_in_search_result = false;
                         app.selected_artist_in_search_result = false;
                         app.selected_album_in_search_result = false;
+                        app.is_in_track = false;
                     }
                     let length = 4;
                     let next_index = app.search_state.selected().unwrap_or(0) + 1;

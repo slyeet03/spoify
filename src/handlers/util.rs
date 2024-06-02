@@ -109,6 +109,9 @@ pub fn default(app: &mut App) {
     app.enter_for_playback_in_saved_artist = false;
     app.enter_for_playback_in_user_playlist = false;
     app.enter_for_playback_in_new_release = false;
+    app.is_only_id = false;
+    app.selected_link_for_playback.clear();
+    app.is_in_track = false;
 }
 
 pub fn default_nav(app: &mut App) {
@@ -134,4 +137,25 @@ pub fn default_nav(app: &mut App) {
     app.enter_for_playback_in_saved_artist = false;
     app.enter_for_playback_in_user_playlist = false;
     app.enter_for_playback_in_new_release = false;
+    app.is_only_id = false;
+    app.selected_link_for_playback.clear();
+    app.is_in_track = false;
+}
+
+pub fn default_search(app: &mut App) {
+    app.search_results_rendered = false;
+    app.liked_song_display = false;
+    app.user_album_display = false;
+    app.recently_played_display = false;
+    app.can_navigate_menu = true;
+    app.podcast_display = false;
+    app.user_artist_display = false;
+    app.searched_album_selected = false;
+    app.searched_artist_selected = false;
+    app.searched_album_selected = false;
+    app.searched_playlist_selected = false;
+    app.selected_search = false;
+    app.is_only_id = false;
+    app.selected_link_for_playback.clear();
+    app.is_in_track = false;
 }
