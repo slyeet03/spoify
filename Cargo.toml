@@ -24,6 +24,7 @@ indoc = "2.0.5"
 itertools = "0.12.1"
 yaml-rust = "0.4.5"
 anyhow = "1.0.82"
+rayon = "1.10.0"
 
 
 

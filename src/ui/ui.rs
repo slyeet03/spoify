@@ -22,8 +22,8 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(8),
-            Constraint::Percentage(82),
+            Constraint::Percentage(7),
+            Constraint::Percentage(83),
             Constraint::Percentage(10),
         ])
         .split(size);
@@ -43,6 +43,11 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             Constraint::Percentage(20),
         ])
         .split(chunks[1]);
+
+    let front_chunk = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(30), Constraint::Percentage(70)])
+        .split(content_chunk[1]);
 
     // Dividing the fist portion of middle layout into two vertical layouts: Library section and New Release section
     let content_sub_chunk = Layout::default()
@@ -93,14 +98,18 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
     render_default_library(f, &content_sub_chunk, app);
     render_default_user_playlist(f, &content_chunk, app);
     render_player(f, &player_layout, app);
-    render_main_area(f, &content_chunk, app);
+    render_main_area(f, &content_chunk, &front_chunk, app);
     render_default_help(f, &header_chunk, app);
     render_default_new_releases(f, &content_sub_chunk, app);
 
     // Render different sections based on the selected menu
     match selected_menu {
-        Menu::Default => {}
-        Menu::Main => {}
+        Menu::Default => {
+            render_main_area(f, &content_chunk, &front_chunk, app);
+        }
+        Menu::Main => {
+            render_main_area(f, &content_chunk, &front_chunk, app);
+        }
         Menu::Library => {
             render_library(f, &content_sub_chunk, &content_chunk, app);
         }

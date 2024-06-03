@@ -326,11 +326,16 @@ pub struct App {
     pub selected_link_for_playback: String,
     pub is_only_id: bool,
     pub is_in_track: bool,
+
+    // Top Tracks
+    pub top_tracks_all_time_names: Vec<String>,
+    pub top_tracks_6_months_names: Vec<String>,
+    pub top_tracks_4_weeks_names: Vec<String>,
 }
 
 impl App {
     /// Runs the application's main loop until the user quits
-    pub fn run(&mut self, terminal: &mut tui::Tui, rx: Receiver<()>) -> io::Result<()> {
+    pub fn run(&mut self, terminal: &mut tui::Tui, rx1: Receiver<()>) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
         let timeout: Duration = Duration::from_millis(200);
@@ -354,7 +359,7 @@ impl App {
                 last_tick = now;
 
                 // Check if a message has been received from the player info update thread
-                if let Ok(_) = rx.try_recv() {
+                if let Ok(_) = rx1.try_recv() {
                     process_currently_playing(self);
                 }
 
@@ -661,6 +666,10 @@ impl Default for App {
 
             is_only_id: false,
             is_in_track: false,
+
+            top_tracks_all_time_names: Vec::new(),
+            top_tracks_6_months_names: Vec::new(),
+            top_tracks_4_weeks_names: Vec::new(),
         }
     }
 }

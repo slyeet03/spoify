@@ -93,6 +93,7 @@ pub fn render_search(
             );
         }
         InputMode::SearchResults if app.search_results_rendered => {
+            f.render_widget(Clear, content_chunk[1]);
             f.render_widget(Clear, main_chunk_upper[0]);
 
             let album_names_list = convert_to_list(&app.album_names_search_results);
@@ -143,16 +144,18 @@ pub fn render_search(
         SearchMenu::Default => {}
         SearchMenu::SearchedTrack => {}
         SearchMenu::SearchedAlbum => {
+            f.render_widget(Clear, content_chunk[1]);
             render_searched_album(f, &content_chunk, app);
         }
         SearchMenu::SearchedArtist => {
+            f.render_widget(Clear, content_chunk[1]);
             render_searched_artist(f, &content_chunk, app);
         }
         SearchMenu::SearchedPlaylist => {
+            f.render_widget(Clear, content_chunk[1]);
             render_searched_playlist(f, &content_chunk, app);
         }
     }
-    {}
 }
 
 /// Renders a simplified search bar

@@ -4,3 +4,4 @@ pub mod new_release_section;
 pub mod player;
 pub mod search;
 pub mod user_playlist;
+pub mod user_stats;

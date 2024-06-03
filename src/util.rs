@@ -9,6 +9,7 @@ use crate::settings::volume::{read_volume_values, set_volume_values};
 use crate::spotify::new_release_section::new_releases::{new_releases, process_new_releases};
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
+use crate::spotify::user_stats::top_tracks::top_tracks;
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
@@ -52,6 +53,8 @@ pub fn startup(app: &mut App) {
     // Fetch user playlists from spotify
     get_playlists(app);
     process_user_playlists(app);
+
+    let _ = top_tracks(app);
 }
 
 pub fn instruction() {

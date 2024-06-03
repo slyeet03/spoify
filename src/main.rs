@@ -35,7 +35,7 @@ fn main() -> io::Result<()> {
 
         let mut terminal = tui::init()?;
 
-        let (tx1, rx) = mpsc::channel();
+        let (tx1, rx1) = mpsc::channel();
 
         let mut player_info_app: App = app.clone();
 
@@ -44,7 +44,7 @@ fn main() -> io::Result<()> {
             thread::spawn(move || update_player_info(tx1, &mut player_info_app));
 
         // Run the main app loop
-        app.run(&mut terminal, rx)?;
+        app.run(&mut terminal, rx1)?;
 
         // Wait for the spawned threads to complete
         if let Err(e) = player_info_thread.join() {
