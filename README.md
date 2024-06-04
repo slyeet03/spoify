@@ -22,11 +22,11 @@ In order for `spoify` to work it needs to be connected to Spotify's API.
 
 There we go, now you can use `spoify`.
 ## Configuration
-You can go to the configure folder and change the theme and keybindings of the application.
+You can go to the configure folder and change the theme, keybindings and other related settings of the application.
 ## Limitations
-This app uses the [Web API](https://developer.spotify.com/documentation/web-api/) from Spotify, which doesn't handle streaming itself. So you'll need either an official Spotify app open.
+This app uses the [Web API](https://developer.spotify.com/documentation/web-api/) from Spotify, which doesn't handle streaming itself. So you'll need an official Spotify app open in order to play tracks.
 
-If you want to play tracks, Spotify requires that you have a Premium account.
+If you want to play tracks or control the playback part, Spotify requires that you have a Premium account.
 ## Libraries used
 - [rspotify](https://github.com/ramsayleung/rspotify)
 - [ratatui](https://github.com/ratatui-org/ratatui)
