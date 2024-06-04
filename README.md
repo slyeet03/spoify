@@ -21,6 +21,19 @@ In order for `spoify` to work it needs to be connected to Spotify's API.
 11. After accepting the permissions, you'll be redirected to localhost. You'll be redirected to a blank webpage that might say something like "Connection Refused" since no server is running. Regardless, copy the URL and paste into the prompt in the terminal.
 
 There we go, now you can use `spoify`.
+
+## Installation
+### Cargo
+First, install [Rust](https://www.rust-lang.org/tools/install) (using the recommended `rustup` installation method) and then
+
+```bash
+cargo install spoify
+```
+
+This method will build the binary from source.
+
+To update, run the same command again.
+
 ## Configuration
 You can go to the configure folder and change the theme, keybindings and other related settings of the application.
 ## Limitations
