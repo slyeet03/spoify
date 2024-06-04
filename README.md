@@ -1,5 +1,5 @@
 # Spoify
-This is a Rust project that implements a Spotify client within your terminal. It allows you to browse and interact with your Spotify playlists, liked songs, saved albums, podcasts, recently played songs, and saved artists directly from the command line.
+This is a Rust project that implements a Spotify client within your terminal. It allows you to browse and interact with Spotify directly from the command line.
 ![](screenshots/idle_state_spoify.png)
 ![](screenshots/liked_song_spoify.png)
 ![](screenshots/search_spoify.png)
