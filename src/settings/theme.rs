@@ -16,7 +16,7 @@ struct Theme(HashMap<String, Value>);
 pub fn read_theme() -> HashMap<String, Value> {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push("..");
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("configure");
     path.push("theme.yml");
 

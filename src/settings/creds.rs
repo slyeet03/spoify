@@ -13,7 +13,7 @@ struct Creds(HashMap<String, String>);
 pub fn read_creds() -> HashMap<String, String> {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("configure");
     path.push("creds.yml");
 

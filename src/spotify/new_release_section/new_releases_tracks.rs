@@ -55,7 +55,7 @@ fn save_new_releases_tracks_to_json(items: Vec<SimplifiedTrack>) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("new_releases_tracks.json");
@@ -73,7 +73,7 @@ pub fn process_new_releases_tracks(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("spotify_cache");
     path.push("new_releases_tracks.json");
 

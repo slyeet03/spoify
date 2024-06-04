@@ -51,7 +51,7 @@ fn save_playlists_to_json(playlist_items: Vec<PlaylistItem>) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("playlist_item.json");
@@ -71,7 +71,7 @@ pub fn process_playlist_tracks(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("spotify_cache");
     path.push("playlist_item.json");
 

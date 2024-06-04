@@ -34,7 +34,7 @@ fn save_artist_to_json(items: Vec<FullArtist>) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("user_artist.json");
@@ -51,7 +51,7 @@ pub fn process_user_artists(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("spotify_cache");
     path.push("user_artist.json");
 

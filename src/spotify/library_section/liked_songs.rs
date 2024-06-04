@@ -41,7 +41,7 @@ fn save_liked_songs_to_json(liked_songs: Vec<SavedTrack>) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("liked_songs.json");
@@ -61,7 +61,7 @@ pub fn process_liked_tracks(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify-tui");
+    path.push("spoify");
     path.push("spotify_cache");
     path.push("liked_songs.json");
 
