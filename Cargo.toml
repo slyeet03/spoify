@@ -2,6 +2,19 @@
 name = "spoify"
 version = "0.1.0"
 edition = "2021"
+description = "a spotify client inside your terminal"
+readme = "README.md"
+repository = "https://github.com/slyeet03/spoify"
+license = "MIT OR Apache-2.0"
+keywords = ["rust", "terminal", "spotify", "unix", "cli"]
+categories = ["command-line-utilities"]
+documentation = "https://github.com/slyeet03/spoify"
+
+exclude = [
+    ".vscode/*",
+    "spotify_cache/*",
+    "target/*",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
