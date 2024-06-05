@@ -10,6 +10,9 @@ use crate::spotify::new_release_section::new_releases::{new_releases, process_ne
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use crate::spotify::user_stats::top_tracks::top_tracks;
+use std::fs::File;
+use std::io::{BufWriter, Write};
+use std::path::PathBuf;
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
@@ -69,12 +72,49 @@ pub fn instruction() {
         4. Add 'http://localhost:8888/callback' to the Redirect URIs
         5. Scroll down and click 'Save'
         6. You are now ready to authenticate with Spotify!
-        7. Go to the spoify folder, and inside 'configure' folder go to 'creds.yml'.
-        8. Enter you 'Client ID' and 'Client Secret'.
-        9. Run spoify
-        10. You will be redirected to an official Spotify webpage to ask you for permissions.
-        11. After accepting the permissions, you'll be redirected to localhost.
+        7. Enter you 'Client ID' and 'Client Secret'.
+        8. Run spoify
+        9. You will be redirected to an official Spotify webpage to ask you for permissions.
+        10. After accepting the permissions, you'll be redirected to localhost.
             You'll be redirected to a blank webpage that might say something like 'Connection Refused' since no server is running. 
             Regardless, copy the URL and paste into the prompt in the terminal.
     ");
+}
+
+pub fn save_creds_to_yml(app: &mut App) {
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("configure");
+    path.push("creds.yml");
+
+    // Prompt the user for client ID and secret key
+    println!("Enter Client ID:");
+    let mut client_id = String::new();
+    std::io::stdin()
+        .read_line(&mut client_id)
+        .expect("Failed to read client ID");
+    client_id = client_id.trim().to_string();
+
+    println!("Enter Client Secret:");
+    let mut client_secret = String::new();
+    std::io::stdin()
+        .read_line(&mut client_secret)
+        .expect("Failed to read client secret");
+    client_secret = client_secret.trim().to_string();
+
+    // Create a new YAML string with the updated credentials
+    let yaml_content = format!(
+        "Client ID: \"{}\"\nClient Secret: \"{}\"",
+        client_id, client_secret
+    );
+
+    // Open the file for writing
+    let file = File::create(&path).expect("Unable to create creds file");
+    let mut writer = BufWriter::new(file);
+
+    // Write the updated YAML content to the file
+    writer
+        .write_all(yaml_content.as_bytes())
+        .expect("Unable to write to creds file");
 }

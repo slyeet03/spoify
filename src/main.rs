@@ -4,7 +4,7 @@ use std::thread;
 
 use settings::creds::{read_creds, set_creds};
 use ui::tui;
-use util::{instruction, startup, update_player_info};
+use util::{instruction, save_creds_to_yml, startup, update_player_info};
 
 use crate::app::App;
 
@@ -19,18 +19,15 @@ mod util;
 fn main() -> io::Result<()> {
     let mut app: App = App::default();
 
-    app.file_name = "spoify-0.1.2".to_string();
+    app.file_name = "spoify-0.1.3".to_string();
 
     // Set the creds from the configure files
     read_creds(&mut app);
     set_creds(&mut app);
 
     if app.client_id == "" {
-        let mut enter = String::new();
         instruction();
-        io::stdin()
-            .read_line(&mut enter)
-            .expect("failed to readline");
+        save_creds_to_yml(&mut app);
     } else {
         // Fetch user's playlists, new releases, set keybinds and themes before the main app starts
         startup(&mut app);
