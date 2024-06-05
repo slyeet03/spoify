@@ -12,10 +12,10 @@ use crate::app::App;
 struct Keybindings(HashMap<String, String>);
 
 /// Reads the keybindings from the configuration file and returns them as a HashMap
-pub fn read_keybindings() -> HashMap<String, String> {
+pub fn read_keybindings(app: &mut App) -> HashMap<String, String> {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("configure");
     path.push("keybindings.yml");
 
@@ -28,7 +28,7 @@ pub fn read_keybindings() -> HashMap<String, String> {
 
 /// Sets the keybindings in the App struct based on the loaded configuration
 pub fn set_keybindings(app: &mut App) {
-    let keybindings = read_keybindings();
+    let keybindings = read_keybindings(app);
 
     app.go_to_search_key = match keybindings.get("Go to Search") {
         Some(s) => s.chars().next().unwrap_or(' '),
@@ -92,7 +92,7 @@ pub fn parse_keybindings(app: &mut App) {
     // Construct the paths relative to the root directory
     let mut yaml_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     yaml_path.push("..");
-    yaml_path.push("spoify");
+    yaml_path.push(app.file_name.clone());
     yaml_path.push("configure");
     yaml_path.push("keybindings.yml");
 

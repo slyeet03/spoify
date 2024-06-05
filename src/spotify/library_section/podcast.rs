@@ -29,18 +29,18 @@ pub async fn user_podcast(app: &mut App) -> Result<(), ClientError> {
 
     stream.await?;
 
-    save_podcasts_to_json(podcasts);
+    save_podcasts_to_json(app, podcasts);
 
     Ok(())
 }
 
 /// Saves a vector of saved podcasts to a JSON file in the Spotify cache directory
-fn save_podcasts_to_json(podcasts: Vec<Show>) {
+fn save_podcasts_to_json(app: &mut App, podcasts: Vec<Show>) {
     let json_data = json!(podcasts);
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("podcasts.json");
@@ -58,7 +58,7 @@ pub fn process_podcasts(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     path.push("podcasts.json");
 

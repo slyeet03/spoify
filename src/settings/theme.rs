@@ -13,10 +13,10 @@ use crate::app::App;
 struct Theme(HashMap<String, Value>);
 
 /// Reads the theme configuration file and returns the parsed theme data as a HashMap
-pub fn read_theme() -> HashMap<String, Value> {
+pub fn read_theme(app: &mut App) -> HashMap<String, Value> {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push("..");
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("configure");
     path.push("theme.yml");
 
@@ -30,7 +30,7 @@ pub fn read_theme() -> HashMap<String, Value> {
 
 /// Sets the application theme based on the configuration loaded from the theme file
 pub fn set_theme(app: &mut App) {
-    let theme = read_theme();
+    let theme = read_theme(app);
 
     // Iterate over all entries in the theme HashMap
     for (key, value) in theme.iter() {

@@ -44,18 +44,18 @@ pub async fn search_selected_album_tracks(app: &mut App) -> Result<(), ClientErr
 
     stream.await?;
 
-    save_tracks_to_json(tracks);
+    save_tracks_to_json(app, tracks);
 
     Ok(())
 }
 
 /// Saves a vector of simplified track data to a JSON file in the Spotify cache directory
-fn save_tracks_to_json(items: Vec<SimplifiedTrack>) {
+fn save_tracks_to_json(app: &mut App, items: Vec<SimplifiedTrack>) {
     let json_data = json!(items);
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("selected_searched_album_tracks.json");
@@ -72,7 +72,7 @@ pub fn process_selected_album_tracks(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     path.push("selected_searched_album_tracks.json");
 

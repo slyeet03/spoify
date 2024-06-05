@@ -34,16 +34,16 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
 /// Function to run before starting the main app loop
 pub fn startup(app: &mut App) {
     // Set the keybindings from the configure files
-    read_keybindings();
+    read_keybindings(app);
     set_keybindings(app);
     parse_keybindings(app);
 
     // Set the theme from the configure files
-    read_theme();
+    read_theme(app);
     set_theme(app);
 
     // Set the volume increament and decreament values
-    read_volume_values();
+    read_volume_values(app);
     set_volume_values(app);
 
     // Fetch the new released albums from spotify

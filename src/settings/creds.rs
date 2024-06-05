@@ -10,10 +10,10 @@ use crate::app::App;
 #[derive(Deserialize, Debug)]
 struct Creds(HashMap<String, String>);
 
-pub fn read_creds() -> HashMap<String, String> {
+pub fn read_creds(app: &mut App) -> HashMap<String, String> {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("configure");
     path.push("creds.yml");
 
@@ -24,7 +24,7 @@ pub fn read_creds() -> HashMap<String, String> {
 }
 
 pub fn set_creds(app: &mut App) {
-    let creds = read_creds();
+    let creds = read_creds(app);
 
     if let Some(value_str) = creds.get("Client ID") {
         app.client_id = value_str.as_str().to_string();

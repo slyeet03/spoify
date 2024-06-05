@@ -40,7 +40,7 @@ pub async fn search(user_query: &str, app: &mut App) -> Result<(), std::io::Erro
     // Setting up the directory to store the search results
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push("..");
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
 
@@ -124,7 +124,7 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
 
     let mut spotify_cache_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     spotify_cache_path.push("..");
-    spotify_cache_path.push("spoify");
+    spotify_cache_path.push(app.file_name.clone());
     spotify_cache_path.push("spotify_cache");
 
     if search(query, app).is_ok() {

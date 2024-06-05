@@ -40,18 +40,18 @@ pub async fn fetch_playlists_tracks(app: &mut App) -> Result<(), ClientError> {
 
     stream.await?;
 
-    save_playlists_to_json(playlist_items);
+    save_playlists_to_json(app, playlist_items);
 
     Ok(())
 }
 
 /// Saves playlist items data (including tracks) to a JSON file
-fn save_playlists_to_json(playlist_items: Vec<PlaylistItem>) {
+fn save_playlists_to_json(app: &mut App, playlist_items: Vec<PlaylistItem>) {
     let json_data = json!(playlist_items);
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("playlist_item.json");
@@ -71,7 +71,7 @@ pub fn process_playlist_tracks(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     path.push("playlist_item.json");
 

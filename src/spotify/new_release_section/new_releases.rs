@@ -41,18 +41,18 @@ pub async fn new_releases(app: &mut App) -> Result<(), ClientError> {
 
     stream.await?;
 
-    save_new_releases_to_json(new_releases);
+    save_new_releases_to_json(app, new_releases);
 
     Ok(())
 }
 
 /// Saves a vector of simplified album data to a JSON file in the Spotify cache directory
-fn save_new_releases_to_json(items: Vec<SimplifiedAlbum>) {
+fn save_new_releases_to_json(app: &mut App, items: Vec<SimplifiedAlbum>) {
     let json_data = json!(items);
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("new_releases.json");
@@ -68,7 +68,7 @@ pub fn process_new_releases(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     path.push("new_releases.json");
 

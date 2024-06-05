@@ -45,7 +45,7 @@ pub async fn get_spotify_client(app: &mut App) -> Result<AuthCodeSpotify, Client
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
 
     fs::create_dir_all(&path).unwrap();

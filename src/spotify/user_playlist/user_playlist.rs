@@ -29,12 +29,12 @@ pub async fn fetch_user_playlists(
 }
 
 /// Saves a list of playlists in JSON format to a file for later use
-fn save_playlists_to_json(playlists: &[SimplifiedPlaylist]) {
+fn save_playlists_to_json(app: &mut App, playlists: &[SimplifiedPlaylist]) {
     let json_data = serde_json::to_vec_pretty(playlists).unwrap();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("playlists.json");
@@ -49,7 +49,7 @@ pub async fn get_playlists(app: &mut App) {
     let spotify = get_spotify_client(app).await.unwrap();
     match fetch_user_playlists(&spotify).await {
         Ok(playlists) => {
-            save_playlists_to_json(&playlists);
+            save_playlists_to_json(app, &playlists);
         }
         Err(e) => println!("Error fetching playlists: {}", e),
     }
@@ -59,7 +59,7 @@ pub async fn get_playlists(app: &mut App) {
 pub fn process_user_playlists(app: &mut App) {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     path.push("playlists.json");
 

@@ -13,6 +13,7 @@ use std::time::{Duration, Instant};
 
 #[derive(Clone, Debug)]
 pub struct App {
+    pub file_name: String,
     // Controls whether the application should exit
     pub exit: bool,
 
@@ -670,6 +671,7 @@ impl Default for App {
             top_tracks_all_time_names: Vec::new(),
             top_tracks_6_months_names: Vec::new(),
             top_tracks_4_weeks_names: Vec::new(),
+            file_name: String::new(),
         }
     }
 }

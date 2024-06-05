@@ -24,17 +24,17 @@ pub async fn user_artists(app: &mut App) -> Result<(), ClientError> {
             Vec::new()
         }
     };
-    save_artist_to_json(artist_tracks);
+    save_artist_to_json(app, artist_tracks);
     Ok(())
 }
 
 /// Saves a vector of followed artists to a JSON file in the Spotify cache directory
-fn save_artist_to_json(items: Vec<FullArtist>) {
+fn save_artist_to_json(app: &mut App, items: Vec<FullArtist>) {
     let json_data = json!(items);
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
     path.push("user_artist.json");
@@ -51,7 +51,7 @@ pub fn process_user_artists(app: &mut App) {
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("spotify_cache");
     path.push("user_artist.json");
 

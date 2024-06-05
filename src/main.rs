@@ -19,8 +19,10 @@ mod util;
 fn main() -> io::Result<()> {
     let mut app: App = App::default();
 
+    app.file_name = "spoify-0.1.2".to_string();
+
     // Set the creds from the configure files
-    read_creds();
+    read_creds(&mut app);
     set_creds(&mut app);
 
     if app.client_id == "" {

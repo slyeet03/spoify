@@ -11,10 +11,10 @@ use crate::app::App;
 struct VolumeValues(HashMap<String, String>);
 
 /// Reads the volume_values from the configuration file and returns them as a HashMap
-pub fn read_volume_values() -> HashMap<String, String> {
+pub fn read_volume_values(app: &mut App) -> HashMap<String, String> {
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
-    path.push("spoify");
+    path.push(app.file_name.clone());
     path.push("configure");
     path.push("settings.yml");
 
@@ -27,7 +27,7 @@ pub fn read_volume_values() -> HashMap<String, String> {
 
 /// Sets the volume_values in the App struct based on the loaded configuration
 pub fn set_volume_values(app: &mut App) {
-    let volume_values = read_volume_values();
+    let volume_values = read_volume_values(app);
 
     if let Some(value_str) = volume_values.get("Volume Increament Value") {
         app.volume_increment_value = value_str.parse::<u8>().unwrap_or(0);
