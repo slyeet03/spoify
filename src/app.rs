@@ -332,6 +332,13 @@ pub struct App {
     pub top_tracks_all_time_names: Vec<String>,
     pub top_tracks_6_months_names: Vec<String>,
     pub top_tracks_4_weeks_names: Vec<String>,
+
+    // Add track to playlist
+    pub add_track_to_playlist_state: ListState,
+    pub track_added_to_playlist_name: String,
+    pub playlist_index_for_track_addition: usize,
+    pub track_added_to_playlist_link: String,
+    pub playlist_link_for_track_addition: String,
 }
 
 impl App {
@@ -519,6 +526,7 @@ impl Default for App {
             previous_track_key: char::from(' '),
             error_key: char::from(' '),
             player_fullscreen_key: char::from(' '),
+            add_track_to_playlist_state: ListState::default(),
 
             first_keys: Vec::new(),
             tasks: Vec::new(),
@@ -672,6 +680,11 @@ impl Default for App {
             top_tracks_6_months_names: Vec::new(),
             top_tracks_4_weeks_names: Vec::new(),
             file_name: String::new(),
+
+            track_added_to_playlist_name: String::new(),
+            playlist_index_for_track_addition: 0,
+            track_added_to_playlist_link: String::new(),
+            playlist_link_for_track_addition: String::new(),
         }
     }
 }

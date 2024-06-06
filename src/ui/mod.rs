@@ -6,6 +6,7 @@ pub mod library;
 pub mod main_area;
 pub mod new_release;
 pub mod player;
+pub mod playlist_control;
 pub mod search;
 pub mod tui;
 pub mod ui;
