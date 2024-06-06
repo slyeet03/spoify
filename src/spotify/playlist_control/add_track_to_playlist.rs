@@ -1,4 +1,5 @@
 use crate::app::App;
+use crate::enums::Menu;
 use crate::spotify::auth::get_spotify_client;
 use regex::Regex;
 use rspotify::clients::OAuthClient;
@@ -39,12 +40,10 @@ pub async fn add_track_to_playlist(app: &mut App) -> Result<(), ClientError> {
         .await;
 
     match result {
-        Ok(_) => {
-            println!("Track added to the playlist successfully!");
-            Ok(())
-        }
+        Ok(_) => Ok(()),
         Err(e) => {
-            eprintln!("Error adding track to the playlist: {}", e);
+            app.error_text = format!("Error adding track to the playlist: {}", e);
+            app.selected_menu = Menu::Error;
             Err(e)
         }
     }

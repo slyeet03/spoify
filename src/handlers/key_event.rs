@@ -85,25 +85,29 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     if app.selected_library == Library::RecentlyPlayed {
                         app.track_added_to_playlist_link =
                             app.recently_played_links[app.recently_played_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
                     } else if app.selected_library == Library::LikedSongs {
                         app.track_added_to_playlist_link =
                             app.liked_song_links[app.liked_songs_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
                     } else if app.selected_library == Library::MadeFY {
                         if app.made_fy_track_selected {
                             app.track_added_to_playlist_link =
                                 app.made_fy_track_links[app.made_fy_track_index].clone();
+                            app.selected_menu = Menu::AddTrackToPlaylist;
                         }
                     } else if app.selected_library == Library::Albums {
                         if app.user_album_track_selected {
                             app.track_added_to_playlist_link =
                                 app.user_album_track_links[app.user_album_track_index].clone();
+                            app.selected_menu = Menu::AddTrackToPlaylist;
                         }
                     } else if app.selected_library == Library::Artists {
                         if app.user_artist_track_selected {
                             app.track_added_to_playlist_link =
                                 app.user_artist_track_links[app.user_artist_track_index].clone();
+                            app.selected_menu = Menu::AddTrackToPlaylist;
                         }
-                        app.selected_menu = Menu::AddTrackToPlaylist;
                     }
                 } else if app.selected_menu == Menu::NewRelease {
                     if app.enter_for_playback_in_new_release {
