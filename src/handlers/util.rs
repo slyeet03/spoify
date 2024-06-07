@@ -1,6 +1,9 @@
 use ratatui::widgets::{ListState, TableState};
 
-use crate::{app::App, enums::InputMode};
+use crate::{
+    app::App,
+    enums::{InputMode, SearchMenu},
+};
 
 // Helper functions for cursor movement and character deletion
 pub fn move_cursor_left(app: &mut App) {
@@ -112,6 +115,7 @@ pub fn default(app: &mut App) {
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
     app.is_in_track = false;
+    app.search_menu = SearchMenu::Default;
 }
 
 pub fn default_nav(app: &mut App) {
@@ -158,4 +162,5 @@ pub fn default_search(app: &mut App) {
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
     app.is_in_track = false;
+    app.search_menu = SearchMenu::Default;
 }
