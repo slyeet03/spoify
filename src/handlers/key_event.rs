@@ -32,6 +32,9 @@ use crate::spotify::player::volume_increase::volume_increment;
 use crate::spotify::player::{
     pause_playback::pause, play_playback::play, repeat::cycle_repeat, shuffle::toogle_shuffle,
 };
+use crate::spotify::playlist_control::add_track_to_playlist::add_track_to_playlist;
+use crate::spotify::playlist_control::playlist_follow::follow_playlist;
+use crate::spotify::playlist_control::playlist_unfollow::unfollow_playlist;
 use crate::spotify::search::search::process_search;
 use crate::spotify::search::search_albums::{
     process_selected_album_tracks, search_selected_album_tracks,
@@ -42,6 +45,7 @@ use crate::spotify::search::search_artists::{
 use crate::spotify::search::search_playlists::{
     process_selected_playlist_tracks, search_selected_playlist_tracks,
 };
+use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use crate::spotify::user_playlist::user_playlist_track::{
     fetch_playlists_tracks, process_playlist_tracks,
 };
@@ -78,6 +82,103 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     println!("{}", e);
                 }
             }
+
+            KeyCode::Char('p') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+                if app.selected_menu == Menu::Library {
+                    if app.selected_library == Library::RecentlyPlayed {
+                        app.track_added_to_playlist_link =
+                            app.recently_played_links[app.recently_played_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
+                    } else if app.selected_library == Library::LikedSongs {
+                        app.track_added_to_playlist_link =
+                            app.liked_song_links[app.liked_songs_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
+                    } else if app.selected_library == Library::MadeFY {
+                        if app.made_fy_track_selected {
+                            app.track_added_to_playlist_link =
+                                app.made_fy_track_links[app.made_fy_track_index].clone();
+                            app.selected_menu = Menu::AddTrackToPlaylist;
+                        }
+                    } else if app.selected_library == Library::Albums {
+                        if app.user_album_track_selected {
+                            app.track_added_to_playlist_link =
+                                app.user_album_track_links[app.user_album_track_index].clone();
+                            app.selected_menu = Menu::AddTrackToPlaylist;
+                        }
+                    } else if app.selected_library == Library::Artists {
+                        if app.user_artist_track_selected {
+                            app.track_added_to_playlist_link =
+                                app.user_artist_track_links[app.user_artist_track_index].clone();
+                            app.selected_menu = Menu::AddTrackToPlaylist;
+                        }
+                    }
+                } else if app.selected_menu == Menu::NewRelease {
+                    if app.enter_for_playback_in_new_release {
+                        app.track_added_to_playlist_link =
+                            app.new_release_spotify_urls[app.new_release_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
+                    }
+                } else if app.selected_menu == Menu::Playlists {
+                    if app.enter_for_playback_in_user_playlist {
+                        app.track_added_to_playlist_link =
+                            app.user_playlist_track_links[app.user_playlist_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
+                    }
+                } else if app.selected_menu == Menu::Search {
+                    if app.is_in_track {
+                        app.track_added_to_playlist_link =
+                            app.track_links_search_results[app.track_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
+                    } else if app.search_menu == SearchMenu::SearchedAlbum {
+                        app.track_added_to_playlist_link =
+                            app.selected_album_tracks_links[app.searched_album_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
+                    } else if app.search_menu == SearchMenu::SearchedArtist {
+                        app.track_added_to_playlist_link =
+                            app.selected_artist_tracks_links[app.searched_artist_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
+                    } else if app.search_menu == SearchMenu::SearchedPlaylist {
+                        app.track_added_to_playlist_link =
+                            app.selected_playlist_tracks_links[app.searched_playlist_index].clone();
+                        app.selected_menu = Menu::AddTrackToPlaylist;
+                    }
+                }
+            }
+
+            // Follow Playlist
+            KeyCode::Char('f') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+                app.playlist_link_to_follow.clear();
+                if app.selected_menu == Menu::Search {
+                    if app.selected_playlist_in_search_result {
+                        app.playlist_link_to_follow =
+                            app.playlist_links_search_results[app.playlist_index].clone();
+                        if let Err(e) = follow_playlist(app) {
+                            println!("{}", e);
+                        }
+                        // Fetch user playlists from spotify
+                        get_playlists(app);
+                        process_user_playlists(app);
+                    }
+                }
+            }
+
+            //Unfollow/Delete Playlist
+            KeyCode::Char('d') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+                app.playlist_link_to_follow.clear();
+                if app.selected_menu == Menu::Playlists {
+                    if !app.enter_for_playback_in_user_playlist {
+                        app.playlist_link_to_follow =
+                            app.user_playlist_links[app.user_playlist_index].clone();
+                        if let Err(e) = unfollow_playlist(app) {
+                            println!("{}", e);
+                        }
+                        // Fetch user playlists from spotify
+                        get_playlists(app);
+                        process_user_playlists(app);
+                    }
+                }
+            }
+
             // Exit the application when 'q' is pressed in Normal mode
             code if code == KeyCode::Char(exit_application_key)
                 && app.input_mode != InputMode::Editing =>
@@ -121,6 +222,8 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                     app.selected_menu = Menu::Default;
                 } else if app.selected_menu == Menu::NewRelease {
                     app.selected_menu = Menu::Default;
+                } else if app.selected_menu == Menu::AddTrackToPlaylist {
+                    app.selected_menu = Menu::Default;
                 } else {
                     app.exit();
                 }
@@ -141,11 +244,16 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             code if code == KeyCode::Char(go_to_user_playlists_key)
                 && app.input_mode != InputMode::Editing =>
             {
-                app.selected_menu = Menu::Playlists;
-                app.user_playlist_state.select(Some(0));
-                default(app);
-                app.selected_playlist_uri = app.user_playlist_links[0].clone();
-                app.current_user_playlist = app.user_playlist_names[0].clone();
+                if app.have_playlist {
+                    app.selected_menu = Menu::Playlists;
+                    app.user_playlist_state.select(Some(0));
+                    default(app);
+                    app.selected_playlist_uri = app.user_playlist_links[0].clone();
+                    app.current_user_playlist = app.user_playlist_names[0].clone();
+                } else {
+                    app.error_text = format!("You don't have any playlist saved");
+                    app.selected_menu = Menu::Error;
+                }
             }
 
             // Go to search menu
@@ -393,7 +501,15 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         }
                     }
                 }
-
+                if app.selected_menu == Menu::AddTrackToPlaylist {
+                    (
+                        app.add_track_to_playlist_state,
+                        app.playlist_index_for_track_addition,
+                    ) = down_key_for_list(
+                        app.user_playlist_names.clone(),
+                        app.add_track_to_playlist_state.clone(),
+                    );
+                }
                 if app.can_navigate_menu {
                     let next_index: usize = app.library_state.selected().unwrap_or(0) + 1;
                     app.library_state.select(Some(next_index % 6)); //wrapping around the last option
@@ -569,7 +685,15 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         }
                     }
                 }
-
+                if app.selected_menu == Menu::AddTrackToPlaylist {
+                    (
+                        app.add_track_to_playlist_state,
+                        app.playlist_index_for_track_addition,
+                    ) = up_key_for_list(
+                        app.user_playlist_names.clone(),
+                        app.add_track_to_playlist_state.clone(),
+                    );
+                }
                 if app.can_navigate_menu {
                     let prev_index = if app.library_state.selected().unwrap_or(0) == 0 {
                         5 //wrapping to the last option when user presses up at the first option
@@ -809,6 +933,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                         default_search(app);
                         app.search_menu = SearchMenu::SearchedPlaylist;
                         app.searched_playlist_selected = true;
+                    }
+                }
+                if app.selected_menu == Menu::AddTrackToPlaylist {
+                    app.playlist_link_for_track_addition =
+                        app.user_playlist_links[app.playlist_index_for_track_addition].clone();
+                    if let Err(e) = add_track_to_playlist(app) {
+                        println!("{}", e);
                     }
                 }
             }
