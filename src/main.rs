@@ -19,7 +19,7 @@ mod util;
 fn main() -> io::Result<()> {
     let mut app: App = App::default();
 
-    app.file_name = "spoify-0.1.3".to_string();
+    app.file_name = "spoify".to_string();
 
     // Set the creds from the configure files
     read_creds(&mut app);

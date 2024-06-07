@@ -10,6 +10,7 @@ use super::library::{render_default_library, render_library};
 use super::main_area::render_main_area;
 use super::new_release::{render_default_new_releases, render_new_releases};
 use super::player::render_player;
+use super::playlist_control::add_to_playlist::render_add_track_to_playlist_screen;
 use super::search::search::{render_default_search, render_search};
 use super::user_playlist::{render_default_user_playlist, render_user_playlist};
 
@@ -142,6 +143,9 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
                 &player_fullscreen_vertical_chunk,
                 app,
             );
+        }
+        Menu::AddTrackToPlaylist => {
+            render_add_track_to_playlist_screen(f, app);
         }
     }
 }
