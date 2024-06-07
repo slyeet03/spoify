@@ -14,6 +14,7 @@ use std::path::PathBuf;
 
 /// Fetches user playlists from Spotify
 pub async fn fetch_user_playlists(
+    app: &mut App,
     spotify: &AuthCodeSpotify,
 ) -> Result<Vec<SimplifiedPlaylist>, ClientError> {
     // Collect information about the user playlists
@@ -21,9 +22,11 @@ pub async fn fetch_user_playlists(
     let mut stream = spotify.current_user_playlists();
     while let Ok(Some(playlist)) = stream.try_next().await {
         playlists.push(playlist);
+        app.have_playlist = true;
     }
     if playlists.is_empty() {
-        println!("No playlists found. Check if the authorization code is valid and has the required scopes.");
+        println!("No playlists found.");
+        app.have_playlist = false;
     }
     Ok(playlists)
 }
@@ -47,7 +50,7 @@ fn save_playlists_to_json(app: &mut App, playlists: &[SimplifiedPlaylist]) {
 pub async fn get_playlists(app: &mut App) {
     // Obtain a Spotify client using the access token (if available)
     let spotify = get_spotify_client(app).await.unwrap();
-    match fetch_user_playlists(&spotify).await {
+    match fetch_user_playlists(app, &spotify).await {
         Ok(playlists) => {
             save_playlists_to_json(app, &playlists);
         }
@@ -57,6 +60,9 @@ pub async fn get_playlists(app: &mut App) {
 
 /// Processes the playlist data stored in the cache file and populates the app's data structures
 pub fn process_user_playlists(app: &mut App) {
+    app.user_playlist_names.clear();
+    app.user_playlist_links.clear();
+
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
     path.push(app.file_name.clone());

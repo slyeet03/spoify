@@ -33,6 +33,8 @@ use crate::spotify::player::{
     pause_playback::pause, play_playback::play, repeat::cycle_repeat, shuffle::toogle_shuffle,
 };
 use crate::spotify::playlist_control::add_track_to_playlist::add_track_to_playlist;
+use crate::spotify::playlist_control::playlist_follow::follow_playlist;
+use crate::spotify::playlist_control::playlist_unfollow::unfollow_playlist;
 use crate::spotify::search::search::process_search;
 use crate::spotify::search::search_albums::{
     process_selected_album_tracks, search_selected_album_tracks,
@@ -43,6 +45,7 @@ use crate::spotify::search::search_artists::{
 use crate::spotify::search::search_playlists::{
     process_selected_playlist_tracks, search_selected_playlist_tracks,
 };
+use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use crate::spotify::user_playlist::user_playlist_track::{
     fetch_playlists_tracks, process_playlist_tracks,
 };
@@ -142,6 +145,40 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 }
             }
 
+            // Follow Playlist
+            KeyCode::Char('f') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+                app.playlist_link_to_follow.clear();
+                if app.selected_menu == Menu::Search {
+                    if app.selected_playlist_in_search_result {
+                        app.playlist_link_to_follow =
+                            app.playlist_links_search_results[app.playlist_index].clone();
+                        if let Err(e) = follow_playlist(app) {
+                            println!("{}", e);
+                        }
+                        // Fetch user playlists from spotify
+                        get_playlists(app);
+                        process_user_playlists(app);
+                    }
+                }
+            }
+
+            //Unfollow/Delete Playlist
+            KeyCode::Char('d') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+                app.playlist_link_to_follow.clear();
+                if app.selected_menu == Menu::Playlists {
+                    if !app.enter_for_playback_in_user_playlist {
+                        app.playlist_link_to_follow =
+                            app.user_playlist_links[app.user_playlist_index].clone();
+                        if let Err(e) = unfollow_playlist(app) {
+                            println!("{}", e);
+                        }
+                        // Fetch user playlists from spotify
+                        get_playlists(app);
+                        process_user_playlists(app);
+                    }
+                }
+            }
+
             // Exit the application when 'q' is pressed in Normal mode
             code if code == KeyCode::Char(exit_application_key)
                 && app.input_mode != InputMode::Editing =>
@@ -207,11 +244,16 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             code if code == KeyCode::Char(go_to_user_playlists_key)
                 && app.input_mode != InputMode::Editing =>
             {
-                app.selected_menu = Menu::Playlists;
-                app.user_playlist_state.select(Some(0));
-                default(app);
-                app.selected_playlist_uri = app.user_playlist_links[0].clone();
-                app.current_user_playlist = app.user_playlist_names[0].clone();
+                if app.have_playlist {
+                    app.selected_menu = Menu::Playlists;
+                    app.user_playlist_state.select(Some(0));
+                    default(app);
+                    app.selected_playlist_uri = app.user_playlist_links[0].clone();
+                    app.current_user_playlist = app.user_playlist_names[0].clone();
+                } else {
+                    app.error_text = format!("You don't have any playlist saved");
+                    app.selected_menu = Menu::Error;
+                }
             }
 
             // Go to search menu

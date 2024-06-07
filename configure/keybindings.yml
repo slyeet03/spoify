@@ -6,6 +6,8 @@ Navigate between Menu: "Tab"
 Play/Pause: "Space"
 Exit Search menu or Help menu: "Esc"
 Add track to playlist: "Ctrl+P"
+Follow playlist: "Ctrl+F"
+Unfollow/Delete playlist: "Ctrl+D"
 # Changable key bindings
 Go to Search: "s"
 Go to Library: "l"

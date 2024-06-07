@@ -339,6 +339,11 @@ pub struct App {
     pub playlist_index_for_track_addition: usize,
     pub track_added_to_playlist_link: String,
     pub playlist_link_for_track_addition: String,
+
+    // Follow/Unfollow Playlist
+    pub playlist_link_to_follow: String,
+    pub is_follow_playlist: bool,
+    pub have_playlist: bool,
 }
 
 impl App {
@@ -685,6 +690,10 @@ impl Default for App {
             playlist_index_for_track_addition: 0,
             track_added_to_playlist_link: String::new(),
             playlist_link_for_track_addition: String::new(),
+
+            playlist_link_to_follow: String::new(),
+            is_follow_playlist: false,
+            have_playlist: true,
         }
     }
 }
