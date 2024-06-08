@@ -170,7 +170,7 @@ pub fn process_currently_playing(app: &mut App) {
                 }
 
                 if let Some(artist_section) = item.get("artists").and_then(Value::as_array) {
-                    if let Some(first_artist) = artist_section.get(0).and_then(Value::as_object) {
+                    if let Some(first_artist) = artist_section.first().and_then(Value::as_object) {
                         if let Some(artist_name) = first_artist.get("name").and_then(Value::as_str)
                         {
                             app.currently_playing_artist = artist_name.to_string();

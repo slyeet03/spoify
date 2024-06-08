@@ -79,7 +79,7 @@ pub fn set_theme(app: &mut App) {
 
 /// Parses an RGB color string in the format "Color::Rgb(r, g, b)" into a tuple of (u8, u8, u8)
 fn parse_color(value: &str) -> (u8, u8, u8) {
-    let binding = value.replace("Color::Rgb(", "").replace(")", "");
+    let binding = value.replace("Color::Rgb(", "").replace(')', "");
     let rgb: Vec<&str> = binding.split(", ").collect();
 
     (

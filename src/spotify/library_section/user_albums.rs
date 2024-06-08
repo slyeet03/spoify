@@ -87,7 +87,7 @@ pub fn process_user_albums(app: &mut App) {
                         }
                     }
                     if let Some(artists) = album_info.get("artists").and_then(Value::as_array) {
-                        if let Some(first_artist) = artists.get(0).and_then(Value::as_object) {
+                        if let Some(first_artist) = artists.first().and_then(Value::as_object) {
                             if let Some(artist_name) =
                                 first_artist.get("name").and_then(Value::as_str)
                             {

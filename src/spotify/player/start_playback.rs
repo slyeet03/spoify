@@ -5,12 +5,11 @@ use regex::Regex;
 use rspotify::clients::OAuthClient;
 use rspotify::model::{PlayableId, TrackId};
 use rspotify::ClientError;
-use std::ops::Deref;
 
 #[tokio::main]
 pub async fn start_playback(app: &mut App) -> Result<(), ClientError> {
     let spotify = get_spotify_client(app).await?;
-    let device_id: Option<&str> = app.current_device_id.as_ref().map(Deref::deref);
+    let device_id: Option<&str> = app.current_device_id.as_deref();
     let track_uri;
 
     if app.is_only_id {

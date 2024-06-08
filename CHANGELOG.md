@@ -1,6 +1,12 @@
 # Changelog
 
-## [0.2.0]
+## [0.2.1] - 2024-06-08
+
+### Fixed
+- Add to Playlist menu will not dissapear after adding track to playlist
+- Seperated key events in different files
+
+## [0.2.0] - 2024-06-07
 
 ### Fixed
 - Search results would not refresh the second time

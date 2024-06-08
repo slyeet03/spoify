@@ -3,7 +3,6 @@ use crate::enums::Menu;
 use crate::spotify::auth::get_spotify_client;
 use rspotify::clients::OAuthClient;
 use rspotify::ClientError;
-use std::ops::Deref;
 
 // Main function to toggle the shuffle mode
 #[tokio::main]
@@ -12,7 +11,7 @@ pub async fn volume_decreament(app: &mut App) -> Result<(), ClientError> {
     let spotify = get_spotify_client(app).await?;
 
     // Get the device ID from the application state (if available)
-    let device_id: Option<&str> = app.current_device_id.as_ref().map(Deref::deref);
+    let device_id: Option<&str> = app.current_device_id.as_deref();
 
     // Decreament the current device volume by the configured volume decreament value
     if app.volume_percent != 0 {
@@ -23,7 +22,7 @@ pub async fn volume_decreament(app: &mut App) -> Result<(), ClientError> {
 
         result.await?;
     } else {
-        app.error_text = format!("Volume is already at 0%");
+        app.error_text = "Volume is already at 0%".to_string();
         app.selected_menu = Menu::Error;
     }
 

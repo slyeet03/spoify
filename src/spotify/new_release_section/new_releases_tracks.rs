@@ -95,7 +95,7 @@ pub fn process_new_releases_tracks(app: &mut App) {
                 // Extract first artist name
                 if let Some(artists) = track_obj.get("artists").and_then(|v| v.as_array()) {
                     if !artists.is_empty() {
-                        if let Some(first_artist) = artists.get(0).and_then(|v| v.as_object()) {
+                        if let Some(first_artist) = artists.first().and_then(|v| v.as_object()) {
                             if let Some(artist_name) =
                                 first_artist.get("name").and_then(|v| v.as_str())
                             {

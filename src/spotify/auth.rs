@@ -41,7 +41,7 @@ pub async fn get_spotify_client(app: &mut App) -> Result<AuthCodeSpotify, Client
     oauth.scopes = scopes;
     oauth.redirect_uri = "http://localhost:8888/callback".to_owned();
 
-    let creds = Credentials::new(&client_id, &client_secret_id);
+    let creds = Credentials::new(client_id, client_secret_id);
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -110,7 +110,7 @@ async fn handle_authorization_flow(spotify: &mut AuthCodeSpotify) -> Result<(), 
     }
 
     // Requesting the access token using the authorization code
-    spotify.request_token(&code.trim()).await?;
+    spotify.request_token(code.trim()).await?;
 
     Ok(())
 }

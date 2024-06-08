@@ -22,7 +22,7 @@ pub async fn made_fy(app: &mut App) -> Result<(), ClientError> {
     let mut made_fy_playlists = Vec::new();
     // Executing the futures sequentially
     let stream = spotify
-        .category_playlists(&category_id, None)
+        .category_playlists(category_id, None)
         .try_for_each(|item| {
             made_fy_playlists.push(item);
             futures::future::ok(())
@@ -92,7 +92,7 @@ pub fn process_made_fy(app: &mut App) {
                     .and_then(|tracks| tracks.get("total"))
                     .and_then(Value::as_i64)
                 {
-                    app.made_fy_playlist_track_total.push(total_tracks as i64);
+                    app.made_fy_playlist_track_total.push(total_tracks);
                 }
             }
         }

@@ -1,2 +1,11 @@
+pub mod error_screen;
+pub mod exit;
+pub mod help;
 pub mod key_event;
+pub mod library;
+pub mod new_release;
+pub mod player;
+pub mod playlist_control;
+pub mod search;
+pub mod user_playlist;
 pub mod util;

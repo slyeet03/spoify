@@ -372,7 +372,7 @@ impl App {
                 last_tick = now;
 
                 // Check if a message has been received from the player info update thread
-                if let Ok(_) = rx1.try_recv() {
+                if rx1.try_recv().is_ok() {
                     process_currently_playing(self);
                 }
 
@@ -517,20 +517,20 @@ impl Default for App {
             task: Vec::new(),
             key: Vec::new(),
 
-            go_to_search_key: char::from(' '),
-            go_to_library_key: char::from(' '),
-            go_to_user_playlists_key: char::from(' '),
-            exit_application_key: char::from(' '),
-            pause_play_key: char::from(' '),
-            help_key: char::from(' '),
-            volume_up_key: char::from(' '),
-            volume_down_key: char::from(' '),
-            new_release_key: char::from(' '),
-            lyrics_key: char::from(' '),
-            next_track_key: char::from(' '),
-            previous_track_key: char::from(' '),
-            error_key: char::from(' '),
-            player_fullscreen_key: char::from(' '),
+            go_to_search_key: ' ',
+            go_to_library_key: ' ',
+            go_to_user_playlists_key: ' ',
+            exit_application_key: ' ',
+            pause_play_key: ' ',
+            help_key: ' ',
+            volume_up_key: ' ',
+            volume_down_key: ' ',
+            new_release_key: ' ',
+            lyrics_key: ' ',
+            next_track_key: ' ',
+            previous_track_key: ' ',
+            error_key: ' ',
+            player_fullscreen_key: ' ',
             add_track_to_playlist_state: ListState::default(),
 
             first_keys: Vec::new(),

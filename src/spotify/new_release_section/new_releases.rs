@@ -83,7 +83,7 @@ pub fn process_new_releases(app: &mut App) {
             if let Value::Object(album_obj) = album {
                 if let Some(artists) = album_obj.get("artists") {
                     if let Value::Array(artist_array) = artists {
-                        if let Some(first_artist) = artist_array.get(0) {
+                        if let Some(first_artist) = artist_array.first() {
                             if let Value::Object(artist_obj) = first_artist {
                                 if let Some(artist_name) = artist_obj.get("name") {
                                     if let Value::String(name) = artist_name {
