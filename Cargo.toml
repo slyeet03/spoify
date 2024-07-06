@@ -1,6 +1,6 @@
 [package]
 name = "spoify"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 description = "a spotify client inside your terminal"
 readme = "README.md"
@@ -10,11 +10,7 @@ keywords = ["rust", "terminal", "spotify", "unix", "cli"]
 categories = ["command-line-utilities"]
 documentation = "https://github.com/slyeet03/spoify"
 
-exclude = [
-    ".vscode/*",
-    "spotify_cache/*",
-    "target/*",
-]
+exclude = [".vscode/*", "spotify_cache/*", "target/*"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -22,7 +18,7 @@ exclude = [
 crossterm = "0.27.0"
 ratatui = "0.26.1"
 reqwest = "0.12.2"
-tokio = {version = "1.36.0", features = ["full"]}
+tokio = { version = "1.36.0", features = ["full"] }
 rspotify = { version = "0.13.0", features = ["cli"] }
 serde_json = "1.0.114"
 serde = "1.0.197"
@@ -38,7 +34,3 @@ itertools = "0.12.1"
 yaml-rust = "0.4.5"
 anyhow = "1.0.82"
 rayon = "1.10.0"
-
-
-
-

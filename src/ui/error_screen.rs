@@ -6,10 +6,11 @@ use ratatui::{
 };
 
 use crate::app::App;
+use crate::structs::Key;
 
 /// Renders the error screen
-pub fn render_error(f: &mut Frame, app: &mut App) {
-    let error_label = format!("Error (press {} to exit the error screen)", app.error_key);
+pub fn render_error(f: &mut Frame, app: &mut App, key: &mut Key) {
+    let error_label = format!("Error (press {} to exit the error screen)", key.error_key);
     f.render_widget(Clear, f.size());
 
     let error_block = Block::default()

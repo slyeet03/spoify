@@ -1,3 +1,4 @@
+use super::change_keybindings::change_keybindings;
 use super::error_screen::go_to_error_event;
 use super::exit::exit_event;
 use super::help::go_to_help_event;
@@ -31,23 +32,25 @@ use super::util::{default_nav, delete_char, move_cursor_left, move_cursor_right,
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
 use crate::spotify::search::search::process_search;
+use crate::structs::Key;
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use std::io::{self, Write};
 
 /// Function to handle key events for the application
-pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
-    let go_to_search_key: char = app.go_to_search_key;
-    let go_to_library_key: char = app.go_to_library_key;
-    let go_to_user_playlists_key: char = app.go_to_user_playlists_key;
-    let exit_application_key: char = app.exit_application_key;
-    let help_key: char = app.help_key;
-    let volume_up_key: char = app.volume_up_key;
-    let volume_down_key: char = app.volume_down_key;
-    let new_release_key: char = app.new_release_key;
-    let next_track_key: char = app.next_track_key;
-    let previous_track_key: char = app.previous_track_key;
-    let error_key: char = app.error_key;
-    let player_fullscreen_key: char = app.player_fullscreen_key;
+pub fn handle_key_event(app: &mut App, key_event: KeyEvent, key: &mut Key) {
+    let go_to_search_key: char = key.go_to_search_key;
+    let go_to_library_key: char = key.go_to_library_key;
+    let go_to_user_playlists_key: char = key.go_to_user_playlists_key;
+    let exit_application_key: char = key.exit_application_key;
+    let help_key: char = key.help_key;
+    let volume_up_key: char = key.volume_up_key;
+    let volume_down_key: char = key.volume_down_key;
+    let new_release_key: char = key.new_release_key;
+    let next_track_key: char = key.next_track_key;
+    let previous_track_key: char = key.previous_track_key;
+    let error_key: char = key.error_key;
+    let player_fullscreen_key: char = key.player_fullscreen_key;
+    let change_keybind: char = key.change_keybind;
 
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
@@ -109,6 +112,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
                 go_to_help_event(app);
             }
 
+            // Enter fullscreen mode for the player
             code if code == KeyCode::Char(player_fullscreen_key)
                 && app.input_mode != InputMode::Editing =>
             {
@@ -150,6 +154,12 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent) {
             // Key for Error Screen
             code if code == KeyCode::Char(error_key) && app.input_mode != InputMode::Editing => {
                 go_to_error_event(app);
+            }
+
+            code if code == KeyCode::Char(change_keybind)
+                && app.input_mode != InputMode::Editing =>
+            {
+                change_keybindings(app, key);
             }
 
             // Down keybinding for all the menus

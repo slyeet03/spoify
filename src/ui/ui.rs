@@ -1,5 +1,6 @@
 use crate::app::App;
 use crate::enums::Menu;
+use crate::structs::Key;
 
 use ratatui::prelude::*;
 
@@ -15,7 +16,7 @@ use super::search::search::{render_default_search, render_search};
 use super::user_playlist::{render_default_user_playlist, render_user_playlist};
 
 /// Renders the main frame of the application's user interface
-pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
+pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App, key: &mut Key) {
     // Calculate the layout constraints
     let size = f.size();
 
@@ -128,13 +129,13 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             );
         }
         Menu::Help => {
-            render_help(f, app);
+            render_help(f, app, key);
         }
         Menu::NewRelease => {
             render_new_releases(f, &content_sub_chunk, &content_chunk, app);
         }
         Menu::Error => {
-            render_error(f, app);
+            render_error(f, app, key);
         }
         Menu::Player => {
             render_player_in_fullscreen(
@@ -145,7 +146,7 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App) {
             );
         }
         Menu::AddTrackToPlaylist => {
-            render_add_track_to_playlist_screen(f, app);
+            render_add_track_to_playlist_screen(f, app, key);
         }
     }
 }

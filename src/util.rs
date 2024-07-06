@@ -10,6 +10,7 @@ use crate::spotify::new_release_section::new_releases::{new_releases, process_ne
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use crate::spotify::user_stats::top_tracks::top_tracks;
+use crate::structs::Key;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::PathBuf;
@@ -35,11 +36,11 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
 }
 
 /// Function to run before starting the main app loop
-pub fn startup(app: &mut App) {
+pub fn startup(app: &mut App, key: &mut Key) {
     // Set the keybindings from the configure files
     read_keybindings(app);
-    set_keybindings(app);
-    parse_keybindings(app);
+    set_keybindings(app, key);
+    parse_keybindings(app, key);
 
     // Set the theme from the configure files
     read_theme(app);
@@ -117,4 +118,6 @@ pub fn save_creds_to_yml(app: &mut App) {
     writer
         .write_all(yaml_content.as_bytes())
         .expect("Unable to write to creds file");
+
+    println!("Please run spoify again.");
 }

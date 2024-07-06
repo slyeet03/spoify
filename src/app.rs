@@ -2,6 +2,7 @@ use crate::enums::{InputMode, Library, Menu, SearchMenu};
 use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
 use crate::spotify::player::player::process_currently_playing;
+use crate::structs::Key;
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
 use crossterm::event::{self, Event};
@@ -260,24 +261,24 @@ pub struct App {
     pub new_release_spotify_urls: Vec<String>,
     pub enter_for_playback_in_new_release: bool,
 
-    // Keybindings
-    pub go_to_search_key: char,
-    pub go_to_library_key: char,
-    pub go_to_user_playlists_key: char,
-    pub exit_application_key: char,
-    pub pause_play_key: char,
-    pub help_key: char,
-    pub volume_up_key: char,
-    pub volume_down_key: char,
-    pub new_release_key: char,
-    pub lyrics_key: char,
-    pub next_track_key: char,
-    pub previous_track_key: char,
-    pub error_key: char,
-    pub player_fullscreen_key: char,
-
-    pub first_keys: Vec<String>,
-    pub tasks: Vec<String>,
+    // // Keybindings
+    // pub go_to_search_key: char,
+    // pub go_to_library_key: char,
+    // pub go_to_user_playlists_key: char,
+    // pub exit_application_key: char,
+    // pub pause_play_key: char,
+    // pub help_key: char,
+    // pub volume_up_key: char,
+    // pub volume_down_key: char,
+    // pub new_release_key: char,
+    // pub lyrics_key: char,
+    // pub next_track_key: char,
+    // pub previous_track_key: char,
+    // pub error_key: char,
+    // pub player_fullscreen_key: char,
+    //
+    // pub first_keys: Vec<String>,
+    // pub tasks: Vec<String>,
 
     // Color's for UI
     pub player_border_color: Color,
@@ -348,7 +349,12 @@ pub struct App {
 
 impl App {
     /// Runs the application's main loop until the user quits
-    pub fn run(&mut self, terminal: &mut tui::Tui, rx1: Receiver<()>) -> io::Result<()> {
+    pub fn run(
+        &mut self,
+        terminal: &mut tui::Tui,
+        rx1: Receiver<()>,
+        keys: &mut Key,
+    ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
         let timeout: Duration = Duration::from_millis(200);
@@ -357,7 +363,7 @@ impl App {
             // Handling user inputs
             if event::poll(timeout)? {
                 if let Event::Key(key_event) = event::read()? {
-                    handle_key_event(self, key_event);
+                    handle_key_event(self, key_event, keys);
 
                     // In editing mode, handle search input
                     if self.input_mode == InputMode::Editing {
@@ -377,7 +383,7 @@ impl App {
                 }
 
                 // Draw the UI
-                terminal.draw(|frame| render_frame(frame, self.selected_menu, self))?;
+                terminal.draw(|frame| render_frame(frame, self.selected_menu, self, keys))?;
             }
         }
 
@@ -517,25 +523,24 @@ impl Default for App {
             task: Vec::new(),
             key: Vec::new(),
 
-            go_to_search_key: ' ',
-            go_to_library_key: ' ',
-            go_to_user_playlists_key: ' ',
-            exit_application_key: ' ',
-            pause_play_key: ' ',
-            help_key: ' ',
-            volume_up_key: ' ',
-            volume_down_key: ' ',
-            new_release_key: ' ',
-            lyrics_key: ' ',
-            next_track_key: ' ',
-            previous_track_key: ' ',
-            error_key: ' ',
-            player_fullscreen_key: ' ',
-            add_track_to_playlist_state: ListState::default(),
+            // go_to_search_key: ' ',
+            // go_to_library_key: ' ',
+            // go_to_user_playlists_key: ' ',
+            // exit_application_key: ' ',
+            // pause_play_key: ' ',
+            // help_key: ' ',
+            // volume_up_key: ' ',
+            // volume_down_key: ' ',
+            // new_release_key: ' ',
+            // lyrics_key: ' ',
+            // next_track_key: ' ',
+            // previous_track_key: ' ',
+            // error_key: ' ',
+            // player_fullscreen_key: ' ',
 
-            first_keys: Vec::new(),
-            tasks: Vec::new(),
-
+            //
+            // first_keys: Vec::new(),
+            // tasks: Vec::new(),
             new_release_artist: Vec::new(),
             new_release_name: Vec::new(),
             new_release_state: ListState::default(),
@@ -690,6 +695,7 @@ impl Default for App {
             playlist_index_for_track_addition: 0,
             track_added_to_playlist_link: String::new(),
             playlist_link_for_track_addition: String::new(),
+            add_track_to_playlist_state: ListState::default(),
 
             playlist_link_to_follow: String::new(),
             is_follow_playlist: false,

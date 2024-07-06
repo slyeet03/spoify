@@ -7,6 +7,7 @@ use std::path::PathBuf;
 use yaml_rust::YamlLoader;
 
 use crate::app::App;
+use crate::structs::Key;
 
 #[derive(Deserialize, Debug)]
 struct Keybindings(HashMap<String, String>);
@@ -27,68 +28,72 @@ pub fn read_keybindings(app: &mut App) -> HashMap<String, String> {
 }
 
 /// Sets the keybindings in the App struct based on the loaded configuration
-pub fn set_keybindings(app: &mut App) {
+pub fn set_keybindings(app: &mut App, key: &mut Key) {
     let keybindings = read_keybindings(app);
 
-    app.go_to_search_key = match keybindings.get("Go to Search") {
+    key.go_to_search_key = match keybindings.get("Go to Search") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    app.go_to_library_key = match keybindings.get("Go to Library") {
+    key.go_to_library_key = match keybindings.get("Go to Library") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    app.go_to_user_playlists_key = match keybindings.get("Go to User Playlists") {
-        Some(s) => s.chars().next().unwrap_or(' '),
-        None => ' ',
-    };
-
-    app.exit_application_key = match keybindings.get("Exit Application/Go Back") {
+    key.go_to_user_playlists_key = match keybindings.get("Go to User Playlists") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
 
-    app.pause_play_key = match keybindings.get("Pause/Play") {
-        Some(s) => s.chars().next().unwrap_or(' '),
-        None => ' ',
-    };
-    app.help_key = match keybindings.get("Help") {
-        Some(s) => s.chars().next().unwrap_or(' '),
-        None => ' ',
-    };
-    app.volume_up_key = match keybindings.get("Volume Up") {
+    key.exit_application_key = match keybindings.get("Exit Application/Go Back") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
 
-    app.volume_down_key = match keybindings.get("Volume Down") {
+    key.pause_play_key = match keybindings.get("Pause/Play") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    app.new_release_key = match keybindings.get("Go to New Release") {
+    key.help_key = match keybindings.get("Help") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    app.next_track_key = match keybindings.get("Play next track") {
+    key.volume_up_key = match keybindings.get("Volume Up") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    app.previous_track_key = match keybindings.get("Play previous track") {
+
+    key.volume_down_key = match keybindings.get("Volume Down") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    app.error_key = match keybindings.get("Error Screen") {
+    key.new_release_key = match keybindings.get("Go to New Release") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
-    app.player_fullscreen_key = match keybindings.get("Player in fullscreen") {
+    key.next_track_key = match keybindings.get("Play next track") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
+    key.previous_track_key = match keybindings.get("Play previous track") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
+    key.error_key = match keybindings.get("Error Screen") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
+    key.player_fullscreen_key = match keybindings.get("Player in fullscreen") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
+    key.change_keybind = match keybindings.get("Change Key Bindings") {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
 }
 
 /// Parses the keybindings from the configuration file and populates the tasks and first_keys fields in the App struct
-pub fn parse_keybindings(app: &mut App) {
+pub fn parse_keybindings(app: &mut App, keys: &mut Key) {
     // Construct the paths relative to the root directory
     let mut yaml_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     yaml_path.push("..");
@@ -107,7 +112,7 @@ pub fn parse_keybindings(app: &mut App) {
         let task = key.as_str().unwrap().to_string();
         let key_binding = value.as_str().unwrap().to_string();
 
-        app.tasks.push(task);
-        app.first_keys.push(key_binding);
+        keys.tasks.push(task);
+        keys.first_keys.push(key_binding);
     }
 }

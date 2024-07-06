@@ -7,6 +7,7 @@ use ratatui::{
 };
 
 use crate::app::App;
+use crate::structs::Key;
 
 use super::util::help_table_ui;
 
@@ -31,8 +32,8 @@ pub fn render_default_help(f: &mut Frame, header_chunk: &[Rect], app: &mut App) 
 }
 
 /// Renders the full help UI with a table of available commands and keybindings
-pub fn render_help(f: &mut Frame, app: &mut App) {
-    let help_label = format!("Help (press {} to go back)", app.help_key);
+pub fn render_help(f: &mut Frame, app: &mut App, key: &mut Key) {
+    let help_label = format!("Help (press {} to go back)", key.help_key);
     f.render_widget(Clear, f.size());
 
     let help_block = Block::default()
@@ -42,8 +43,8 @@ pub fn render_help(f: &mut Frame, app: &mut App) {
         .style(Style::default().bg(app.help_background_color));
 
     let help_table = help_table_ui(
-        app.tasks.clone(),
-        app.first_keys.clone(),
+        key.tasks.clone(),
+        key.first_keys.clone(),
         help_block,
         app.help_highlight_color.clone(),
         app.help_background_color.clone(),

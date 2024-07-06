@@ -4,13 +4,13 @@ use ratatui::{
     Frame,
 };
 
-use crate::{app::App, ui::util::convert_to_list};
+use crate::{app::App, structs::Key, ui::util::convert_to_list};
 
 /// Renders the error screen
-pub fn render_add_track_to_playlist_screen(f: &mut Frame, app: &mut App) {
+pub fn render_add_track_to_playlist_screen(f: &mut Frame, app: &mut App, key: &mut Key) {
     let add_playlist_label = format!(
         "Select a playlist to add {} to (press {} to cancel)",
-        app.track_added_to_playlist_name, app.exit_application_key
+        app.track_added_to_playlist_name, key.exit_application_key
     );
     f.render_widget(Clear, f.size());
 

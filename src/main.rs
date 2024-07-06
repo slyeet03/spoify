@@ -3,6 +3,7 @@ use std::sync::mpsc;
 use std::thread;
 
 use settings::creds::{read_creds, set_creds};
+use structs::Key;
 use ui::tui;
 use util::{instruction, save_creds_to_yml, startup, update_player_info};
 
@@ -13,13 +14,15 @@ mod enums;
 mod handlers;
 mod settings;
 mod spotify;
+mod structs;
 mod ui;
 mod util;
 
 fn main() -> io::Result<()> {
     let mut app: App = App::default();
+    let mut key: Key = Key::default();
 
-    app.file_name = "spoify-0.2.1".to_string();
+    app.file_name = "spoify-0.2.2".to_string();
 
     // Set the creds from the configure files
     read_creds(&mut app);
@@ -30,7 +33,7 @@ fn main() -> io::Result<()> {
         save_creds_to_yml(&mut app);
     } else {
         // Fetch user's playlists, new releases, set keybinds and themes before the main app starts
-        startup(&mut app);
+        startup(&mut app, &mut key);
 
         let mut terminal = tui::init()?;
 
@@ -43,7 +46,7 @@ fn main() -> io::Result<()> {
             thread::spawn(move || update_player_info(tx1, &mut player_info_app));
 
         // Run the main app loop
-        app.run(&mut terminal, rx1)?;
+        app.run(&mut terminal, rx1, &mut key)?;
 
         // Wait for the spawned threads to complete
         if let Err(e) = player_info_thread.join() {

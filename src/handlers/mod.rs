@@ -1,3 +1,4 @@
+pub mod change_keybindings;
 pub mod error_screen;
 pub mod exit;
 pub mod help;
