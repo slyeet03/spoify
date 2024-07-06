@@ -261,25 +261,6 @@ pub struct App {
     pub new_release_spotify_urls: Vec<String>,
     pub enter_for_playback_in_new_release: bool,
 
-    // // Keybindings
-    // pub go_to_search_key: char,
-    // pub go_to_library_key: char,
-    // pub go_to_user_playlists_key: char,
-    // pub exit_application_key: char,
-    // pub pause_play_key: char,
-    // pub help_key: char,
-    // pub volume_up_key: char,
-    // pub volume_down_key: char,
-    // pub new_release_key: char,
-    // pub lyrics_key: char,
-    // pub next_track_key: char,
-    // pub previous_track_key: char,
-    // pub error_key: char,
-    // pub player_fullscreen_key: char,
-    //
-    // pub first_keys: Vec<String>,
-    // pub tasks: Vec<String>,
-
     // Color's for UI
     pub player_border_color: Color,
     pub player_highlight_color: Color,

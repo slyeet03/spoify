@@ -5,6 +5,7 @@ pub mod help;
 pub mod key_event;
 pub mod library;
 pub mod new_release;
+pub mod open_configure_folder;
 pub mod player;
 pub mod playlist_control;
 pub mod search;

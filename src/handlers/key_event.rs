@@ -10,6 +10,7 @@ use super::new_release::{
     go_to_new_release_event, new_release_down_event, new_release_enter_event,
     new_release_tab_event, new_release_up_event,
 };
+use super::open_configure_folder::open_config_folder;
 use super::player::{
     fullscreen_player_event, next_track_event, play_pause_event, previous_track_event,
     repeat_event, shuffle_event, volume_decreament_event, volume_increment_event,
@@ -58,6 +59,11 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent, key: &mut Key) {
             KeyCode::Char('s') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
                 shuffle_event(app);
             }
+            // Open the configuration folder
+            KeyCode::Char('`') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+                open_config_folder(app, key);
+            }
+
             // Cycle through repeat options when Ctrl+R is pressed
             KeyCode::Char('r') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
                 repeat_event(app);

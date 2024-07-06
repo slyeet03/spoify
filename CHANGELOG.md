@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.3] - 2024-07-06
+
+### Fixed
+
+- Removed unnecessary comments
+
+### Added
+
+- User can now open the configure folder from the terminal itself
+
 ## [0.2.2] - 2024-07-06
 
 ### Fixed
@@ -31,4 +41,3 @@
 # What is this?
 
 All notable changes to this project will be documented in this file.
-
