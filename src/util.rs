@@ -10,7 +10,8 @@ use crate::spotify::new_release_section::new_releases::{new_releases, process_ne
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use crate::spotify::user_stats::top_tracks::top_tracks;
-use crate::structs::Key;
+use crate::structs::Themes;
+use crate::structs::{Key, Settings};
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::PathBuf;
@@ -19,11 +20,11 @@ use std::thread;
 use std::time::Duration;
 
 /// Function to update the player information in a separate thread
-pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
+pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App, settings: &mut Settings) {
     loop {
         // Get the user's current playback
         currently_playing(app).unwrap();
-        process_currently_playing(app);
+        process_currently_playing(app, settings);
 
         // Send a message to the main thread to update the UI
         if tx.send(()).is_err() {
@@ -36,7 +37,7 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App) {
 }
 
 /// Function to run before starting the main app loop
-pub fn startup(app: &mut App, key: &mut Key) {
+pub fn startup(app: &mut App, key: &mut Key, theme: &mut Themes, settings: &mut Settings) {
     // Set the keybindings from the configure files
     read_keybindings(app);
     set_keybindings(app, key);
@@ -44,11 +45,11 @@ pub fn startup(app: &mut App, key: &mut Key) {
 
     // Set the theme from the configure files
     read_theme(app);
-    set_theme(app);
+    set_theme(app, theme);
 
     // Set the volume increament and decreament values
     read_volume_values(app);
-    set_volume_values(app);
+    set_volume_values(app, settings);
 
     // Fetch the new released albums from spotify
     let _ = new_releases(app);

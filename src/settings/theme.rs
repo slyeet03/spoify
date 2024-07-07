@@ -8,6 +8,7 @@ use std::io::BufReader;
 use std::path::PathBuf;
 
 use crate::app::App;
+use crate::structs::Themes;
 
 #[derive(Deserialize, Debug)]
 struct Theme(HashMap<String, Value>);
@@ -29,7 +30,7 @@ pub fn read_theme(app: &mut App) -> HashMap<String, Value> {
 }
 
 /// Sets the application theme based on the configuration loaded from the theme file
-pub fn set_theme(app: &mut App) {
+pub fn set_theme(app: &mut App, themes: &mut Themes) {
     let theme = read_theme(app);
 
     // Iterate over all entries in the theme HashMap
@@ -37,40 +38,44 @@ pub fn set_theme(app: &mut App) {
         if let Some(rgb) = value.as_str() {
             let (r, g, b) = parse_color(rgb);
             match key.as_str() {
-                "Player Border Color" => app.player_border_color = Color::Rgb(r, g, b),
-                "Player Background Color" => app.player_background_color = Color::Rgb(r, g, b),
-                "Player Highlight Color" => app.player_highlight_color = Color::Rgb(r, g, b),
+                "Player Border Color" => themes.player_border_color = Color::Rgb(r, g, b),
+                "Player Background Color" => themes.player_background_color = Color::Rgb(r, g, b),
+                "Player Highlight Color" => themes.player_highlight_color = Color::Rgb(r, g, b),
 
-                "Library Border Color" => app.library_border_color = Color::Rgb(r, g, b),
-                "Library Background Color" => app.library_background_color = Color::Rgb(r, g, b),
-                "Library Highlight Color" => app.library_highlight_color = Color::Rgb(r, g, b),
+                "Library Border Color" => themes.library_border_color = Color::Rgb(r, g, b),
+                "Library Background Color" => themes.library_background_color = Color::Rgb(r, g, b),
+                "Library Highlight Color" => themes.library_highlight_color = Color::Rgb(r, g, b),
 
-                "Playlist Border Color" => app.playlist_border_color = Color::Rgb(r, g, b),
-                "Playlist Background Color" => app.playlist_background_color = Color::Rgb(r, g, b),
-                "Playlist Highlight Color" => app.playlist_highlight_color = Color::Rgb(r, g, b),
+                "Playlist Border Color" => themes.playlist_border_color = Color::Rgb(r, g, b),
+                "Playlist Background Color" => {
+                    themes.playlist_background_color = Color::Rgb(r, g, b)
+                }
+                "Playlist Highlight Color" => themes.playlist_highlight_color = Color::Rgb(r, g, b),
 
-                "New Release Border Color" => app.new_release_border_color = Color::Rgb(r, g, b),
+                "New Release Border Color" => themes.new_release_border_color = Color::Rgb(r, g, b),
                 "New Release Background Color" => {
-                    app.new_release_background_color = Color::Rgb(r, g, b)
+                    themes.new_release_background_color = Color::Rgb(r, g, b)
                 }
                 "New Release Highlight Color" => {
-                    app.new_release_highlight_color = Color::Rgb(r, g, b)
+                    themes.new_release_highlight_color = Color::Rgb(r, g, b)
                 }
 
-                "Main Section Border Color" => app.main_border_color = Color::Rgb(r, g, b),
-                "Main Section Background Color" => app.main_background_color = Color::Rgb(r, g, b),
-                "Main Section Highlight Color" => app.main_highlight_color = Color::Rgb(r, g, b),
+                "Main Section Border Color" => themes.main_border_color = Color::Rgb(r, g, b),
+                "Main Section Background Color" => {
+                    themes.main_background_color = Color::Rgb(r, g, b)
+                }
+                "Main Section Highlight Color" => themes.main_highlight_color = Color::Rgb(r, g, b),
 
-                "Search Border Color" => app.search_border_color = Color::Rgb(r, g, b),
-                "Search Background Color" => app.search_background_color = Color::Rgb(r, g, b),
-                "Search Highlight Color" => app.search_highlight_color = Color::Rgb(r, g, b),
+                "Search Border Color" => themes.search_border_color = Color::Rgb(r, g, b),
+                "Search Background Color" => themes.search_background_color = Color::Rgb(r, g, b),
+                "Search Highlight Color" => themes.search_highlight_color = Color::Rgb(r, g, b),
 
-                "Help Border Color" => app.help_border_color = Color::Rgb(r, g, b),
-                "Help Background Color" => app.help_background_color = Color::Rgb(r, g, b),
-                "Help Highlight Color" => app.help_highlight_color = Color::Rgb(r, g, b),
+                "Help Border Color" => themes.help_border_color = Color::Rgb(r, g, b),
+                "Help Background Color" => themes.help_background_color = Color::Rgb(r, g, b),
+                "Help Highlight Color" => themes.help_highlight_color = Color::Rgb(r, g, b),
 
-                "Error Border Color" => app.error_border_color = Color::Rgb(r, g, b),
-                "Error Background Color" => app.error_background_color = Color::Rgb(r, g, b),
+                "Error Border Color" => themes.error_border_color = Color::Rgb(r, g, b),
+                "Error Background Color" => themes.error_background_color = Color::Rgb(r, g, b),
                 _ => (),
             }
         }

@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.4] - 2024-07-07
+
+### Fixed
+
+- Removed unnecessary comments
+- Made a seperate struct for colors and settings
+
+### Added
+
+- User can now refresh the application
+
 ## [0.2.3] - 2024-07-06
 
 ### Fixed

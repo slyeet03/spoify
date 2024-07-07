@@ -6,6 +6,7 @@ use std::io::BufReader;
 use std::path::PathBuf;
 
 use crate::app::App;
+use crate::structs::Settings;
 
 #[derive(Deserialize, Debug)]
 struct VolumeValues(HashMap<String, String>);
@@ -26,14 +27,14 @@ pub fn read_volume_values(app: &mut App) -> HashMap<String, String> {
 }
 
 /// Sets the volume_values in the App struct based on the loaded configuration
-pub fn set_volume_values(app: &mut App) {
+pub fn set_volume_values(app: &mut App, settings: &mut Settings) {
     let volume_values = read_volume_values(app);
 
     if let Some(value_str) = volume_values.get("Volume Increament Value") {
-        app.volume_increment_value = value_str.parse::<u8>().unwrap_or(0);
+        settings.volume_increment_value = value_str.parse::<u8>().unwrap_or(0);
     }
 
     if let Some(value_str) = volume_values.get("Volume Decreament Value") {
-        app.volume_decreament_value = value_str.parse::<u8>().unwrap_or(0);
+        settings.volume_decreament_value = value_str.parse::<u8>().unwrap_or(0);
     }
 }

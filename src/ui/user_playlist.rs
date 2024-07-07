@@ -5,35 +5,40 @@ use ratatui::{
     Frame,
 };
 
-use crate::app::App;
+use crate::{app::App, structs::Themes};
 
 use super::util::{convert_to_list, track_table_ui};
 
 /// Renders the user playlist UI section, including playlist selection list and track table
-pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
+pub fn render_user_playlist(
+    f: &mut Frame,
+    content_chunk: &[Rect],
+    app: &mut App,
+    theme: &mut Themes,
+) {
     let current_playlist_name = (&app.current_user_playlist).to_string();
 
     let playlist_block_user = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlist"))
-        .border_style(Style::new().fg(app.playlist_border_color))
-        .style(Style::default().bg(app.playlist_background_color));
+        .border_style(Style::new().fg(theme.playlist_border_color))
+        .style(Style::default().bg(theme.playlist_background_color));
 
     let user_playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(current_playlist_name))
         .border_style(if app.user_playlist_tracks_selected {
-            Style::default().fg(app.playlist_border_color)
+            Style::default().fg(theme.playlist_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.playlist_background_color));
+        .style(Style::default().bg(theme.playlist_background_color));
 
     // Convert app data (user playlist names) to a List widget
     let user_playlist_names = convert_to_list(&app.user_playlist_names);
     let user_playlist_list = List::new(user_playlist_names)
         .block(playlist_block_user.clone())
-        .highlight_style(Style::default().fg(app.playlist_highlight_color));
+        .highlight_style(Style::default().fg(theme.playlist_highlight_color));
 
     f.render_widget(Clear, content_chunk[2]);
 
@@ -53,8 +58,8 @@ pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App
             app.user_playlist_album_names.clone(),
             app.user_playlist_track_duration.clone(),
             user_playlist_block,
-            app.playlist_highlight_color.clone(),
-            app.playlist_background_color.clone(),
+            theme.playlist_highlight_color.clone(),
+            theme.playlist_background_color.clone(),
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -68,11 +73,16 @@ pub fn render_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App
 }
 
 /// Renders a default UI for the user playlist section when no playlist is selected
-pub fn render_default_user_playlist(f: &mut Frame, content_chunk: &[Rect], app: &mut App) {
+pub fn render_default_user_playlist(
+    f: &mut Frame,
+    content_chunk: &[Rect],
+    app: &mut App,
+    theme: &mut Themes,
+) {
     let playlist_block_user = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlist"))
-        .style(Style::default().bg(app.playlist_background_color));
+        .style(Style::default().bg(theme.playlist_background_color));
 
     // Convert app data (user playlist names) to a List widget
     let user_playlist_names = convert_to_list(&app.user_playlist_names);

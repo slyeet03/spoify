@@ -6,6 +6,7 @@ use crate::{
         previous_track::previous_track, repeat::cycle_repeat, shuffle::toogle_shuffle,
         volume_decrease::volume_decreament, volume_increase::volume_increment,
     },
+    structs::Settings,
 };
 
 pub fn fullscreen_player_event(app: &mut App) {
@@ -29,14 +30,14 @@ pub fn shuffle_event(app: &mut App) {
     }
 }
 
-pub fn volume_decreament_event(app: &mut App) {
-    if let Err(e) = volume_decreament(app) {
+pub fn volume_decreament_event(app: &mut App, settings: &mut Settings) {
+    if let Err(e) = volume_decreament(app, settings) {
         println!("{}", e);
     }
 }
 
-pub fn volume_increment_event(app: &mut App) {
-    if let Err(e) = volume_increment(app) {
+pub fn volume_increment_event(app: &mut App, settings: &mut Settings) {
+    if let Err(e) = volume_increment(app, settings) {
         println!("{}", e);
     }
 }

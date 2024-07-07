@@ -6,7 +6,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::app::App;
+use crate::{app::App, structs::Themes};
 
 use super::{blank_screen::render_blank_screen, util::format_duration};
 
@@ -16,6 +16,7 @@ pub fn render_player_in_fullscreen(
     player_fullscreen_layout: &[Rect],
     player_fullscreen_vertical_chunk: &[Rect],
     app: &mut App,
+    theme: &mut Themes,
 ) {
     f.render_widget(Clear, f.size());
 
@@ -29,7 +30,7 @@ pub fn render_player_in_fullscreen(
             app.repeat_status,
             app.current_device_volume
         ))
-        .style(Style::default().bg(app.player_background_color));
+        .style(Style::default().bg(theme.player_background_color));
 
     let mut player_info_vec = Vec::new();
     let _var = player_info_vec;
@@ -39,7 +40,7 @@ pub fn render_player_in_fullscreen(
         player_info_vec = vec![Line::from(vec![
             Span::styled(
                 app.current_playing_name.clone(),
-                Style::default().fg(app.player_highlight_color),
+                Style::default().fg(theme.player_highlight_color),
             ),
             Span::raw(", "),
             Span::styled(app.current_playing_album.clone(), Style::default()),
@@ -48,7 +49,7 @@ pub fn render_player_in_fullscreen(
         player_info_vec = vec![Line::from(vec![
             Span::styled(
                 app.current_playing_name.clone(),
-                Style::default().fg(app.player_highlight_color),
+                Style::default().fg(theme.player_highlight_color),
             ),
             Span::raw(", "),
             Span::styled(app.currently_playing_artist.clone(), Style::default()),
@@ -75,17 +76,17 @@ pub fn render_player_in_fullscreen(
         .block(
             Block::default()
                 .borders(Borders::BOTTOM | Borders::RIGHT | Borders::LEFT)
-                .style(Style::default().bg(app.player_background_color)),
+                .style(Style::default().bg(theme.player_background_color)),
         )
         .gauge_style(
             Style::default()
-                .fg(app.player_highlight_color)
-                .bg(app.player_background_color),
+                .fg(theme.player_highlight_color)
+                .bg(theme.player_background_color),
         )
         .label(label)
         .ratio(app.progress_bar_ratio);
 
-    render_blank_screen(f, &player_fullscreen_vertical_chunk, app);
+    render_blank_screen(f, player_fullscreen_vertical_chunk, theme);
     f.render_widget(player_info_block.clone(), player_fullscreen_layout[0]);
     f.render_widget(
         player_info,

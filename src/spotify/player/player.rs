@@ -1,5 +1,6 @@
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
+use crate::structs::Settings;
 use chrono::DateTime;
 use rspotify::model::{
     Actions, AdditionalType, CurrentPlaybackContext, CurrentlyPlayingType, Device, DeviceType,
@@ -93,7 +94,7 @@ fn save_data_to_json(app: &mut App, items: CurrentPlaybackContext) {
 }
 
 // Function to process the currently playing track information and update the application state
-pub fn process_currently_playing(app: &mut App) {
+pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
     // Clear any existing currently playing data in the app before processing new data
     app.currrent_timestamp = 0.0;
     app.ending_timestamp = 0.0;
@@ -142,7 +143,7 @@ pub fn process_currently_playing(app: &mut App) {
             }
             if let Some(device_volume) = device.get("volume_percent").and_then(Value::as_u64) {
                 app.current_device_volume = device_volume.to_string();
-                app.volume_percent = device_volume as u8;
+                settings.volume_percent = device_volume as u8;
             }
         }
         if let Some(shuffle) = currently_playing

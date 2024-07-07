@@ -8,6 +8,7 @@ pub mod new_release;
 pub mod open_configure_folder;
 pub mod player;
 pub mod playlist_control;
+pub mod refresh;
 pub mod search;
 pub mod user_playlist;
 pub mod util;

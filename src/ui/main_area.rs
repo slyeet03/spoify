@@ -9,7 +9,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::app::App;
+use crate::{app::App, structs::Themes};
 
 use super::util::convert_to_list;
 
@@ -19,20 +19,21 @@ pub fn render_main_area(
     content_chunk: &[Rect],
     front_chunk: &[Rect],
     app: &mut App,
+    theme: &mut Themes,
 ) {
     let content_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"))
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let logo_block = Block::default()
         .borders(Borders::NONE)
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let logo = Paragraph::new(logo())
         .block(logo_block)
         .alignment(Alignment::Center)
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let stat_chunk = Layout::default()
         .direction(Direction::Horizontal)
@@ -48,21 +49,21 @@ pub fn render_main_area(
         .padding(Padding::right(2))
         .title("Top Tracks(All Time)")
         .title_style(Style::default().add_modifier(Modifier::BOLD).underlined())
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let top_track_6_months_block = Block::default()
         .borders(Borders::NONE)
         .padding(Padding::right(2))
         .title("Top Tracks(6 Months)")
         .title_style(Style::default().underlined().add_modifier(Modifier::BOLD))
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let top_track_4_weeks_block = Block::default()
         .borders(Borders::NONE)
         .padding(Padding::right(2))
         .title("Top Tracks(4 Weeks)")
         .title_style(Style::default().underlined().add_modifier(Modifier::BOLD))
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let top_tracks_all_time_names_clone = app.top_tracks_all_time_names.clone();
     let top_track_all_time_names = convert_to_list(&top_tracks_all_time_names_clone);

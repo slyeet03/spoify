@@ -4,10 +4,19 @@ use ratatui::{
     Frame,
 };
 
-use crate::{app::App, structs::Key, ui::util::convert_to_list};
+use crate::{
+    app::App,
+    structs::{Key, Themes},
+    ui::util::convert_to_list,
+};
 
 /// Renders the error screen
-pub fn render_add_track_to_playlist_screen(f: &mut Frame, app: &mut App, key: &mut Key) {
+pub fn render_add_track_to_playlist_screen(
+    f: &mut Frame,
+    app: &mut App,
+    key: &mut Key,
+    theme: &mut Themes,
+) {
     let add_playlist_label = format!(
         "Select a playlist to add {} to (press {} to cancel)",
         app.track_added_to_playlist_name, key.exit_application_key
@@ -17,13 +26,13 @@ pub fn render_add_track_to_playlist_screen(f: &mut Frame, app: &mut App, key: &m
     let add_playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(add_playlist_label))
-        .border_style(Style::new().fg(app.playlist_border_color))
-        .style(Style::default().bg(app.playlist_background_color));
+        .border_style(Style::new().fg(theme.playlist_border_color))
+        .style(Style::default().bg(theme.playlist_background_color));
 
     let add_to_playlist_names = convert_to_list(&app.user_playlist_names);
     let add_to_playlist_list = List::new(add_to_playlist_names)
         .block(add_playlist_block.clone())
-        .highlight_style(Style::default().fg(app.playlist_highlight_color));
+        .highlight_style(Style::default().fg(theme.playlist_highlight_color));
 
     f.render_widget(Clear, f.size());
 

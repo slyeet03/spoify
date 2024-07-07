@@ -1,6 +1,6 @@
 use crate::app::App;
 use crate::enums::Menu;
-use crate::structs::Key;
+use crate::structs::{Key, Themes};
 
 use ratatui::prelude::*;
 
@@ -16,7 +16,13 @@ use super::search::search::{render_default_search, render_search};
 use super::user_playlist::{render_default_user_playlist, render_user_playlist};
 
 /// Renders the main frame of the application's user interface
-pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App, key: &mut Key) {
+pub fn render_frame(
+    f: &mut Frame,
+    selected_menu: Menu,
+    app: &mut App,
+    key: &mut Key,
+    theme: &mut Themes,
+) {
     // Calculate the layout constraints
     let size = f.size();
 
@@ -96,27 +102,27 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App, key: &mut
         .split(player_fullscreen_vertical_chunk[1]);
 
     // Render the default UI
-    render_default_search(f, &header_chunk, app);
-    render_default_library(f, &content_sub_chunk, app);
-    render_default_user_playlist(f, &content_chunk, app);
-    render_player(f, &player_layout, app);
-    render_main_area(f, &content_chunk, &front_chunk, app);
-    render_default_help(f, &header_chunk, app);
-    render_default_new_releases(f, &content_sub_chunk, app);
+    render_default_search(f, &header_chunk, theme);
+    render_default_library(f, &content_sub_chunk, theme);
+    render_default_user_playlist(f, &content_chunk, app, theme);
+    render_player(f, &player_layout, app, theme);
+    render_main_area(f, &content_chunk, &front_chunk, app, theme);
+    render_default_help(f, &header_chunk, theme);
+    render_default_new_releases(f, &content_sub_chunk, app, theme);
 
     // Render different sections based on the selected menu
     match selected_menu {
         Menu::Default => {
-            render_main_area(f, &content_chunk, &front_chunk, app);
+            render_main_area(f, &content_chunk, &front_chunk, app, theme);
         }
         Menu::Main => {
-            render_main_area(f, &content_chunk, &front_chunk, app);
+            render_main_area(f, &content_chunk, &front_chunk, app, theme);
         }
         Menu::Library => {
-            render_library(f, &content_sub_chunk, &content_chunk, app);
+            render_library(f, &content_sub_chunk, &content_chunk, app, theme);
         }
         Menu::Playlists => {
-            render_user_playlist(f, &content_chunk, app);
+            render_user_playlist(f, &content_chunk, app, theme);
         }
         Menu::Search => {
             render_search(
@@ -126,16 +132,17 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App, key: &mut
                 &main_chunk_lower,
                 &content_chunk,
                 app,
+                theme,
             );
         }
         Menu::Help => {
-            render_help(f, app, key);
+            render_help(f, key, theme);
         }
         Menu::NewRelease => {
-            render_new_releases(f, &content_sub_chunk, &content_chunk, app);
+            render_new_releases(f, &content_sub_chunk, &content_chunk, app, theme);
         }
         Menu::Error => {
-            render_error(f, app, key);
+            render_error(f, app, key, theme);
         }
         Menu::Player => {
             render_player_in_fullscreen(
@@ -143,10 +150,11 @@ pub fn render_frame(f: &mut Frame, selected_menu: Menu, app: &mut App, key: &mut
                 &player_fullscreen_layout,
                 &player_fullscreen_vertical_chunk,
                 app,
+                theme,
             );
         }
         Menu::AddTrackToPlaylist => {
-            render_add_track_to_playlist_screen(f, app, key);
+            render_add_track_to_playlist_screen(f, app, key, theme);
         }
     }
 }

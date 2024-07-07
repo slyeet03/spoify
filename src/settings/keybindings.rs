@@ -90,6 +90,10 @@ pub fn set_keybindings(app: &mut App, key: &mut Key) {
         Some(s) => s.chars().next().unwrap_or(' '),
         None => ' ',
     };
+    key.refresh_key = match keybindings.get("Refresh") {
+        Some(s) => s.chars().next().unwrap_or(' '),
+        None => ' ',
+    };
 }
 
 /// Parses the keybindings from the configuration file and populates the tasks and first_keys fields in the App struct

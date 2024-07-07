@@ -1,3 +1,5 @@
+use ratatui::style::Color;
+
 #[derive(Clone, Debug)]
 pub struct Key {
     pub go_to_search_key: char,
@@ -15,6 +17,7 @@ pub struct Key {
     pub error_key: char,
     pub player_fullscreen_key: char,
     pub change_keybind: char,
+    pub refresh_key: char,
 
     pub first_keys: Vec<String>,
     pub tasks: Vec<String>,
@@ -38,9 +41,99 @@ impl Default for Key {
             error_key: ' ',
             player_fullscreen_key: ' ',
             change_keybind: ' ',
+            refresh_key: ' ',
 
             first_keys: Vec::new(),
             tasks: Vec::new(),
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct Themes {
+    pub player_border_color: Color,
+    pub player_highlight_color: Color,
+    pub player_background_color: Color,
+
+    pub library_border_color: Color,
+    pub library_highlight_color: Color,
+    pub library_background_color: Color,
+
+    pub playlist_border_color: Color,
+    pub playlist_highlight_color: Color,
+    pub playlist_background_color: Color,
+
+    pub new_release_border_color: Color,
+    pub new_release_highlight_color: Color,
+    pub new_release_background_color: Color,
+
+    pub main_border_color: Color,
+    pub main_highlight_color: Color,
+    pub main_background_color: Color,
+
+    pub search_border_color: Color,
+    pub search_highlight_color: Color,
+    pub search_background_color: Color,
+
+    pub help_border_color: Color,
+    pub help_highlight_color: Color,
+    pub help_background_color: Color,
+
+    pub error_border_color: Color,
+    pub error_background_color: Color,
+}
+
+impl Default for Themes {
+    fn default() -> Self {
+        Self {
+            player_border_color: Color::Rgb(0, 0, 0),
+            player_highlight_color: Color::Rgb(0, 0, 0),
+            player_background_color: Color::Rgb(0, 0, 0),
+
+            library_border_color: Color::Rgb(0, 0, 0),
+            library_highlight_color: Color::Rgb(0, 0, 0),
+            library_background_color: Color::Rgb(0, 0, 0),
+
+            playlist_border_color: Color::Rgb(0, 0, 0),
+            playlist_highlight_color: Color::Rgb(0, 0, 0),
+            playlist_background_color: Color::Rgb(0, 0, 0),
+
+            new_release_border_color: Color::Rgb(0, 0, 0),
+            new_release_highlight_color: Color::Rgb(0, 0, 0),
+            new_release_background_color: Color::Rgb(0, 0, 0),
+
+            main_border_color: Color::Rgb(0, 0, 0),
+            main_highlight_color: Color::Rgb(0, 0, 0),
+            main_background_color: Color::Rgb(0, 0, 0),
+
+            search_border_color: Color::Rgb(0, 0, 0),
+            search_highlight_color: Color::Rgb(0, 0, 0),
+            search_background_color: Color::Rgb(0, 0, 0),
+
+            help_border_color: Color::Rgb(0, 0, 0),
+            help_highlight_color: Color::Rgb(0, 0, 0),
+            help_background_color: Color::Rgb(0, 0, 0),
+
+            error_border_color: Color::Rgb(0, 0, 0),
+            error_background_color: Color::Rgb(0, 0, 0),
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct Settings {
+    // Volume controls
+    pub volume_increment_value: u8,
+    pub volume_decreament_value: u8,
+    pub volume_percent: u8,
+}
+
+impl Default for Settings {
+    fn default() -> Self {
+        Self {
+            volume_increment_value: 0,
+            volume_decreament_value: 0,
+            volume_percent: 0,
         }
     }
 }

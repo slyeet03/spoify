@@ -22,6 +22,7 @@ use super::playlist_control::add_track_to_playlist::{
 use super::playlist_control::{
     follow_playlist::follow_playlist_event, unfollow_playlist::unfollow_playlist_event,
 };
+use super::refresh::refresh_event;
 use super::search::{
     go_to_search_event, search_down_event, search_enter_event, search_tab_event, search_up_event,
 };
@@ -33,12 +34,18 @@ use super::util::{default_nav, delete_char, move_cursor_left, move_cursor_right,
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
 use crate::spotify::search::search::process_search;
-use crate::structs::Key;
+use crate::structs::{Key, Settings, Themes};
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use std::io::{self, Write};
 
 /// Function to handle key events for the application
-pub fn handle_key_event(app: &mut App, key_event: KeyEvent, key: &mut Key) {
+pub fn handle_key_event(
+    app: &mut App,
+    key_event: KeyEvent,
+    key: &mut Key,
+    theme: &mut Themes,
+    settings: &mut Settings,
+) {
     let go_to_search_key: char = key.go_to_search_key;
     let go_to_library_key: char = key.go_to_library_key;
     let go_to_user_playlists_key: char = key.go_to_user_playlists_key;
@@ -52,6 +59,7 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent, key: &mut Key) {
     let error_key: char = key.error_key;
     let player_fullscreen_key: char = key.player_fullscreen_key;
     let change_keybind: char = key.change_keybind;
+    let refresh_key: char = key.refresh_key;
 
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
@@ -88,6 +96,11 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent, key: &mut Key) {
                 && app.input_mode != InputMode::Editing =>
             {
                 exit_event(app);
+            }
+
+            // Run the startup function again
+            code if code == KeyCode::Char(refresh_key) && app.input_mode != InputMode::Editing => {
+                refresh_event(app, key, theme, settings);
             }
 
             // Navigate to different menus (Library, Playlists, Search, New Releases) when 'l', 'p', 's' or 'n' is pressed
@@ -136,13 +149,13 @@ pub fn handle_key_event(app: &mut App, key_event: KeyEvent, key: &mut Key) {
             code if code == KeyCode::Char(volume_down_key)
                 && app.input_mode != InputMode::Editing =>
             {
-                volume_decreament_event(app);
+                volume_decreament_event(app, settings);
             }
 
             code if code == KeyCode::Char(volume_up_key)
                 && app.input_mode != InputMode::Editing =>
             {
-                volume_increment_event(app);
+                volume_increment_event(app, settings);
             }
 
             // Keys for next and previous track

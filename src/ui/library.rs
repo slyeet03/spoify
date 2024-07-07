@@ -5,8 +5,8 @@ use ratatui::{
     Frame,
 };
 
-use crate::app::App;
 use crate::ui::util::{album_table_ui, artist_table_ui, podcast_table_ui, track_table_ui};
+use crate::{app::App, structs::Themes};
 
 use super::{
     search::util::{searched_track_table_for_album_ui, searched_track_table_for_artist_ui},
@@ -19,72 +19,73 @@ pub fn render_library(
     content_sub_chunk: &[Rect],
     content_chunk: &[Rect],
     app: &mut App,
+    theme: &mut Themes,
 ) {
     let library_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Library"))
-        .border_style(Style::new().fg(app.library_border_color))
-        .style(Style::default().bg(app.library_background_color));
+        .border_style(Style::new().fg(theme.library_border_color))
+        .style(Style::default().bg(theme.library_background_color));
 
     let liked_song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Liked Songs"))
         .border_style(if app.liked_songs_selected {
-            Style::default().fg(app.main_border_color)
+            Style::default().fg(theme.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let recently_played_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Recently Played"))
         .border_style(if app.recently_played_selected {
-            Style::default().fg(app.main_border_color)
+            Style::default().fg(theme.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let user_album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
         .border_style(if app.user_album_selected {
-            Style::default().fg(app.main_border_color)
+            Style::default().fg(theme.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let podcast_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Podcasts"))
         .border_style(if app.podcast_selected {
-            Style::default().fg(app.main_border_color)
+            Style::default().fg(theme.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let user_artist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Artists"))
         .border_style(if app.user_artist_selected {
-            Style::default().fg(app.main_border_color)
+            Style::default().fg(theme.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let made_fy_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Made For You"))
         .border_style(if app.made_fy_selected {
-            Style::default().fg(app.main_border_color)
+            Style::default().fg(theme.main_border_color)
         } else {
             Style::default()
         })
-        .style(Style::default().bg(app.main_background_color));
+        .style(Style::default().bg(theme.main_background_color));
 
     let library_items = vec![
         String::from("Made For You"),
@@ -97,7 +98,7 @@ pub fn render_library(
     // Rendering currently selected menu
     let library_list = List::new(library_items)
         .block(library_block)
-        .highlight_style(Style::default().fg(app.library_highlight_color));
+        .highlight_style(Style::default().fg(theme.library_highlight_color));
 
     f.render_stateful_widget(library_list, content_sub_chunk[0], &mut app.library_state);
 
@@ -109,8 +110,8 @@ pub fn render_library(
             app.made_fy_playlist_names.clone(),
             app.made_fy_playlist_track_total.clone(),
             made_fy_block,
-            app.main_highlight_color,
-            app.main_background_color,
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -123,17 +124,17 @@ pub fn render_library(
     }
 
     if app.made_fy_track_display {
-        let made_fy_track_label = format!("{}", app.made_fy_playlist_names[app.made_fy_index]);
+        let made_fy_track_label = app.made_fy_playlist_names[app.made_fy_index].to_string();
 
         let made_fy_track_block = Block::default()
             .borders(Borders::ALL)
             .title(Title::from(made_fy_track_label))
             .border_style(if app.made_fy_track_selected {
-                Style::default().fg(app.main_border_color)
+                Style::default().fg(theme.main_border_color)
             } else {
                 Style::default()
             })
-            .style(Style::default().bg(app.main_background_color));
+            .style(Style::default().bg(theme.main_background_color));
 
         f.render_widget(Clear, content_chunk[1]);
 
@@ -143,8 +144,8 @@ pub fn render_library(
             app.made_fy_album_names.clone(),
             app.made_fy_track_duration.clone(),
             made_fy_track_block,
-            app.main_highlight_color.clone(),
-            app.main_background_color.clone(),
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -165,8 +166,8 @@ pub fn render_library(
             app.liked_song_album_names.clone(),
             app.liked_song_duration.clone(),
             liked_song_block,
-            app.main_highlight_color.clone(),
-            app.main_background_color.clone(),
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -187,8 +188,8 @@ pub fn render_library(
             app.recently_played_album_names.clone(),
             app.recently_played_duration.clone(),
             recently_played_block,
-            app.main_highlight_color.clone(),
-            app.main_background_color.clone(),
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -207,8 +208,8 @@ pub fn render_library(
             app.podcast_names.clone(),
             app.podcast_publisher.clone(),
             podcast_block,
-            app.main_highlight_color.clone(),
-            app.main_background_color.clone(),
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -222,8 +223,8 @@ pub fn render_library(
         let artist_table = artist_table_ui(
             app.user_artist_names.clone(),
             user_artist_block,
-            app.main_highlight_color.clone(),
-            app.main_background_color.clone(),
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -239,8 +240,8 @@ pub fn render_library(
             app.user_album_artist_names.clone(),
             app.user_album_tracks.clone(),
             user_album_block,
-            app.main_highlight_color.clone(),
-            app.main_background_color.clone(),
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -252,17 +253,17 @@ pub fn render_library(
         );
     }
     if app.user_album_track_display {
-        let user_album_track_label = format!("{}", app.user_album_names[app.user_album_index]);
+        let user_album_track_label = app.user_album_names[app.user_album_index].to_string();
 
         let user_album_track_block = Block::default()
             .borders(Borders::ALL)
             .title(Title::from(user_album_track_label))
             .border_style(if app.user_album_track_selected {
-                Style::default().fg(app.main_border_color)
+                Style::default().fg(theme.main_border_color)
             } else {
                 Style::default()
             })
-            .style(Style::default().bg(app.main_background_color));
+            .style(Style::default().bg(theme.main_background_color));
 
         f.render_widget(Clear, content_chunk[1]);
 
@@ -271,8 +272,8 @@ pub fn render_library(
             app.user_album_track_artist.clone(),
             app.user_album_track_duration.clone(),
             user_album_track_block,
-            app.main_highlight_color.clone(),
-            app.main_background_color.clone(),
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -284,17 +285,17 @@ pub fn render_library(
         );
     }
     if app.user_artist_track_display {
-        let user_artist_track_label = format!("{}", app.user_artist_names[app.user_artist_index]);
+        let user_artist_track_label = app.user_artist_names[app.user_artist_index].to_string();
 
         let user_artist_track_block = Block::default()
             .borders(Borders::ALL)
             .title(Title::from(user_artist_track_label))
             .border_style(if app.user_artist_track_selected {
-                Style::default().fg(app.main_border_color)
+                Style::default().fg(theme.main_border_color)
             } else {
                 Style::default()
             })
-            .style(Style::default().bg(app.main_background_color));
+            .style(Style::default().bg(theme.main_background_color));
 
         f.render_widget(Clear, content_chunk[1]);
 
@@ -303,8 +304,8 @@ pub fn render_library(
             app.user_artist_track_album.clone(),
             app.user_artist_track_duration.clone(),
             user_artist_track_block,
-            app.main_highlight_color.clone(),
-            app.main_background_color.clone(),
+            theme.main_highlight_color,
+            theme.main_background_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -318,7 +319,7 @@ pub fn render_library(
 }
 
 /// Renders a simplified library view with only the list of library sections
-pub fn render_default_library(f: &mut Frame, content_sub_chunk: &[Rect], app: &mut App) {
+pub fn render_default_library(f: &mut Frame, content_sub_chunk: &[Rect], theme: &mut Themes) {
     // Define the library items
     let library_items = vec![
         String::from("Made For You"),
@@ -332,7 +333,7 @@ pub fn render_default_library(f: &mut Frame, content_sub_chunk: &[Rect], app: &m
     let library_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Library"))
-        .style(Style::default().bg(app.library_background_color));
+        .style(Style::default().bg(theme.library_background_color));
 
     let library_list = List::new(library_items.clone()).block(library_block);
     f.render_widget(library_list, content_sub_chunk[0]);

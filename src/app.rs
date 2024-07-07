@@ -2,11 +2,10 @@ use crate::enums::{InputMode, Library, Menu, SearchMenu};
 use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
 use crate::spotify::player::player::process_currently_playing;
-use crate::structs::Key;
+use crate::structs::{Key, Settings, Themes};
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
 use crossterm::event::{self, Event};
-use ratatui::style::Color;
 use ratatui::widgets::{ListState, TableState};
 use std::io;
 use std::sync::mpsc::Receiver;
@@ -261,43 +260,6 @@ pub struct App {
     pub new_release_spotify_urls: Vec<String>,
     pub enter_for_playback_in_new_release: bool,
 
-    // Color's for UI
-    pub player_border_color: Color,
-    pub player_highlight_color: Color,
-    pub player_background_color: Color,
-
-    pub library_border_color: Color,
-    pub library_highlight_color: Color,
-    pub library_background_color: Color,
-
-    pub playlist_border_color: Color,
-    pub playlist_highlight_color: Color,
-    pub playlist_background_color: Color,
-
-    pub new_release_border_color: Color,
-    pub new_release_highlight_color: Color,
-    pub new_release_background_color: Color,
-
-    pub main_border_color: Color,
-    pub main_highlight_color: Color,
-    pub main_background_color: Color,
-
-    pub search_border_color: Color,
-    pub search_highlight_color: Color,
-    pub search_background_color: Color,
-
-    pub help_border_color: Color,
-    pub help_highlight_color: Color,
-    pub help_background_color: Color,
-
-    pub error_border_color: Color,
-    pub error_background_color: Color,
-
-    // Volume controls
-    pub volume_increment_value: u8,
-    pub volume_decreament_value: u8,
-    pub volume_percent: u8,
-
     // Creds
     pub client_id: String,
     pub client_secret: String,
@@ -335,6 +297,8 @@ impl App {
         terminal: &mut tui::Tui,
         rx1: Receiver<()>,
         keys: &mut Key,
+        theme: &mut Themes,
+        settings: &mut Settings,
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -344,7 +308,7 @@ impl App {
             // Handling user inputs
             if event::poll(timeout)? {
                 if let Event::Key(key_event) = event::read()? {
-                    handle_key_event(self, key_event, keys);
+                    handle_key_event(self, key_event, keys, theme, settings);
 
                     // In editing mode, handle search input
                     if self.input_mode == InputMode::Editing {
@@ -360,11 +324,12 @@ impl App {
 
                 // Check if a message has been received from the player info update thread
                 if rx1.try_recv().is_ok() {
-                    process_currently_playing(self);
+                    process_currently_playing(self, settings);
                 }
 
                 // Draw the UI
-                terminal.draw(|frame| render_frame(frame, self.selected_menu, self, keys))?;
+                terminal
+                    .draw(|frame| render_frame(frame, self.selected_menu, self, keys, theme))?;
             }
         }
 
@@ -504,24 +469,6 @@ impl Default for App {
             task: Vec::new(),
             key: Vec::new(),
 
-            // go_to_search_key: ' ',
-            // go_to_library_key: ' ',
-            // go_to_user_playlists_key: ' ',
-            // exit_application_key: ' ',
-            // pause_play_key: ' ',
-            // help_key: ' ',
-            // volume_up_key: ' ',
-            // volume_down_key: ' ',
-            // new_release_key: ' ',
-            // lyrics_key: ' ',
-            // next_track_key: ' ',
-            // previous_track_key: ' ',
-            // error_key: ' ',
-            // player_fullscreen_key: ' ',
-
-            //
-            // first_keys: Vec::new(),
-            // tasks: Vec::new(),
             new_release_artist: Vec::new(),
             new_release_name: Vec::new(),
             new_release_state: ListState::default(),
@@ -539,43 +486,8 @@ impl Default for App {
             new_release_durations_ms: Vec::new(),
             new_release_spotify_urls: Vec::new(),
 
-            volume_increment_value: 0,
-            volume_decreament_value: 0,
-            volume_percent: 0,
-
             client_id: String::new(),
             client_secret: String::new(),
-
-            player_border_color: Color::Rgb(0, 0, 0),
-            player_highlight_color: Color::Rgb(0, 0, 0),
-            player_background_color: Color::Rgb(0, 0, 0),
-
-            library_border_color: Color::Rgb(0, 0, 0),
-            library_highlight_color: Color::Rgb(0, 0, 0),
-            library_background_color: Color::Rgb(0, 0, 0),
-
-            playlist_border_color: Color::Rgb(0, 0, 0),
-            playlist_highlight_color: Color::Rgb(0, 0, 0),
-            playlist_background_color: Color::Rgb(0, 0, 0),
-
-            new_release_border_color: Color::Rgb(0, 0, 0),
-            new_release_highlight_color: Color::Rgb(0, 0, 0),
-            new_release_background_color: Color::Rgb(0, 0, 0),
-
-            main_border_color: Color::Rgb(0, 0, 0),
-            main_highlight_color: Color::Rgb(0, 0, 0),
-            main_background_color: Color::Rgb(0, 0, 0),
-
-            search_border_color: Color::Rgb(0, 0, 0),
-            search_highlight_color: Color::Rgb(0, 0, 0),
-            search_background_color: Color::Rgb(0, 0, 0),
-
-            help_border_color: Color::Rgb(0, 0, 0),
-            help_highlight_color: Color::Rgb(0, 0, 0),
-            help_background_color: Color::Rgb(0, 0, 0),
-
-            error_border_color: Color::Rgb(0, 0, 0),
-            error_background_color: Color::Rgb(0, 0, 0),
 
             album_index: 0,
             track_index: 0,
