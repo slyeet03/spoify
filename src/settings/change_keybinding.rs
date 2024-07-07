@@ -29,10 +29,7 @@ pub fn change_keybinding(app: &mut App, key: &mut Key) {
         .spawn();
 
     match spawn_command {
-        Ok(_) => println!(
-            "Press {}, then run spoify again for the keybinds to change",
-            key.exit_application_key
-        ),
+        Ok(_) => println!("Press {} to refresh", key.refresh_key),
         Err(e) => eprintln!("Failed to spawn terminal: {}", e),
     }
 }

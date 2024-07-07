@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.5] - 2024-07-07
+
+### Added
+
+- User don't have to exit the application in order to take the changed configuration to take place
+
 ## [0.2.4] - 2024-07-07
 
 ### Fixed
