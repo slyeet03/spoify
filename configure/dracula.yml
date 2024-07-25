@@ -1,0 +1,46 @@
+# Default Values:
+# Border Color: Color::Rgb(189, 147, 249)
+# Background Color: Color::Rgb(40, 42, 54)
+# Highlight Color: Color::Rgb(189, 147, 249)
+#
+# Note: Only put RGB values
+#
+
+# Player Theme
+Player Border Color: Color::Rgb(189, 147, 249)
+Player Background Color: Color::Rgb(40, 42, 54)
+Player Highlight Color: Color::Rgb(189, 147, 249)
+
+# Library Theme
+Library Border Color: Color::Rgb(189, 147, 249)
+Library Background Color: Color::Rgb(40, 42, 54)
+Library Highlight Color: Color::Rgb(189, 147, 249)
+
+# Playlist Theme
+Playlist Border Color: Color::Rgb(189, 147, 249)
+Playlist Background Color: Color::Rgb(40, 42, 54)
+Playlist Highlight Color: Color::Rgb(189, 147, 249)
+
+# New Release Theme
+New Release Border Color: Color::Rgb(189, 147, 249)
+New Release Background Color: Color::Rgb(40, 42, 54)
+New Release Highlight Color: Color::Rgb(189, 147, 249)
+
+# Main Section Theme
+Main Section Border Color: Color::Rgb(189, 147, 249)
+Main Section Background Color: Color::Rgb(40, 42, 54)
+Main Section Highlight Color: Color::Rgb(189, 147, 249)
+
+# Search Theme
+Search Border Color: Color::Rgb(189, 147, 249)
+Search Background Color: Color::Rgb(40, 42, 54)
+Search Highlight Color: Color::Rgb(189, 147, 249)
+
+# Help Theme
+Help Border Color: Color::Rgb(189, 147, 249)
+Help Background Color: Color::Rgb(40, 42, 54)
+Help Highlight Color: Color::Rgb(189, 147, 249)
+
+# Error Screen Theme
+Error Border Color: Color::Rgb(204, 0, 0)
+Error Background Color: Color::Rgb(40, 42, 54)

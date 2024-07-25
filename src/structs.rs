@@ -126,6 +126,7 @@ pub struct Settings {
     pub volume_increment_value: u8,
     pub volume_decreament_value: u8,
     pub volume_percent: u8,
+    pub theme_name: String,
 }
 
 impl Default for Settings {
@@ -134,6 +135,7 @@ impl Default for Settings {
             volume_increment_value: 0,
             volume_decreament_value: 0,
             volume_percent: 0,
+            theme_name: String::new(),
         }
     }
 }

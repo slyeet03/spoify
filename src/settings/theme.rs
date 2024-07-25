@@ -8,18 +8,20 @@ use std::io::BufReader;
 use std::path::PathBuf;
 
 use crate::app::App;
-use crate::structs::Themes;
+use crate::structs::{Settings, Themes};
 
 #[derive(Deserialize, Debug)]
 struct Theme(HashMap<String, Value>);
 
 /// Reads the theme configuration file and returns the parsed theme data as a HashMap
-pub fn read_theme(app: &mut App) -> HashMap<String, Value> {
+pub fn read_theme(app: &mut App, settings: &mut Settings) -> HashMap<String, Value> {
+    let file_name = format!("{}.yml", settings.theme_name.clone());
+
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push("..");
     path.push(app.file_name.clone());
     path.push("configure");
-    path.push("theme.yml");
+    path.push(file_name);
 
     let file = File::open(&path).expect("Unable to open theme file");
     let reader = BufReader::new(file);
@@ -30,8 +32,8 @@ pub fn read_theme(app: &mut App) -> HashMap<String, Value> {
 }
 
 /// Sets the application theme based on the configuration loaded from the theme file
-pub fn set_theme(app: &mut App, themes: &mut Themes) {
-    let theme = read_theme(app);
+pub fn set_theme(app: &mut App, themes: &mut Themes, settings: &mut Settings) {
+    let theme = read_theme(app, settings);
 
     // Iterate over all entries in the theme HashMap
     for (key, value) in theme.iter() {

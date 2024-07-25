@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.6] - 2024-07-19
+
+### Fixed
+
+- Help section doesn't get duplicated upon refreshing
+
+### Added
+
+- Added a multiple themes, will add more
+- User can now make their own themes and pick them
+
 ## [0.2.5] - 2024-07-07
 
 ### Added

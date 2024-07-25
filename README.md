@@ -5,6 +5,16 @@ This is a Rust project that implements a Spotify client within your terminal. It
 ![](screenshots/liked_song_spoify.png)
 ![](screenshots/search_spoify.png)
 
+- [Spoify](#spoify)
+  - [Connecting to Spotify's API](#connecting-to-spotifys-api)
+    - [Instructions](#instructions)
+  - [Installation](#installation)
+    - [Cargo](#cargo)
+  - [Configuration](#configuration)
+  - [Themes](#themes)
+  - [Limitations](#limitations)
+  - [Libraries used](#libraries-used)
+
 ## Connecting to Spotify's API
 
 In order for `spoify` to work it needs to be connected to Spotify's API.
@@ -42,6 +52,7 @@ To update, run the same command again.
 ## Configuration
 
 You can go to the configure folder and change the theme, keybindings and other related settings of the application.
+You can add more themes in the theme folder. Some popular themes already comes with `spoify`. More will be added time to time.
 
 You can open the configure folder directly through the terminal. Check `help` menu in the application.
 The keybind to open the configure folder is:
@@ -49,6 +60,22 @@ The keybind to open the configure folder is:
 ```
 Ctrl+`
 ```
+
+## Themes
+
+A collection of themes that already comes with spoify
+
+### Default
+
+![](screenshots/idle_state_spoify.png)
+
+### Dracula
+
+![](screenshots/dracula_theme_spoify.png)
+
+### Kanagawa
+
+![](screenshots/kanagawa_theme_spoify.png)
 
 ## Limitations
 

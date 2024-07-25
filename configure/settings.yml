@@ -1,2 +1,5 @@
 Volume Increament Value: "5"
 Volume Decreament Value: "5"
+
+# you need to make a .yml file with color values(you can copy the default file and change the values) then write the name of that file here.
+Theme: "default"

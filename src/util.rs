@@ -4,8 +4,8 @@ extern crate yaml_rust;
 
 use crate::app::App;
 use crate::settings::keybindings::{parse_keybindings, read_keybindings, set_keybindings};
+use crate::settings::settings::set_settings_values;
 use crate::settings::theme::{read_theme, set_theme};
-use crate::settings::volume::{read_volume_values, set_volume_values};
 use crate::spotify::new_release_section::new_releases::{new_releases, process_new_releases};
 use crate::spotify::player::player::{currently_playing, process_currently_playing};
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
@@ -38,18 +38,20 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App, settings: &mut Se
 
 /// Function to run before starting the main app loop
 pub fn startup(app: &mut App, key: &mut Key, theme: &mut Themes, settings: &mut Settings) {
+    key.tasks.clear();
+    key.first_keys.clear();
+
     // Set the keybindings from the configure files
     read_keybindings(app);
     set_keybindings(app, key);
     parse_keybindings(app, key);
 
-    // Set the theme from the configure files
-    read_theme(app);
-    set_theme(app, theme);
+    // Set the settings
+    set_settings_values(app, settings);
 
-    // Set the volume increament and decreament values
-    read_volume_values(app);
-    set_volume_values(app, settings);
+    // Set the theme from the configure files
+    read_theme(app, settings);
+    set_theme(app, theme, settings);
 
     // Fetch the new released albums from spotify
     let _ = new_releases(app);

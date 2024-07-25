@@ -24,13 +24,13 @@ fn main() -> io::Result<()> {
     let mut theme: Themes = Themes::default();
     let mut settings: Settings = Settings::default();
 
-    app.file_name = "spoify-0.2.5".to_string();
+    app.file_name = "spoify-0.2.6".to_string();
 
     // Set the creds from the configure files
     read_creds(&mut app);
     set_creds(&mut app);
 
-    if app.client_id == "" {
+    if app.client_id.is_empty() {
         instruction();
         save_creds_to_yml(&mut app);
     } else {
