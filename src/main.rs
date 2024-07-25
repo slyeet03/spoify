@@ -30,7 +30,7 @@ fn main() -> io::Result<()> {
     read_creds(&mut app);
     set_creds(&mut app);
 
-    if app.client_id.is_empty() {
+    if app.client_id == "" {
         instruction();
         save_creds_to_yml(&mut app);
     } else {
