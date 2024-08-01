@@ -24,16 +24,26 @@ pub fn render_main_area(
     let content_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Welcome!"))
-        .style(Style::default().bg(theme.main_background_color));
+        .style(
+            Style::default()
+                .bg(theme.main_background_color)
+                .fg(theme.main_inactive_border_color),
+        );
 
-    let logo_block = Block::default()
-        .borders(Borders::NONE)
-        .style(Style::default().bg(theme.main_background_color));
+    let logo_block = Block::default().borders(Borders::NONE).style(
+        Style::default()
+            .bg(theme.main_background_color)
+            .fg(theme.main_inactive_border_color),
+    );
 
     let logo = Paragraph::new(logo())
         .block(logo_block)
         .alignment(Alignment::Center)
-        .style(Style::default().bg(theme.main_background_color));
+        .style(
+            Style::default()
+                .bg(theme.main_background_color)
+                .fg(theme.main_inactive_border_color),
+        );
 
     let stat_chunk = Layout::default()
         .direction(Direction::Horizontal)

@@ -7,7 +7,7 @@ use ratatui::{
 
 use crate::structs::Themes;
 
-/// Renders the error screen
+/// Renders a blank screen
 pub fn render_blank_screen(
     f: &mut Frame,
     player_fullscreen_vertical_chunk: &[Rect],

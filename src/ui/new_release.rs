@@ -19,7 +19,11 @@ pub fn render_default_new_releases(
     let new_release_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("New Releases"))
-        .style(Style::default().bg(theme.new_release_background_color));
+        .style(
+            Style::default()
+                .bg(theme.new_release_background_color)
+                .fg(theme.new_release_inactive_border_color),
+        );
 
     let new_releases_name = convert_to_list(&app.new_release_name);
     let new_releases_list = List::new(new_releases_name)
@@ -43,7 +47,11 @@ pub fn render_new_releases(
         .borders(Borders::ALL)
         .title(Title::from("New Releases"))
         .border_style(Style::default().fg(theme.new_release_border_color))
-        .style(Style::default().bg(theme.new_release_background_color));
+        .style(
+            Style::default()
+                .bg(theme.new_release_background_color)
+                .fg(theme.new_release_inactive_border_color),
+        );
 
     let current_new_release_block = Block::default()
         .borders(Borders::ALL)
@@ -51,7 +59,7 @@ pub fn render_new_releases(
         .border_style(if app.new_release_album_selected {
             Style::default().fg(theme.new_release_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.new_release_inactive_border_color)
         })
         .style(Style::default().bg(theme.new_release_background_color));
 
@@ -78,6 +86,7 @@ pub fn render_new_releases(
             current_new_release_block,
             theme.new_release_highlight_color.clone(),
             theme.new_release_background_color.clone(),
+            theme.new_release_inactive_border_color.clone(),
         );
         f.render_widget(Clear, content_chunk[1]);
 

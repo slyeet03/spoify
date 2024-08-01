@@ -1,0 +1,52 @@
+# Default Values:
+# Border Color: Color::Rgb(255, 158, 59)
+# Background Color: Color::Rgb(220, 215, 186)
+# Highlight Color: Color::Rgb(255, 158, 59)
+# Inactive Border Color: Color::Rgb(34, 50, 73)
+# Note: Only put RGB values
+#
+
+# Player Theme
+Player Border Color: Color::Rgb(255, 158, 59)
+Player Background Color: Color::Rgb(220, 215, 186)
+Player Highlight Color: Color::Rgb(45, 79, 103
+Player Inactive Border Color: Color::Rgb(34, 50, 73)
+
+# Library Theme
+Library Border Color: Color::Rgb(255, 158, 59)
+Library Background Color: Color::Rgb(220, 215, 186)
+Library Highlight Color: Color::Rgb(255, 158, 59)
+Library Inactive Border Color: Color::Rgb(34, 50, 73)
+
+# Playlist Theme
+Playlist Border Color: Color::Rgb(255, 158, 59)
+Playlist Background Color: Color::Rgb(220, 215, 186)
+Playlist Highlight Color: Color::Rgb(255, 158, 59)
+Playlist Inactive Border Color: Color::Rgb(34, 50, 73)
+
+# New Release Theme
+New Release Border Color: Color::Rgb(255, 158, 59)
+New Release Background Color: Color::Rgb(220, 215, 186)
+New Release Highlight Color: Color::Rgb(255, 158, 59)
+New Release Inactive Border Color: Color::Rgb(34, 50, 73)
+
+# Main Section Theme
+Main Section Border Color: Color::Rgb(255, 158, 59)
+Main Section Background Color: Color::Rgb(220, 215, 186)
+Main Section Highlight Color: Color::Rgb(255, 158, 59)
+Main Section Inactive Border Color: Color::Rgb(34, 50, 73)
+
+# Search Theme
+Search Border Color: Color::Rgb(255, 158, 59)
+Search Background Color: Color::Rgb(220, 215, 186)
+Search Highlight Color: Color::Rgb(255, 158, 59)
+Search Inactive Border Color: Color::Rgb(34, 50, 73)
+
+# Help Theme
+Help Border Color: Color::Rgb(255, 158, 59)
+Help Background Color: Color::Rgb(220, 215, 186)
+Help Highlight Color: Color::Rgb(255, 158, 59)
+
+# Error Screen Theme
+Error Border Color: Color::Rgb(204, 0, 0)
+Error Background Color: Color::Rgb(220, 215, 186)

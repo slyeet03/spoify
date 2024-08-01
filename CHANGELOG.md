@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.8] - 2024-08-01
+
+### Added
+
+- Added more themes, will add more
+- Made a specified color for inactive borders
+
 ## [0.2.7] - 2024-07-19
 
 ### Fixed
@@ -8,7 +15,7 @@
 
 ### Added
 
-- Added a multiple themes, will add more
+- Added multiple themes, will add more
 - User can now make their own themes and pick them
 
 ## [0.2.5] - 2024-07-07

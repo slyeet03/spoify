@@ -12,6 +12,10 @@ This is a Rust project that implements a Spotify client within your terminal. It
     - [Cargo](#cargo)
   - [Configuration](#configuration)
   - [Themes](#themes)
+    - [Default](#default)
+    - [Dracula](#dracula)
+    - [Kanagawa Light](#kanagawa-light)
+    - [Kanagawa Dark](#kanagawa-dark)
   - [Limitations](#limitations)
   - [Libraries used](#libraries-used)
 
@@ -73,9 +77,13 @@ A collection of themes that already comes with spoify
 
 ![](screenshots/dracula_theme_spoify.png)
 
-### Kanagawa
+### Kanagawa Light
 
-![](screenshots/kanagawa_theme_spoify.png)
+![](screenshots/kanagawa_light_theme_spoify.png)
+
+### Kanagawa Dark
+
+![](screenshots/kanagawa_dark_theme_spoify)
 
 ## Limitations
 

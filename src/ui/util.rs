@@ -38,6 +38,7 @@ pub fn track_table_ui(
     block: Block,
     highlight_color: Color,
     background_color: Color,
+    inactive_border_color: Color,
 ) -> Table {
     let tracks: Vec<(usize, String, String, String, String)> = names
         .iter()
@@ -89,7 +90,11 @@ pub fn track_table_ui(
     )
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
-    .style(Style::default().bg(background_color));
+    .style(
+        Style::default()
+            .bg(background_color)
+            .fg(inactive_border_color),
+    );
 
     table
 }
@@ -101,6 +106,7 @@ pub fn album_table_ui(
     block: Block,
     highlight_color: Color,
     background_color: Color,
+    inactive_border_color: Color,
 ) -> Table {
     let albums: Vec<(usize, String, String, usize)> = names
         .iter()
@@ -142,7 +148,11 @@ pub fn album_table_ui(
     )
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
-    .style(Style::default().bg(background_color));
+    .style(
+        Style::default()
+            .bg(background_color)
+            .fg(inactive_border_color),
+    );
 
     table
 }
@@ -153,6 +163,7 @@ pub fn podcast_table_ui(
     block: Block,
     highlight_color: Color,
     background_color: Color,
+    inactive_border_color: Color,
 ) -> Table {
     let podcasts: Vec<(usize, String, String)> = names
         .iter()
@@ -188,7 +199,11 @@ pub fn podcast_table_ui(
     )
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
-    .style(Style::default().bg(background_color));
+    .style(
+        Style::default()
+            .bg(background_color)
+            .fg(inactive_border_color),
+    );
 
     table
 }
@@ -198,6 +213,7 @@ pub fn artist_table_ui(
     block: Block,
     highlight_color: Color,
     background_color: Color,
+    inactive_border_color: Color,
 ) -> Table {
     let podcasts: Vec<(usize, String)> = names
         .iter()
@@ -220,7 +236,11 @@ pub fn artist_table_ui(
     .header(Row::new(vec![Cell::from("#"), Cell::from("Title")]).bold())
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
-    .style(Style::default().bg(background_color));
+    .style(
+        Style::default()
+            .bg(background_color)
+            .fg(inactive_border_color),
+    );
 
     table
 }
@@ -278,6 +298,7 @@ pub fn new_release_table_ui(
     block: Block,
     highlight_color: Color,
     background_color: Color,
+    inactive_border_color: Color,
 ) -> Table {
     let tracks: Vec<(usize, String, String, String)> = names
         .iter()
@@ -319,7 +340,11 @@ pub fn new_release_table_ui(
     )
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
-    .style(Style::default().bg(background_color));
+    .style(
+        Style::default()
+            .bg(background_color)
+            .fg(inactive_border_color),
+    );
 
     table
 }
@@ -330,6 +355,7 @@ pub fn made_fy_table_ui(
     block: Block,
     highlight_color: Color,
     background_color: Color,
+    inactive_border_color: Color,
 ) -> Table {
     let tracks: Vec<(usize, String, i64)> = names
         .iter()
@@ -365,7 +391,11 @@ pub fn made_fy_table_ui(
     )
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
-    .style(Style::default().bg(background_color));
+    .style(
+        Style::default()
+            .bg(background_color)
+            .fg(inactive_border_color),
+    );
 
     table
 }

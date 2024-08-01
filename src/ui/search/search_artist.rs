@@ -23,7 +23,7 @@ pub fn render_searched_artist(
         .border_style(if app.searched_artist_selected {
             Style::default().fg(theme.main_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.main_inactive_border_color)
         })
         .style(Style::default().bg(theme.main_background_color));
 
@@ -34,6 +34,7 @@ pub fn render_searched_artist(
         artist_block,
         theme.main_highlight_color,
         theme.main_background_color,
+        theme.main_inactive_border_color,
     );
 
     f.render_widget(Clear, content_chunk[1]);

@@ -40,7 +40,7 @@ pub fn render_search(
         .border_style(if app.selected_album_in_search_result {
             Style::default().fg(theme.search_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.search_inactive_border_color)
         })
         .style(Style::default().bg(theme.search_background_color));
     let artist_block = Block::default()
@@ -49,7 +49,7 @@ pub fn render_search(
         .border_style(if app.selected_artist_in_search_result {
             Style::default().fg(theme.search_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.search_inactive_border_color)
         })
         .style(Style::default().bg(theme.search_background_color));
     let song_block = Block::default()
@@ -58,7 +58,7 @@ pub fn render_search(
         .border_style(if app.selected_track_in_search_result {
             Style::default().fg(theme.search_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.search_inactive_border_color)
         })
         .style(Style::default().bg(theme.search_background_color));
     let playlist_block = Block::default()
@@ -67,7 +67,7 @@ pub fn render_search(
         .border_style(if app.selected_playlist_in_search_result {
             Style::default().fg(theme.search_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.search_inactive_border_color)
         })
         .style(Style::default().bg(theme.search_background_color));
 
@@ -79,7 +79,11 @@ pub fn render_search(
             InputMode::SearchResults => Style::default(),
         })
         .block(Block::default().borders(Borders::ALL).title("Search"))
-        .style(Style::default().bg(theme.search_background_color));
+        .style(
+            Style::default()
+                .bg(theme.search_background_color)
+                .fg(theme.search_inactive_border_color),
+        );
 
     f.render_widget(search_block, header_chunk[0]);
 
@@ -165,7 +169,11 @@ pub fn render_default_search(f: &mut Frame, header_chunk: &[Rect], theme: &mut T
     let search_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Search"))
-        .style(Style::default().bg(theme.search_background_color));
+        .style(
+            Style::default()
+                .bg(theme.search_background_color)
+                .fg(theme.search_inactive_border_color),
+        );
 
     f.render_widget(search_block, header_chunk[0]);
 }

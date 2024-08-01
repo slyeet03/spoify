@@ -13,6 +13,7 @@ pub fn searched_track_table_for_album_ui(
     block: Block,
     highlight_color: Color,
     background_color: Color,
+    inactive_border_color: Color,
 ) -> Table {
     let tracks: Vec<(usize, String, String, String)> = names
         .iter()
@@ -54,7 +55,11 @@ pub fn searched_track_table_for_album_ui(
     )
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
-    .style(Style::default().bg(background_color));
+    .style(
+        Style::default()
+            .bg(background_color)
+            .fg(inactive_border_color),
+    );
 
     table
 }
@@ -66,6 +71,7 @@ pub fn searched_track_table_for_artist_ui(
     block: Block,
     highlight_color: Color,
     background_color: Color,
+    inactive_border_color: Color,
 ) -> Table {
     let tracks: Vec<(usize, String, String, String)> = names
         .iter()
@@ -107,7 +113,11 @@ pub fn searched_track_table_for_artist_ui(
     )
     .block(block.clone())
     .highlight_style(Style::default().fg(highlight_color))
-    .style(Style::default().bg(background_color));
+    .style(
+        Style::default()
+            .bg(background_color)
+            .fg(inactive_border_color),
+    );
 
     table
 }

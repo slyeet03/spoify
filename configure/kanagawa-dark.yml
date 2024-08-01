@@ -1,43 +1,49 @@
 # Default Values:
-# Border Color: Color::Rgb(220, 215, 186)
+# Border Color: Color::Rgb(255, 158, 59)
 # Background Color: Color::Rgb(31, 31, 31)
 # Highlight Color: Color::Rgb(200, 192, 147)
-#
+# Inactive Border Color: Color::Rgb(220, 215, 186)
 # Note: Only put RGB values
 #
 
 # Player Theme
-Player Border Color: Color::Rgb(220, 215, 186)
+Player Border Color: Color::Rgb(255, 158, 59)
 Player Background Color: Color::Rgb(31, 31, 31)
 Player Highlight Color: Color::Rgb(200, 192, 147)
+Player Inactive Border Color: Color::Rgb(220, 215, 186)
 
 # Library Theme
-Library Border Color: Color::Rgb(220, 215, 186)
+Library Border Color: Color::Rgb(255, 158, 59)
 Library Background Color: Color::Rgb(31, 31, 31)
 Library Highlight Color: Color::Rgb(200, 192, 147)
+Library Inactive Border Color: Color::Rgb(220, 215, 186)
 
 # Playlist Theme
-Playlist Border Color: Color::Rgb(220, 215, 186)
+Playlist Border Color: Color::Rgb(255, 158, 59)
 Playlist Background Color: Color::Rgb(31, 31, 31)
 Playlist Highlight Color: Color::Rgb(200, 192, 147)
+Playlist Inactive Border Color: Color::Rgb(220, 215, 186)
 
 # New Release Theme
-New Release Border Color: Color::Rgb(220, 215, 186)
+New Release Border Color: Color::Rgb(255, 158, 59)
 New Release Background Color: Color::Rgb(31, 31, 31)
 New Release Highlight Color: Color::Rgb(200, 192, 147)
+New Release Inactive Border Color: Color::Rgb(220, 215, 186)
 
 # Main Section Theme
-Main Section Border Color: Color::Rgb(220, 215, 186)
+Main Section Border Color: Color::Rgb(255, 158, 59)
 Main Section Background Color: Color::Rgb(31, 31, 31)
 Main Section Highlight Color: Color::Rgb(200, 192, 147)
+Main Section Inactive Border Color: Color::Rgb(220, 215, 186)
 
 # Search Theme
-Search Border Color: Color::Rgb(220, 215, 186)
+Search Border Color: Color::Rgb(255, 158, 59)
 Search Background Color: Color::Rgb(31, 31, 31)
 Search Highlight Color: Color::Rgb(200, 192, 147)
+Search Inactive Border Color: Color::Rgb(220, 215, 186)
 
 # Help Theme
-Help Border Color: Color::Rgb(220, 215, 186)
+Help Border Color: Color::Rgb(255, 158, 59)
 Help Background Color: Color::Rgb(31, 31, 31)
 Help Highlight Color: Color::Rgb(200, 192, 147)
 

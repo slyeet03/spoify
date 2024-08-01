@@ -54,26 +54,32 @@ pub struct Themes {
     pub player_border_color: Color,
     pub player_highlight_color: Color,
     pub player_background_color: Color,
+    pub player_inactive_border_color: Color,
 
     pub library_border_color: Color,
     pub library_highlight_color: Color,
     pub library_background_color: Color,
+    pub library_inactive_border_color: Color,
 
     pub playlist_border_color: Color,
     pub playlist_highlight_color: Color,
     pub playlist_background_color: Color,
+    pub playlist_inactive_border_color: Color,
 
     pub new_release_border_color: Color,
     pub new_release_highlight_color: Color,
     pub new_release_background_color: Color,
+    pub new_release_inactive_border_color: Color,
 
     pub main_border_color: Color,
     pub main_highlight_color: Color,
     pub main_background_color: Color,
+    pub main_inactive_border_color: Color,
 
     pub search_border_color: Color,
     pub search_highlight_color: Color,
     pub search_background_color: Color,
+    pub search_inactive_border_color: Color,
 
     pub help_border_color: Color,
     pub help_highlight_color: Color,
@@ -89,26 +95,32 @@ impl Default for Themes {
             player_border_color: Color::Rgb(0, 0, 0),
             player_highlight_color: Color::Rgb(0, 0, 0),
             player_background_color: Color::Rgb(0, 0, 0),
+            player_inactive_border_color: Color::Rgb(0, 0, 0),
 
             library_border_color: Color::Rgb(0, 0, 0),
             library_highlight_color: Color::Rgb(0, 0, 0),
             library_background_color: Color::Rgb(0, 0, 0),
+            library_inactive_border_color: Color::Rgb(0, 0, 0),
 
             playlist_border_color: Color::Rgb(0, 0, 0),
             playlist_highlight_color: Color::Rgb(0, 0, 0),
             playlist_background_color: Color::Rgb(0, 0, 0),
+            playlist_inactive_border_color: Color::Rgb(0, 0, 0),
 
             new_release_border_color: Color::Rgb(0, 0, 0),
             new_release_highlight_color: Color::Rgb(0, 0, 0),
             new_release_background_color: Color::Rgb(0, 0, 0),
+            new_release_inactive_border_color: Color::Rgb(0, 0, 0),
 
             main_border_color: Color::Rgb(0, 0, 0),
             main_highlight_color: Color::Rgb(0, 0, 0),
             main_background_color: Color::Rgb(0, 0, 0),
+            main_inactive_border_color: Color::Rgb(0, 0, 0),
 
             search_border_color: Color::Rgb(0, 0, 0),
             search_highlight_color: Color::Rgb(0, 0, 0),
             search_background_color: Color::Rgb(0, 0, 0),
+            search_inactive_border_color: Color::Rgb(0, 0, 0),
 
             help_border_color: Color::Rgb(0, 0, 0),
             help_highlight_color: Color::Rgb(0, 0, 0),

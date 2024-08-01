@@ -22,7 +22,11 @@ pub fn render_user_playlist(
         .borders(Borders::ALL)
         .title(Title::from("Playlist"))
         .border_style(Style::new().fg(theme.playlist_border_color))
-        .style(Style::default().bg(theme.playlist_background_color));
+        .style(
+            Style::default()
+                .bg(theme.playlist_background_color)
+                .fg(theme.playlist_inactive_border_color),
+        );
 
     let user_playlist_block = Block::default()
         .borders(Borders::ALL)
@@ -30,7 +34,7 @@ pub fn render_user_playlist(
         .border_style(if app.user_playlist_tracks_selected {
             Style::default().fg(theme.playlist_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.playlist_inactive_border_color)
         })
         .style(Style::default().bg(theme.playlist_background_color));
 
@@ -60,6 +64,7 @@ pub fn render_user_playlist(
             user_playlist_block,
             theme.playlist_highlight_color.clone(),
             theme.playlist_background_color.clone(),
+            theme.playlist_inactive_border_color.clone(),
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -82,7 +87,11 @@ pub fn render_default_user_playlist(
     let playlist_block_user = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlist"))
-        .style(Style::default().bg(theme.playlist_background_color));
+        .style(
+            Style::default()
+                .bg(theme.playlist_background_color)
+                .fg(theme.playlist_inactive_border_color),
+        );
 
     // Convert app data (user playlist names) to a List widget
     let user_playlist_names = convert_to_list(&app.user_playlist_names);

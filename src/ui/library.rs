@@ -33,7 +33,7 @@ pub fn render_library(
         .border_style(if app.liked_songs_selected {
             Style::default().fg(theme.main_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.main_inactive_border_color)
         })
         .style(Style::default().bg(theme.main_background_color));
 
@@ -43,7 +43,7 @@ pub fn render_library(
         .border_style(if app.recently_played_selected {
             Style::default().fg(theme.main_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.main_inactive_border_color)
         })
         .style(Style::default().bg(theme.main_background_color));
 
@@ -53,7 +53,7 @@ pub fn render_library(
         .border_style(if app.user_album_selected {
             Style::default().fg(theme.main_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.main_inactive_border_color)
         })
         .style(Style::default().bg(theme.main_background_color));
 
@@ -63,7 +63,7 @@ pub fn render_library(
         .border_style(if app.podcast_selected {
             Style::default().fg(theme.main_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.main_inactive_border_color)
         })
         .style(Style::default().bg(theme.main_background_color));
 
@@ -73,7 +73,7 @@ pub fn render_library(
         .border_style(if app.user_artist_selected {
             Style::default().fg(theme.main_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.main_inactive_border_color)
         })
         .style(Style::default().bg(theme.main_background_color));
 
@@ -83,7 +83,7 @@ pub fn render_library(
         .border_style(if app.made_fy_selected {
             Style::default().fg(theme.main_border_color)
         } else {
-            Style::default()
+            Style::default().fg(theme.main_inactive_border_color)
         })
         .style(Style::default().bg(theme.main_background_color));
 
@@ -112,6 +112,7 @@ pub fn render_library(
             made_fy_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -132,7 +133,7 @@ pub fn render_library(
             .border_style(if app.made_fy_track_selected {
                 Style::default().fg(theme.main_border_color)
             } else {
-                Style::default()
+                Style::default().fg(theme.main_inactive_border_color)
             })
             .style(Style::default().bg(theme.main_background_color));
 
@@ -146,6 +147,7 @@ pub fn render_library(
             made_fy_track_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -168,6 +170,7 @@ pub fn render_library(
             liked_song_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -190,6 +193,7 @@ pub fn render_library(
             recently_played_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -210,6 +214,7 @@ pub fn render_library(
             podcast_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -225,6 +230,7 @@ pub fn render_library(
             user_artist_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -242,6 +248,7 @@ pub fn render_library(
             user_album_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -261,7 +268,7 @@ pub fn render_library(
             .border_style(if app.user_album_track_selected {
                 Style::default().fg(theme.main_border_color)
             } else {
-                Style::default()
+                Style::default().fg(theme.main_inactive_border_color)
             })
             .style(Style::default().bg(theme.main_background_color));
 
@@ -274,6 +281,7 @@ pub fn render_library(
             user_album_track_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -293,7 +301,7 @@ pub fn render_library(
             .border_style(if app.user_artist_track_selected {
                 Style::default().fg(theme.main_border_color)
             } else {
-                Style::default()
+                Style::default().fg(theme.main_inactive_border_color)
             })
             .style(Style::default().bg(theme.main_background_color));
 
@@ -306,6 +314,7 @@ pub fn render_library(
             user_artist_track_block,
             theme.main_highlight_color,
             theme.main_background_color,
+            theme.main_inactive_border_color,
         );
 
         f.render_widget(Clear, content_chunk[1]);
@@ -333,7 +342,11 @@ pub fn render_default_library(f: &mut Frame, content_sub_chunk: &[Rect], theme: 
     let library_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Library"))
-        .style(Style::default().bg(theme.library_background_color));
+        .style(
+            Style::default()
+                .bg(theme.library_background_color)
+                .fg(theme.main_inactive_border_color),
+        );
 
     let library_list = List::new(library_items.clone()).block(library_block);
     f.render_widget(library_list, content_sub_chunk[0]);

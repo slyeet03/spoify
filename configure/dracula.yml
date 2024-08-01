@@ -10,31 +10,37 @@
 Player Border Color: Color::Rgb(189, 147, 249)
 Player Background Color: Color::Rgb(40, 42, 54)
 Player Highlight Color: Color::Rgb(189, 147, 249)
+Player Inactive Border Color: Color::Rgb(255, 255, 255)
 
 # Library Theme
 Library Border Color: Color::Rgb(189, 147, 249)
 Library Background Color: Color::Rgb(40, 42, 54)
 Library Highlight Color: Color::Rgb(189, 147, 249)
+Library Inactive Border Color: Color::Rgb(255, 255, 255)
 
 # Playlist Theme
 Playlist Border Color: Color::Rgb(189, 147, 249)
 Playlist Background Color: Color::Rgb(40, 42, 54)
 Playlist Highlight Color: Color::Rgb(189, 147, 249)
+Playlist Inactive Border Color: Color::Rgb(255, 255, 255)
 
 # New Release Theme
 New Release Border Color: Color::Rgb(189, 147, 249)
 New Release Background Color: Color::Rgb(40, 42, 54)
 New Release Highlight Color: Color::Rgb(189, 147, 249)
+New Release Inactive Border Color: Color::Rgb(255, 255, 255)
 
 # Main Section Theme
 Main Section Border Color: Color::Rgb(189, 147, 249)
 Main Section Background Color: Color::Rgb(40, 42, 54)
 Main Section Highlight Color: Color::Rgb(189, 147, 249)
+Main Section Inactive Border Color: Color::Rgb(255, 255, 255)
 
 # Search Theme
 Search Border Color: Color::Rgb(189, 147, 249)
 Search Background Color: Color::Rgb(40, 42, 54)
 Search Highlight Color: Color::Rgb(189, 147, 249)
+Search Inactive Border Color: Color::Rgb(255, 255, 255)
 
 # Help Theme
 Help Border Color: Color::Rgb(189, 147, 249)

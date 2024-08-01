@@ -17,7 +17,11 @@ pub fn render_default_help(f: &mut Frame, header_chunk: &[Rect], theme: &mut The
         .borders(Borders::ALL)
         .title(Title::from("Help"))
         .border_style(Style::default())
-        .style(Style::default().bg(theme.help_background_color));
+        .style(
+            Style::default()
+                .bg(theme.help_background_color)
+                .fg(theme.main_inactive_border_color),
+        );
 
     let mut help_panel_vec = Vec::new();
     let _var = help_panel_vec;

@@ -22,7 +22,11 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App, theme
             app.repeat_status,
             app.current_device_volume
         ))
-        .style(Style::default().bg(theme.player_background_color));
+        .style(
+            Style::default()
+                .bg(theme.player_background_color)
+                .fg(theme.player_inactive_border_color),
+        );
 
     let mut player_info_vec = Vec::new();
     let _var = player_info_vec;
