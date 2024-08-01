@@ -83,7 +83,7 @@ A collection of themes that already comes with spoify
 
 ### Kanagawa Dark
 
-![](screenshots/kanagawa_dark_theme_spoify)
+![](screenshots/kanagawa_dark_theme_spoify.png)
 
 ## Limitations
 
