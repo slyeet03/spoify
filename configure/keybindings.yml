@@ -8,7 +8,6 @@ Exit Search menu or Help menu: "Esc"
 Add track to playlist: "Ctrl+P"
 Follow playlist: "Ctrl+F"
 Unfollow/Delete playlist: "Ctrl+D"
-Open the configure folder: "Ctrl+`"
 # Changable key bindings
 Go to Search: "s"
 Go to Library: "l"
@@ -24,3 +23,5 @@ Error Screen: "e"
 Player in fullscreen: "f"
 Change Key Bindings: "`"
 Refresh: "#"
+Open the configure folder: "~"
+

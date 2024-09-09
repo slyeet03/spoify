@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.9] - 2024-09-09
+
+### Fixed
+
+- Better support for MacOS in opening the configure folder
+- Changed the default keybind to open the configure folder
+
 ## [0.2.8] - 2024-08-01
 
 ### Added

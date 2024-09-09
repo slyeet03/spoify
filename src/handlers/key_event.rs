@@ -60,6 +60,7 @@ pub fn handle_key_event(
     let player_fullscreen_key: char = key.player_fullscreen_key;
     let change_keybind: char = key.change_keybind;
     let refresh_key: char = key.refresh_key;
+    let open_config_fold_key: char = key.open_config_fold_key;
 
     if key_event.kind == KeyEventKind::Press {
         match key_event.code {
@@ -68,7 +69,9 @@ pub fn handle_key_event(
                 shuffle_event(app);
             }
             // Open the configuration folder
-            KeyCode::Char('`') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+            code if code == KeyCode::Char(open_config_fold_key)
+                && app.input_mode != InputMode::Editing =>
+            {
                 open_config_folder(app, key);
             }
 

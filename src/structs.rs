@@ -11,13 +11,13 @@ pub struct Key {
     pub volume_up_key: char,
     pub volume_down_key: char,
     pub new_release_key: char,
-    pub lyrics_key: char,
     pub next_track_key: char,
     pub previous_track_key: char,
     pub error_key: char,
     pub player_fullscreen_key: char,
     pub change_keybind: char,
     pub refresh_key: char,
+    pub open_config_fold_key: char,
 
     pub first_keys: Vec<String>,
     pub tasks: Vec<String>,
@@ -26,6 +26,7 @@ pub struct Key {
 impl Default for Key {
     fn default() -> Self {
         Self {
+            open_config_fold_key: ' ',
             go_to_search_key: ' ',
             go_to_library_key: ' ',
             go_to_user_playlists_key: ' ',
@@ -35,7 +36,6 @@ impl Default for Key {
             volume_up_key: ' ',
             volume_down_key: ' ',
             new_release_key: ' ',
-            lyrics_key: ' ',
             next_track_key: ' ',
             previous_track_key: ' ',
             error_key: ' ',

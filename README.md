@@ -62,7 +62,7 @@ You can open the configure folder directly through the terminal. Check `help` me
 The keybind to open the configure folder is:
 
 ```
-Ctrl+`
+~
 ```
 
 ## Themes
