@@ -5,10 +5,10 @@ use serde_yaml;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
-use std::path::PathBuf;
 
 use crate::app::App;
 use crate::structs::{Settings, Themes};
+use crate::util::get_project_dir;
 
 #[derive(Deserialize, Debug)]
 struct Theme(HashMap<String, Value>);
@@ -17,11 +17,8 @@ struct Theme(HashMap<String, Value>);
 pub fn read_theme(app: &mut App, settings: &mut Settings) -> HashMap<String, Value> {
     let file_name = format!("{}.yml", settings.theme_name.clone());
 
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push("..");
-    path.push(app.file_name.clone());
-    path.push("configure");
-    path.push(file_name);
+    let project_dir = get_project_dir(&app.file_name);
+    let path = project_dir.join("configure").join(file_name);
 
     let file = File::open(&path).expect("Unable to open theme file");
     let reader = BufReader::new(file);

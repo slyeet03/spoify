@@ -13,14 +13,13 @@ use rspotify::{
     ClientCredsSpotify, Credentials,
 };
 use serde::{Deserialize, Serialize};
-use std::env;
 use std::fs;
 use std::fs::File;
 use std::io;
 use std::io::Write;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
-use crate::app::App;
+use crate::{app::App, util::get_project_dir};
 
 // Main function to perform the search and store the results in JSON files
 #[tokio::main]
@@ -38,10 +37,8 @@ pub async fn search(user_query: &str, app: &mut App) -> Result<(), std::io::Erro
     spotify.request_token().await.unwrap();
 
     // Setting up the directory to store the search results
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push("..");
-    path.push(app.file_name.clone());
-    path.push("spotify_cache");
+    let project_dir = get_project_dir(&app.file_name);
+    let mut path = project_dir.join("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
 
     // Performing search and storing the results in JSON files
@@ -122,10 +119,8 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
     app.track_links_search_results.clear();
     app.playlist_links_search_results.clear();
 
-    let mut spotify_cache_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    spotify_cache_path.push("..");
-    spotify_cache_path.push(app.file_name.clone());
-    spotify_cache_path.push("spotify_cache");
+    let project_dir = get_project_dir(&app.file_name);
+    let mut spotify_cache_path = project_dir.join("spotify_cache");
 
     if search(query, app).is_ok() {
         (

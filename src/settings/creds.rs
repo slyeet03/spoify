@@ -3,19 +3,16 @@ use serde_yaml;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
-use std::path::PathBuf;
 
 use crate::app::App;
+use crate::util::get_project_dir;
 
 #[derive(Deserialize, Debug)]
 struct Creds(HashMap<String, String>);
 
 pub fn read_creds(app: &mut App) -> HashMap<String, String> {
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push(".."); // Move up to the root of the Git repository
-    path.push(app.file_name.clone());
-    path.push("configure");
-    path.push("creds.yml");
+    let project_dir = get_project_dir(&app.file_name);
+    let path = project_dir.join("configure").join("creds.yml");
 
     let file = File::open(&path).expect("Unable to open creds file");
     let reader = BufReader::new(file);

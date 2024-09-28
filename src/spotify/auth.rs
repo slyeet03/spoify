@@ -2,14 +2,13 @@ extern crate rspotify;
 
 use rspotify::prelude::OAuthClient;
 use rspotify::{scopes, AuthCodeSpotify, ClientError, Credentials, OAuth};
-use std::env;
 use std::fs;
 use std::io::stdin;
-use std::path::PathBuf;
 use url::Url;
 use webbrowser;
 
 use crate::app::App;
+use crate::util::get_project_dir;
 
 // Function to get the Spotify client, either from a cached token or through the authorization flow
 pub async fn get_spotify_client(app: &mut App) -> Result<AuthCodeSpotify, ClientError> {
@@ -43,11 +42,8 @@ pub async fn get_spotify_client(app: &mut App) -> Result<AuthCodeSpotify, Client
 
     let creds = Credentials::new(client_id, client_secret_id);
 
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push(".."); // Move up to the root of the Git repository
-    path.push(app.file_name.clone());
-    path.push("spotify_cache");
-
+    let project_dir = get_project_dir(&app.file_name);
+    let mut path = project_dir.join("spotify_cache");
     fs::create_dir_all(&path).unwrap();
 
     let config = rspotify::Config {

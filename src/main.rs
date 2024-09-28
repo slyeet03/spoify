@@ -5,7 +5,7 @@ use std::thread;
 use settings::creds::{read_creds, set_creds};
 use structs::{Key, Settings, Themes};
 use ui::tui;
-use util::{instruction, save_creds_to_yml, startup, update_player_info};
+use util::{get_project_dir, instruction, save_creds_to_yml, startup, update_player_info};
 
 use crate::app::App;
 
@@ -24,7 +24,8 @@ fn main() -> io::Result<()> {
     let mut theme: Themes = Themes::default();
     let mut settings: Settings = Settings::default();
 
-    app.file_name = "spoify-0.2.9".to_string();
+    app.file_name = "spoify-0.2.10".to_string();
+    let project_dir = get_project_dir(&app.file_name);
 
     // Set the creds from the configure files
     read_creds(&mut app);

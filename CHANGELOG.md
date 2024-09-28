@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.10] - 2024-09-20
+
+### Fixed
+
+- Changed the way it navigates through files
+- Added homebrew support
+
 ## [0.2.9] - 2024-09-09
 
 ### Fixed

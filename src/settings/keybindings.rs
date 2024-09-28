@@ -8,17 +8,15 @@ use yaml_rust::YamlLoader;
 
 use crate::app::App;
 use crate::structs::Key;
+use crate::util::get_project_dir;
 
 #[derive(Deserialize, Debug)]
 struct Keybindings(HashMap<String, String>);
 
 /// Reads the keybindings from the configuration file and returns them as a HashMap
 pub fn read_keybindings(app: &mut App) -> HashMap<String, String> {
-    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    path.push(".."); // Move up to the root of the Git repository
-    path.push(app.file_name.clone());
-    path.push("configure");
-    path.push("keybindings.yml");
+    let project_dir = get_project_dir(&app.file_name);
+    let path = project_dir.join("configure").join("keybindings.yml");
 
     let file = File::open(&path).expect("Unable to open keybindings file");
     let reader = BufReader::new(file);

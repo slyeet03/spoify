@@ -12,9 +12,10 @@ use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_p
 use crate::spotify::user_stats::top_tracks::top_tracks;
 use crate::structs::Themes;
 use crate::structs::{Key, Settings};
+use std::env;
 use std::fs::File;
 use std::io::{BufWriter, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
@@ -123,4 +124,35 @@ pub fn save_creds_to_yml(app: &mut App) {
         .expect("Unable to write to creds file");
 
     println!("Please run spoify again.");
+}
+
+pub fn get_project_dir(app_name: &str) -> PathBuf {
+    // First, try to use CARGO_MANIFEST_DIR
+    if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
+        let path = Path::new(&manifest_dir).join("..").join(app_name);
+        if path.exists() {
+            return path;
+        }
+    }
+
+    // If that fails, try to use the executable's directory
+    if let Ok(exe_path) = env::current_exe() {
+        if let Some(exe_dir) = exe_path.parent() {
+            let path = exe_dir.join(app_name);
+            if path.exists() {
+                return path;
+            }
+        }
+    }
+
+    // If all else fails, use a directory in the user's home folder
+    let mut path = dirs::home_dir().expect("Unable to find home directory");
+    path.push(".local");
+    path.push("share");
+    path.push(app_name);
+
+    // Create the directory if it doesn't exist
+    std::fs::create_dir_all(&path).expect("Failed to create project directory");
+
+    path
 }

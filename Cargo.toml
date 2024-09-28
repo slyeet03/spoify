@@ -1,6 +1,6 @@
 [package]
 name = "spoify"
-version = "0.2.9"
+version = "0.2.10"
 edition = "2021"
 description = "a spotify client inside your terminal"
 readme = "README.md"
@@ -34,3 +34,4 @@ itertools = "0.12.1"
 yaml-rust = "0.4.5"
 anyhow = "1.0.82"
 rayon = "1.10.0"
+dirs = "5.0.1"
