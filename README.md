@@ -58,6 +58,7 @@ To update, run the same command again.
 For both macOS and Linux
 
 ```bash
+brew tap slyeet03/spoify
 brew install spoify
 ```
 
