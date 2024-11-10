@@ -2,13 +2,14 @@ extern crate rspotify;
 extern crate serde_json;
 
 use crate::app::App;
-use crate::util::get_project_dir;
 use futures::{FutureExt, TryStreamExt};
 use rspotify::model::{AlbumId, SimplifiedTrack};
 use rspotify::{prelude::*, ClientCredsSpotify, ClientError, Credentials};
 use serde_json::{json, Value};
+use std::env;
 use std::fs::File;
 use std::io::{BufReader, Write};
+use std::path::PathBuf;
 
 /// Fetches the tracks from a new release album and stores them for later use
 #[tokio::main]
@@ -52,10 +53,12 @@ pub async fn new_releases_tracks(app: &mut App) -> Result<(), ClientError> {
 fn save_new_releases_tracks_to_json(app: &mut App, items: Vec<SimplifiedTrack>) {
     let json_data = json!(items);
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
-    path = path.join("new_releases_tracks.json");
+    path.push("new_releases_tracks.json");
 
     let mut file = File::create(&path).unwrap();
     let _ = file.write_all(json_data.to_string().as_bytes());
@@ -68,9 +71,11 @@ pub fn process_new_releases_tracks(app: &mut App) {
     app.new_release_durations_ms.clear();
     app.new_release_spotify_urls.clear();
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
-    path = path.join("new_releases_tracks.json");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
+    path.push("new_releases_tracks.json");
 
     let file = File::open(&path).expect("Failed to open new_releases_tracks.json");
     let reader = BufReader::new(file);

@@ -1,5 +1,12 @@
 # Changelog
 
+
+## [0.2.11] - 2024-11-11
+
+### Fixed
+
+- Homebrew support was broken so have to remove it for now
+
 ## [0.2.10] - 2024-09-20
 
 ### Fixed

@@ -53,21 +53,6 @@ This method will build the binary from source.
 
 To update, run the same command again.
 
-### Homebrew
-
-For both macOS and Linux
-
-```bash
-brew tap slyeet03/spoify
-brew install spoify
-```
-
-To update, run
-
-```bash
-brew upgrade spoify
-```
-
 ## Configuration
 
 You can go to the configure folder and change the theme, keybindings and other related settings of the application.

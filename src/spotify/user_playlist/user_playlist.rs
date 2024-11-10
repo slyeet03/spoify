@@ -1,7 +1,6 @@
 // This section handles fetching and processing the user's Spotify playlists
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
-use crate::util::get_project_dir;
 use futures_util::TryStreamExt;
 use rspotify::clients::OAuthClient;
 use rspotify::model::SimplifiedPlaylist;
@@ -11,6 +10,7 @@ use serde_json::Value;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::Write;
+use std::path::PathBuf;
 
 /// Fetches user playlists from Spotify
 pub async fn fetch_user_playlists(
@@ -35,10 +35,12 @@ pub async fn fetch_user_playlists(
 fn save_playlists_to_json(app: &mut App, playlists: &[SimplifiedPlaylist]) {
     let json_data = serde_json::to_vec_pretty(playlists).unwrap();
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
-    path = path.join("playlists.json");
+    path.push("playlists.json");
 
     let mut file = File::create(&path).unwrap();
     file.write_all(&json_data).unwrap();
@@ -61,9 +63,11 @@ pub fn process_user_playlists(app: &mut App) {
     app.user_playlist_names.clear();
     app.user_playlist_links.clear();
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
-    path = path.join("playlists.json");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
+    path.push("playlists.json");
 
     let file = File::open(&path).expect("Failed to open playlists.json");
     let reader = BufReader::new(file);

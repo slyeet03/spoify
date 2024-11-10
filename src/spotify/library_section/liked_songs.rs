@@ -1,9 +1,9 @@
 use std::fs::File;
 use std::io::{BufReader, Write};
+use std::path::PathBuf;
 
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
-use crate::util::get_project_dir;
 use futures::FutureExt;
 use futures_util::TryStreamExt;
 use rspotify::model::SavedTrack;
@@ -39,10 +39,12 @@ pub async fn liked_tracks(app: &mut App) -> Result<(), ClientError> {
 fn save_liked_songs_to_json(app: &mut App, liked_songs: Vec<SavedTrack>) {
     let json_data = json!(liked_songs);
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
-    path = path.join("liked_songs.json");
+    path.push("liked_songs.json");
 
     let mut file = File::create(&path).unwrap();
     let _ = file.write_all(json_data.to_string().as_bytes());
@@ -57,9 +59,11 @@ pub fn process_liked_tracks(app: &mut App) {
     app.liked_song_artist_names.clear();
     app.liked_song_album_names.clear();
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
-    path = path.join("liked_songs.json");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
+    path.push("liked_songs.json");
 
     let file = File::open(&path).expect("Failed to open liked_songs.json");
     let reader = BufReader::new(file);

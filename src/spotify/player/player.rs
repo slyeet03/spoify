@@ -1,7 +1,6 @@
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
 use crate::structs::Settings;
-use crate::util::get_project_dir;
 use chrono::DateTime;
 use rspotify::model::{
     Actions, AdditionalType, CurrentPlaybackContext, CurrentlyPlayingType, Device, DeviceType,
@@ -12,6 +11,7 @@ use rspotify::ClientError;
 use serde_json::{json, Value};
 use std::fs::File;
 use std::io::{BufReader, Write};
+use std::path::PathBuf;
 
 // Main function to fetch the currently playing track information
 #[tokio::main]
@@ -83,12 +83,12 @@ pub async fn currently_playing(app: &mut App) -> Result<(), ClientError> {
 // Function to save the currently playing track data to a JSON file
 fn save_data_to_json(app: &mut App, items: CurrentPlaybackContext) {
     let json_data: Value = json!(items);
-
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
+    let mut path: PathBuf = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
-    path = path.join("currently_playing.json");
-
+    path.push("currently_playing.json");
     let mut file: File = File::create(&path).unwrap();
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
@@ -106,9 +106,11 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
 
     let mut repeat_state = String::new();
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
-    path = path.join("currently_playing.json");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
+    path.push("currently_playing.json");
 
     let file = File::open(&path).expect("Failed to open currently_playing.json");
     let reader = BufReader::new(file);

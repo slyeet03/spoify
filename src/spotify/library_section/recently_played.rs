@@ -1,12 +1,12 @@
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
-use crate::util::get_project_dir;
 use rspotify::model::PlayHistory;
 use rspotify::prelude::OAuthClient;
 use rspotify::ClientError;
 use serde_json::{json, Value};
 use std::fs::File;
 use std::io::{BufReader, Write};
+use std::path::PathBuf;
 
 /// Fetches a user's recently played tracks from Spotify
 #[tokio::main]
@@ -32,10 +32,12 @@ pub async fn recently_played(app: &mut App) -> Result<(), ClientError> {
 fn save_recently_played_to_json(app: &mut App, items: Vec<PlayHistory>) {
     let json_data = json!(items);
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
-    path = path.join("recently_played.json");
+    path.push("recently_played.json");
 
     let mut file = File::create(&path).unwrap();
     let _ = file.write_all(json_data.to_string().as_bytes());
@@ -50,9 +52,11 @@ pub fn process_recently_played(app: &mut App) {
     app.recently_played_artist_names.clear();
     app.recently_played_album_names.clear();
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
-    path = path.join("recently_played.json");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
+    path.push("recently_played.json");
 
     let file = File::open(&path).expect("Failed to open recently_played.json");
     let reader = BufReader::new(file);

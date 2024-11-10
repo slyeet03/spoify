@@ -2,7 +2,6 @@
 
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
-use crate::util::get_project_dir;
 use futures::FutureExt;
 use futures_util::TryStreamExt;
 use regex::Regex;
@@ -10,8 +9,10 @@ use rspotify::model::{PlaylistId, PlaylistItem};
 use rspotify::prelude::BaseClient;
 use rspotify::ClientError;
 use serde_json::{json, Value};
+use std::env;
 use std::fs::File;
 use std::io::{BufReader, Write};
+use std::path::PathBuf;
 
 /// Fetches playlist tracks from Spotify
 #[tokio::main]
@@ -48,10 +49,12 @@ pub async fn fetch_made_fy_tracks(app: &mut App) -> Result<(), ClientError> {
 fn save_file_to_json(app: &mut App, playlist_items: Vec<PlaylistItem>) {
     let json_data = json!(playlist_items);
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
     std::fs::create_dir_all(&path).unwrap();
-    path = path.join("made_fy_tracks.json");
+    path.push("made_fy_tracks.json");
 
     let mut file = File::create(&path).unwrap();
     let _ = file.write_all(json_data.to_string().as_bytes());
@@ -66,9 +69,11 @@ pub fn process_made_fy_tracks(app: &mut App) {
     app.made_fy_artist_names.clear();
     app.made_fy_album_names.clear();
 
-    let project_dir = get_project_dir(&app.file_name);
-    let mut path = project_dir.join("spotify_cache");
-    path = path.join("made_fy_tracks.json");
+    let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    path.push(".."); // Move up to the root of the Git repository
+    path.push(app.file_name.clone());
+    path.push("spotify_cache");
+    path.push("made_fy_tracks.json");
 
     let file = File::open(&path).expect("Failed to open made_fy_tracks.json");
     let reader = BufReader::new(file);
