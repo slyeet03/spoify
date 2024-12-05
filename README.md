@@ -1,6 +1,6 @@
 # Spoify
-[!IMPORTANT]
-This project is discontinued due to new changes in [Spotify's API Policy](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api).
+> [!IMPORTANT]
+> This project is discontinued due to new changes in [Spotify's API Policy](https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api).
 
 This is a Rust project that implements a Spotify client within your terminal. It allows you to browse and interact with Spotify directly from the command line.
 ![](screenshots/idle_state_spoify.png)
