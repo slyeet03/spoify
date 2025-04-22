@@ -9,8 +9,14 @@ use rspotify::ClientError;
 #[tokio::main]
 pub async fn start_playback(app: &mut App) -> Result<(), ClientError> {
     let spotify = get_spotify_client(app).await?;
-    let device_id: Option<&str> = app.current_device_id.as_deref();
+    let device_id;
     let track_uri;
+
+    if app.current_device_id == Some("".to_string()) {
+        device_id = app.device_id_after_pause.as_deref();
+    } else {
+        device_id = app.current_device_id.as_deref();
+    }
 
     if app.is_only_id {
         let track_id = app.selected_link_for_playback.as_str();

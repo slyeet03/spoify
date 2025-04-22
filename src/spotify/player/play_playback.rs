@@ -12,11 +12,14 @@ pub async fn play(app: &mut App) -> Result<(), ClientError> {
     let spotify = get_spotify_client(app).await?;
 
     // Get the device ID from the application state (if available)
-    let device_id: Option<&str> = app.current_device_id.as_deref();
+    let device_id: Option<&str> = app.device_id_after_pause.as_deref();
 
     let duration_result: Result<TimeDelta, chrono::OutOfRangeError> =
         f64_to_duration(app.currrent_timestamp);
 
+    // try start uri playback while taking track id using now playing from startplayback.rs
+    //
+    // and pray to god it works
     match duration_result {
         Ok(duration) => {
             let _result = spotify.resume_playback(device_id, Some(duration));

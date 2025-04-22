@@ -11,14 +11,14 @@ use rspotify::model::SimplifiedPlaylist;
 use rspotify::ClientError;
 use serde_json::{json, Value};
 
-/// Fetches a user's liked songs from Spotify
+/// Fetches a user's made for you playlists from Spotify
 #[tokio::main]
 pub async fn made_fy(app: &mut App) -> Result<(), ClientError> {
     // Get a Spotify client using an existing access token (if available).
     let spotify = get_spotify_client(app).await?;
 
     let category_id = "0JQ5DAt0tbjZptfcdMSKl3";
-    // Collect all the user's liked songs from Spotify.
+    // Collect all the user's made for you playlists from Spotify.
     let mut made_fy_playlists = Vec::new();
     // Executing the futures sequentially
     let stream = spotify

@@ -12,7 +12,7 @@ pub async fn volume_increment(app: &mut App, settings: &mut Settings) -> Result<
     let spotify = get_spotify_client(app).await?;
 
     // Get the device ID from the application state (if available)
-    let device_id: Option<&str> = app.current_device_id.as_deref();
+    let device_id: Option<&str> = app.device_id_after_pause.as_deref();
 
     // Increment the current device volume by the configured volume increment value
     if settings.volume_percent != 100 {

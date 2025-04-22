@@ -34,7 +34,9 @@ pub async fn get_spotify_client(app: &mut App) -> Result<AuthCodeSpotify, Client
         "user-modify-playback-state",
         "playlist-modify-public",
         "playlist-modify-private",
-        "ugc-image-upload"
+        "ugc-image-upload",
+        "app-remote-control",
+        "streaming"
     );
 
     let mut oauth = OAuth::default();

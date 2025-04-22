@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.12] - 2025-04-22
+
+### Fixed
+
+- Can use the shuffle and repeat features now
+
 ## [0.2.11] - 2024-11-11
 
 ### Fixed

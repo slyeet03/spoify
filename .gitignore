@@ -10,3 +10,6 @@ spotify.log
 .log
 /spoify_vault
 /target2k4PJC
+.DS_Store
+src/.DS_Store
+stats.txt

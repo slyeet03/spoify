@@ -17,13 +17,15 @@ pub struct App {
     // Controls whether the application should exit
     pub exit: bool,
 
+    // Stores the device id to resume playback
+    pub device_id_after_pause: Option<String>,
+
     // Controls the navigation inside Menu
     pub selected_menu: Menu,
     pub can_navigate_menu: bool,
 
     // Controls the navigation inside Library
     pub selected_library: Library,
-    pub library_index: usize,
     pub library_state: ListState,
 
     // Handles Search function
@@ -94,7 +96,6 @@ pub struct App {
 
     pub user_playlist_links: Vec<String>,
     pub user_playlist_track_links: Vec<String>,
-    pub user_playlist_artist_links: Vec<String>,
 
     pub user_playlist_track_duration: Vec<i64>,
 
@@ -115,11 +116,9 @@ pub struct App {
     pub liked_song_links: Vec<String>,
     pub liked_song_duration: Vec<i64>,
     pub liked_song_artist_names: Vec<String>,
-    pub liked_song_artist_links: Vec<String>,
     pub liked_song_album_names: Vec<String>,
     pub liked_songs_selected: bool,
     pub liked_song_display: bool,
-    pub selected_liked_song_uri: String,
     pub liked_songs_state: TableState,
     pub liked_songs_index: usize,
     pub enter_for_playback_in_liked_song: bool,
@@ -128,13 +127,10 @@ pub struct App {
     pub user_album_names: Vec<String>,
     pub user_album_links: Vec<String>,
     pub user_album_artist_names: Vec<String>,
-    pub user_album_artist_links: Vec<String>,
     pub user_album_tracks: Vec<usize>,
     pub user_album_selected: bool,
     pub user_album_display: bool,
     pub user_album_state: TableState,
-    pub user_album_selected_uri: String,
-    pub current_user_album: String,
     pub user_album_index: usize,
 
     pub user_album_track_names: Vec<String>,
@@ -155,8 +151,6 @@ pub struct App {
     pub podcast_selected: bool,
     pub podcast_display: bool,
     pub podcast_state: TableState,
-    pub podcast_selected_uri: String,
-    pub current_podcast: String,
     pub podcast_index: usize,
 
     // Handles User's Recently Played Songs
@@ -164,11 +158,9 @@ pub struct App {
     pub recently_played_links: Vec<String>,
     pub recently_played_duration: Vec<i64>,
     pub recently_played_artist_names: Vec<String>,
-    pub recently_played_artist_links: Vec<String>,
     pub recently_played_album_names: Vec<String>,
     pub recently_played_selected: bool,
     pub recently_played_display: bool,
-    pub selected_recently_played_uri: String,
     pub recently_played_state: TableState,
     pub recently_played_index: usize,
     pub enter_for_playback_in_recently_played: bool,
@@ -179,8 +171,6 @@ pub struct App {
     pub user_artist_selected: bool,
     pub user_artist_display: bool,
     pub user_artist_state: TableState,
-    pub user_artist_selected_uri: String,
-    pub current_user_artist: String,
     pub user_artist_index: usize,
     pub enter_for_playback_in_saved_artist: bool,
 
@@ -190,8 +180,8 @@ pub struct App {
     pub user_artist_track_index: usize,
     pub user_artist_track_state: TableState,
     pub user_artist_track_display: bool,
-    pub user_artist_track_selected: bool, // for a track list that is selected
-    pub user_artist_current_artist_selected: bool, // for an artist that is selected
+    pub user_artist_track_selected: bool,
+    pub user_artist_current_artist_selected: bool,
     pub user_artist_track_links: Vec<String>,
 
     // Handles Made For You
@@ -217,9 +207,7 @@ pub struct App {
     // Handles User's currently playing device
     pub current_device_name: String,
     pub current_device_volume: String,
-    pub is_device_active: Vec<bool>,
     pub playback_status: String,
-    pub device_ids: Vec<String>,
     pub current_device_id: Option<String>,
     pub shuffle_status: String,
     pub repeat_status: String,
@@ -234,19 +222,12 @@ pub struct App {
     pub progress_bar_ratio: f64,
     pub currently_playing_media_type: String,
 
-    // Handle Help section
-    pub is_help_section: bool,
-    pub task: Vec<String>,
-    pub key: Vec<String>,
-
     // Handle New Release section
     pub new_release_artist: Vec<String>,
     pub new_release_name: Vec<String>,
     pub new_release_state: ListState,
     pub current_new_release: String,
     pub new_release_display: bool,
-    pub new_release_selected: String,
-    pub is_new_release_selected: bool,
     pub new_release_album_selected: bool,
     pub new_release_album_state: TableState,
     pub new_release_album_links: Vec<String>,
@@ -286,7 +267,6 @@ pub struct App {
 
     // Follow/Unfollow Playlist
     pub playlist_link_to_follow: String,
-    pub is_follow_playlist: bool,
     pub have_playlist: bool,
 }
 
@@ -349,7 +329,6 @@ impl Default for App {
             selected_menu: Menu::Default,
 
             selected_library: Library::MadeFY,
-            library_index: 0,
             library_state: ListState::default(),
 
             user_playlist_state: ListState::default(),
@@ -386,7 +365,6 @@ impl Default for App {
             user_playlist_track_duration: Vec::new(),
             user_playlist_artist_names: Vec::new(),
             user_playlist_track_links: Vec::new(),
-            user_playlist_artist_links: Vec::new(),
             user_playlist_album_names: Vec::new(),
             selected_playlist_uri: String::new(),
             current_user_playlist: String::new(),
@@ -399,9 +377,7 @@ impl Default for App {
             liked_song_links: Vec::new(),
             liked_song_duration: Vec::new(),
             liked_song_artist_names: Vec::new(),
-            liked_song_artist_links: Vec::new(),
             liked_songs_selected: false,
-            selected_liked_song_uri: String::new(),
             liked_song_display: false,
             liked_song_album_names: Vec::new(),
 
@@ -410,10 +386,7 @@ impl Default for App {
             user_album_state: TableState::default(),
             user_album_names: Vec::new(),
             user_album_links: Vec::new(),
-            user_album_selected_uri: String::new(),
-            current_user_album: String::new(),
             user_album_artist_names: Vec::new(),
-            user_album_artist_links: Vec::new(),
             user_album_tracks: Vec::new(),
             can_navigate_menu: true,
 
@@ -421,11 +394,9 @@ impl Default for App {
             recently_played_links: Vec::new(),
             recently_played_duration: Vec::new(),
             recently_played_artist_names: Vec::new(),
-            recently_played_artist_links: Vec::new(),
             recently_played_album_names: Vec::new(),
             recently_played_selected: false,
             recently_played_display: false,
-            selected_recently_played_uri: String::new(),
             recently_played_state: TableState::default(),
 
             podcast_names: Vec::new(),
@@ -434,26 +405,21 @@ impl Default for App {
             podcast_selected: false,
             podcast_display: false,
             podcast_state: TableState::default(),
-            podcast_selected_uri: String::new(),
-            current_podcast: String::new(),
 
             user_artist_names: Vec::new(),
             user_artist_links: Vec::new(),
             user_artist_selected: false,
             user_artist_display: false,
             user_artist_state: TableState::default(),
-            user_artist_selected_uri: String::new(),
-            current_user_artist: String::new(),
 
             current_device_name: String::new(),
             current_device_volume: String::new(),
-            is_device_active: Vec::new(),
             playback_status: String::from("Playing"),
             shuffle_status: String::from("Off"),
             repeat_status: String::from("Off"),
             is_shuffle: false,
-            device_ids: Vec::new(),
             current_device_id: Some(String::new()),
+            device_id_after_pause: Some(String::new()),
 
             currrent_timestamp: f64::from(0),
             ending_timestamp: f64::from(1),
@@ -465,17 +431,11 @@ impl Default for App {
             progress_bar_ratio: 0.0,
             currently_playing_media_type: String::new(),
 
-            is_help_section: false,
-            task: Vec::new(),
-            key: Vec::new(),
-
             new_release_artist: Vec::new(),
             new_release_name: Vec::new(),
             new_release_state: ListState::default(),
             current_new_release: String::new(),
             new_release_display: false,
-            new_release_selected: String::new(),
-            is_new_release_selected: false,
             new_release_album_selected: false,
             new_release_album_state: TableState::default(),
             new_release_album_links: Vec::new(),
@@ -591,7 +551,6 @@ impl Default for App {
             add_track_to_playlist_state: ListState::default(),
 
             playlist_link_to_follow: String::new(),
-            is_follow_playlist: false,
             have_playlist: true,
         }
     }

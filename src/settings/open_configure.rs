@@ -19,6 +19,8 @@ pub fn open_configure(app: &mut App, key: &mut Key) {
 
     #[cfg(not(target_os = "windows"))]
     let spawn_command = Command::new("open").arg(yaml_path).spawn();
+    #[cfg(not(target_os = "windows"))]
+    let _temp = yaml_file;
 
     match spawn_command {
         Ok(_) => println!("Press {} to refresh", key.refresh_key),

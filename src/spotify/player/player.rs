@@ -103,6 +103,7 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
     app.current_playing_album.clear();
     app.current_device_name.clear();
     app.current_device_volume.clear();
+    app.current_device_id = Some("".to_string());
 
     let mut repeat_state = String::new();
 
@@ -140,6 +141,9 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
         if let Some(device) = currently_playing.get("device").and_then(Value::as_object) {
             if let Some(device_name) = device.get("name").and_then(Value::as_str) {
                 app.current_device_name = device_name.to_string();
+            }
+            if let Some(device_id) = device.get("id").and_then(Value::as_str) {
+                app.current_device_id = Some(device_id.to_string());
             }
             if let Some(device_volume) = device.get("volume_percent").and_then(Value::as_u64) {
                 app.current_device_volume = device_volume.to_string();

@@ -11,6 +11,8 @@ pub async fn pause(app: &mut App) -> Result<(), ClientError> {
 
     // Get the device ID from the application state (if available)
     let device_id: Option<&str> = app.current_device_id.as_deref();
+    app.device_id_after_pause = Some("".to_string());
+    app.device_id_after_pause = device_id.map(str::to_string);
 
     let result = spotify.pause_playback(device_id);
 
