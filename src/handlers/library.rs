@@ -2,6 +2,7 @@ use super::util::{default, down_key_for_table, up_key_for_table};
 use crate::{
     app::App,
     enums::{Library, Menu},
+    structs::Search,
     spotify::{
         library_section::{
             liked_songs::{liked_tracks, process_liked_tracks},
@@ -18,10 +19,10 @@ use crate::{
     },
 };
 
-pub fn go_to_library_event(app: &mut App) {
+pub fn go_to_library_event(app: &mut App,search:&mut Search) {
     app.selected_menu = Menu::Library;
     app.library_state.select(Some(0)); //reseting the library state
-    default(app);
+    default(app,search);
 }
 
 pub fn library_down_event(app: &mut App) {
@@ -144,11 +145,11 @@ pub fn library_up_event(app: &mut App) {
     }
 }
 
-pub fn library_enter_event(app: &mut App) {
+pub fn library_enter_event(app: &mut App,search: &mut Search) {
     if app.selected_menu == Menu::Library {
-        app.searched_album_selected = false;
-        app.searched_artist_selected = false;
-        app.searched_playlist_selected = false;
+        search.searched_album_selected = false;
+        search.searched_artist_selected = false;
+        search.searched_playlist_selected = false;
         if app.library_state.selected() == Some(0) {
             app.selected_library = Library::MadeFY;
             if app.made_fy_current_playlist_selected {
@@ -250,7 +251,7 @@ pub fn library_enter_event(app: &mut App) {
                 if let Err(e) = user_artist_tracks(app) {
                     println!("{}", e);
                 }
-                process_user_artist_tracks(app);
+                process_user_artist_tracks(app,search);
                 app.user_artist_track_display = true;
                 app.user_artist_display = false;
                 app.user_artist_track_selected = true;

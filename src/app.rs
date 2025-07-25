@@ -2,7 +2,7 @@ use crate::enums::{InputMode, Library, Menu, SearchMenu};
 use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
 use crate::spotify::player::player::process_currently_playing;
-use crate::structs::{Key, Settings, Themes};
+use crate::structs::{Key, Search, Settings, Themes};
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
 use crossterm::event::{self, Event};
@@ -29,65 +29,6 @@ pub struct App {
     pub library_state: ListState,
 
     // Handles Search function
-    pub search_query: String,
-    pub input: String,
-    pub cursor_position: usize,
-    pub input_mode: InputMode,
-    pub search_results_rendered: bool,
-    pub search_menu: SearchMenu,
-
-    pub album_names_search_results: Vec<String>,
-    pub track_names_search_results: Vec<String>,
-    pub playlist_names_search_results: Vec<String>,
-    pub artist_names_search_results: Vec<String>,
-
-    pub album_links_search_results: Vec<String>,
-    pub track_links_search_results: Vec<String>,
-    pub playlist_links_search_results: Vec<String>,
-    pub artist_links_search_results: Vec<String>,
-
-    pub album_index: usize,
-    pub track_index: usize,
-    pub playlist_index: usize,
-    pub artist_index: usize,
-
-    pub selected_album_in_search_result: bool,
-    pub selected_track_in_search_result: bool,
-    pub selected_playlist_in_search_result: bool,
-    pub selected_artist_in_search_result: bool,
-    pub selected_search: bool,
-
-    pub search_state: ListState,
-    pub album_state_in_search_result: ListState,
-    pub track_state_in_search_result: ListState,
-    pub playlist_state_in_search_result: ListState,
-    pub artist_state_in_search_result: ListState,
-
-    pub selected_album_tracks_names: Vec<String>,
-    pub selected_album_tracks_artists: Vec<String>,
-    pub selected_album_tracks_duration: Vec<i64>,
-    pub selected_album_tracks_links: Vec<String>,
-    pub searched_album_selected: bool,
-    pub searched_album_state: TableState,
-    pub searched_album_index: usize,
-
-    pub selected_playlist_tracks_names: Vec<String>,
-    pub selected_playlist_tracks_artists: Vec<String>,
-    pub selected_playlist_tracks_duration: Vec<i64>,
-    pub selected_playlist_tracks_albums: Vec<String>,
-    pub selected_playlist_tracks_links: Vec<String>,
-    pub searched_playlist_selected: bool,
-    pub searched_playlist_state: TableState,
-    pub searched_playlist_index: usize,
-
-    pub selected_artist_tracks_names: Vec<String>,
-    pub selected_artist_tracks_duration: Vec<i64>,
-    pub selected_artist_tracks_links: Vec<String>,
-    pub selected_artist_track_album_names: Vec<String>,
-    pub searched_artist_selected: bool,
-    pub searched_artist_state: TableState,
-    pub searched_artist_index: usize,
-
     // Handles User's playlists
     pub user_playlist_names: Vec<String>,
     pub user_playlist_artist_names: Vec<String>,
@@ -279,6 +220,7 @@ impl App {
         keys: &mut Key,
         theme: &mut Themes,
         settings: &mut Settings,
+        search: &mut Search,
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -288,11 +230,11 @@ impl App {
             // Handling user inputs
             if event::poll(timeout)? {
                 if let Event::Key(key_event) = event::read()? {
-                    handle_key_event(self, key_event, keys, theme, settings);
+                    handle_key_event(self, key_event, keys, theme, settings, search);
 
                     // In editing mode, handle search input
-                    if self.input_mode == InputMode::Editing {
-                        let _ = search_input(self, key_event);
+                    if search.input_mode == InputMode::Editing {
+                        let _ = search_input(self, search, key_event);
                     }
                 }
             }
@@ -309,7 +251,7 @@ impl App {
 
                 // Draw the UI
                 terminal
-                    .draw(|frame| render_frame(frame, self.selected_menu, self, keys, theme))?;
+                    .draw(|frame| render_frame(frame, self.selected_menu, self, keys, theme, search))?;
             }
         }
 
@@ -332,32 +274,6 @@ impl Default for App {
             library_state: ListState::default(),
 
             user_playlist_state: ListState::default(),
-
-            search_query: "".to_string(),
-            input: String::new(),
-            input_mode: InputMode::Normal,
-            cursor_position: 0,
-            search_menu: SearchMenu::Default,
-
-            album_names_search_results: Vec::new(),
-            album_links_search_results: Vec::new(),
-            track_names_search_results: Vec::new(),
-            track_links_search_results: Vec::new(),
-            playlist_names_search_results: Vec::new(),
-            playlist_links_search_results: Vec::new(),
-            artist_names_search_results: Vec::new(),
-            artist_links_search_results: Vec::new(),
-            album_state_in_search_result: ListState::default(),
-            track_state_in_search_result: ListState::default(),
-            playlist_state_in_search_result: ListState::default(),
-            artist_state_in_search_result: ListState::default(),
-            search_state: ListState::default(),
-            selected_album_in_search_result: false,
-            selected_track_in_search_result: false,
-            selected_playlist_in_search_result: false,
-            selected_artist_in_search_result: false,
-            selected_search: false,
-            search_results_rendered: false,
 
             user_playlist_names: Vec::new(),
             user_playlist_links: Vec::new(),
@@ -449,10 +365,6 @@ impl Default for App {
             client_id: String::new(),
             client_secret: String::new(),
 
-            album_index: 0,
-            track_index: 0,
-            playlist_index: 0,
-            artist_index: 0,
             user_playlist_index: 0,
             liked_songs_index: 0,
             user_album_index: 0,
@@ -462,31 +374,6 @@ impl Default for App {
             new_release_index: 0,
 
             error_text: String::new(),
-
-            selected_album_tracks_names: Vec::new(),
-            selected_album_tracks_artists: Vec::new(),
-            selected_album_tracks_duration: Vec::new(),
-            selected_album_tracks_links: Vec::new(),
-            searched_album_selected: false,
-            searched_album_state: TableState::default(),
-            searched_album_index: 0,
-
-            selected_artist_track_album_names: Vec::new(),
-            searched_artist_selected: false,
-            searched_artist_state: TableState::default(),
-            searched_artist_index: 0,
-            selected_artist_tracks_names: Vec::new(),
-            selected_artist_tracks_duration: Vec::new(),
-            selected_artist_tracks_links: Vec::new(),
-
-            searched_playlist_selected: false,
-            searched_playlist_state: TableState::default(),
-            searched_playlist_index: 0,
-            selected_playlist_tracks_names: Vec::new(),
-            selected_playlist_tracks_artists: Vec::new(),
-            selected_playlist_tracks_duration: Vec::new(),
-            selected_playlist_tracks_albums: Vec::new(),
-            selected_playlist_tracks_links: Vec::new(),
 
             made_fy_playlist_names: Vec::new(),
             made_fy_playlist_links: Vec::new(),

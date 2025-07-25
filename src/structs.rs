@@ -1,4 +1,7 @@
+use crate::enums::InputMode;
+use crate::enums::SearchMenu;
 use ratatui::style::Color;
+use ratatui::widgets::{ListState, TableState};
 
 #[derive(Clone, Debug)]
 pub struct Key {
@@ -148,6 +151,130 @@ impl Default for Settings {
             volume_decreament_value: 0,
             volume_percent: 0,
             theme_name: String::new(),
+        }
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct Search {
+    pub search_query: String,
+    pub input: String,
+    pub cursor_position: usize,
+    pub input_mode: InputMode,
+    pub search_results_rendered: bool,
+    pub search_menu: SearchMenu,
+
+    pub album_names_search_results: Vec<String>,
+    pub track_names_search_results: Vec<String>,
+    pub playlist_names_search_results: Vec<String>,
+    pub artist_names_search_results: Vec<String>,
+
+    pub album_links_search_results: Vec<String>,
+    pub track_links_search_results: Vec<String>,
+    pub playlist_links_search_results: Vec<String>,
+    pub artist_links_search_results: Vec<String>,
+
+    pub album_index: usize,
+    pub track_index: usize,
+    pub playlist_index: usize,
+    pub artist_index: usize,
+
+    pub selected_album_in_search_result: bool,
+    pub selected_track_in_search_result: bool,
+    pub selected_playlist_in_search_result: bool,
+    pub selected_artist_in_search_result: bool,
+    pub selected_search: bool,
+
+    pub search_state: ListState,
+    pub album_state_in_search_result: ListState,
+    pub track_state_in_search_result: ListState,
+    pub playlist_state_in_search_result: ListState,
+    pub artist_state_in_search_result: ListState,
+
+    pub selected_album_tracks_names: Vec<String>,
+    pub selected_album_tracks_artists: Vec<String>,
+    pub selected_album_tracks_duration: Vec<i64>,
+    pub selected_album_tracks_links: Vec<String>,
+    pub searched_album_selected: bool,
+    pub searched_album_state: TableState,
+    pub searched_album_index: usize,
+
+    pub selected_playlist_tracks_names: Vec<String>,
+    pub selected_playlist_tracks_artists: Vec<String>,
+    pub selected_playlist_tracks_duration: Vec<i64>,
+    pub selected_playlist_tracks_albums: Vec<String>,
+    pub selected_playlist_tracks_links: Vec<String>,
+    pub searched_playlist_selected: bool,
+    pub searched_playlist_state: TableState,
+    pub searched_playlist_index: usize,
+
+    pub selected_artist_tracks_names: Vec<String>,
+    pub selected_artist_tracks_duration: Vec<i64>,
+    pub selected_artist_tracks_links: Vec<String>,
+    pub selected_artist_track_album_names: Vec<String>,
+    pub searched_artist_selected: bool,
+    pub searched_artist_state: TableState,
+    pub searched_artist_index: usize,
+}
+
+impl Default for Search {
+    fn default() -> Self {
+        Self {
+            search_query: "".to_string(),
+            input: String::new(),
+            input_mode: InputMode::Normal,
+            cursor_position: 0,
+            search_menu: SearchMenu::Default,
+
+            album_names_search_results: Vec::new(),
+            album_links_search_results: Vec::new(),
+            track_names_search_results: Vec::new(),
+            track_links_search_results: Vec::new(),
+            playlist_names_search_results: Vec::new(),
+            playlist_links_search_results: Vec::new(),
+            artist_names_search_results: Vec::new(),
+            artist_links_search_results: Vec::new(),
+            album_state_in_search_result: ListState::default(),
+            track_state_in_search_result: ListState::default(),
+            playlist_state_in_search_result: ListState::default(),
+            artist_state_in_search_result: ListState::default(),
+            search_state: ListState::default(),
+            selected_album_in_search_result: false,
+            selected_track_in_search_result: false,
+            selected_playlist_in_search_result: false,
+            selected_artist_in_search_result: false,
+            selected_search: false,
+            search_results_rendered: false,
+
+            album_index: 0,
+            track_index: 0,
+            playlist_index: 0,
+            artist_index: 0,
+
+            selected_album_tracks_names: Vec::new(),
+            selected_album_tracks_artists: Vec::new(),
+            selected_album_tracks_duration: Vec::new(),
+            selected_album_tracks_links: Vec::new(),
+            searched_album_selected: false,
+            searched_album_state: TableState::default(),
+            searched_album_index: 0,
+
+            selected_artist_track_album_names: Vec::new(),
+            searched_artist_selected: false,
+            searched_artist_state: TableState::default(),
+            searched_artist_index: 0,
+            selected_artist_tracks_names: Vec::new(),
+            selected_artist_tracks_duration: Vec::new(),
+            selected_artist_tracks_links: Vec::new(),
+
+            searched_playlist_selected: false,
+            searched_playlist_state: TableState::default(),
+            searched_playlist_index: 0,
+            selected_playlist_tracks_names: Vec::new(),
+            selected_playlist_tracks_artists: Vec::new(),
+            selected_playlist_tracks_duration: Vec::new(),
+            selected_playlist_tracks_albums: Vec::new(),
+            selected_playlist_tracks_links: Vec::new(),
         }
     }
 }

@@ -1,6 +1,7 @@
 extern crate rspotify;
 extern crate serde_json;
 
+use crate::structs::Search;
 use crate::app::App;
 use futures::{FutureExt, TryStreamExt};
 use rspotify::model::{AlbumId, SimplifiedTrack};
@@ -12,7 +13,7 @@ use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
 #[tokio::main]
-pub async fn search_selected_album_tracks(app: &mut App) -> Result<(), ClientError> {
+pub async fn search_selected_album_tracks(app: &mut App, search: &mut Search) -> Result<(), ClientError> {
     let client_id = &app.client_id;
     let client_secret_id = &app.client_secret;
 
@@ -30,7 +31,7 @@ pub async fn search_selected_album_tracks(app: &mut App) -> Result<(), ClientErr
 
     // Collect tracks from the selected album
     let mut tracks = Vec::new();
-    let id = app.album_links_search_results[app.album_index].as_str();
+    let id = search.album_links_search_results[search.album_index].as_str();
     let album_id: AlbumId = AlbumId::from_id(id).unwrap();
 
     // Stream the album tracks and collect them into a vector.
@@ -64,11 +65,11 @@ fn save_tracks_to_json(app: &mut App, items: Vec<SimplifiedTrack>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
-pub fn process_selected_album_tracks(app: &mut App) {
-    app.selected_album_tracks_names.clear();
-    app.selected_album_tracks_artists.clear();
-    app.selected_album_tracks_duration.clear();
-    app.selected_album_tracks_links.clear();
+pub fn process_selected_album_tracks(app: &mut App, search: &mut Search) {
+    search.selected_album_tracks_names.clear();
+    search.selected_album_tracks_artists.clear();
+    search.selected_album_tracks_duration.clear();
+    search.selected_album_tracks_links.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -88,7 +89,7 @@ pub fn process_selected_album_tracks(app: &mut App) {
             if let Value::Object(track_obj) = track {
                 // Extract track name
                 if let Some(name) = track_obj.get("name").and_then(|v| v.as_str()) {
-                    app.selected_album_tracks_names.push(name.to_owned());
+                    search.selected_album_tracks_names.push(name.to_owned());
                 }
 
                 // Extract first artist name
@@ -98,7 +99,7 @@ pub fn process_selected_album_tracks(app: &mut App) {
                             if let Some(artist_name) =
                                 first_artist.get("name").and_then(|v| v.as_str())
                             {
-                                app.selected_album_tracks_artists
+                                search.selected_album_tracks_artists
                                     .push(artist_name.to_owned());
                             }
                         }
@@ -107,7 +108,7 @@ pub fn process_selected_album_tracks(app: &mut App) {
 
                 // Extract duration in milliseconds
                 if let Some(duration) = track_obj.get("duration_ms").and_then(|v| v.as_i64()) {
-                    app.selected_album_tracks_duration.push(duration);
+                    search.selected_album_tracks_duration.push(duration);
                 }
 
                 // Extract external Spotify URL
@@ -116,7 +117,7 @@ pub fn process_selected_album_tracks(app: &mut App) {
                     .and_then(|v| v.get("spotify"))
                     .and_then(|v| v.as_str())
                 {
-                    app.selected_album_tracks_links.push(url.to_owned());
+                    search.selected_album_tracks_links.push(url.to_owned());
                 }
             }
         }

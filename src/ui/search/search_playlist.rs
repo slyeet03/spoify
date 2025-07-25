@@ -1,3 +1,4 @@
+use crate::structs::Search;
 use ratatui::{
     layout::Rect,
     style::Style,
@@ -12,14 +13,15 @@ pub fn render_searched_playlist(
     content_chunk: &[Rect],
     app: &mut App,
     theme: &mut Themes,
+    search: &mut Search,
 ) {
     f.render_widget(Clear, content_chunk[1]);
-    let current_playlist = &app.playlist_names_search_results[app.playlist_index];
+    let current_playlist = &search.playlist_names_search_results[search.playlist_index];
 
     let playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(current_playlist.to_string()))
-        .border_style(if app.searched_playlist_selected {
+        .border_style(if search.searched_playlist_selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -27,10 +29,10 @@ pub fn render_searched_playlist(
         .style(Style::default().bg(theme.main_background_color));
 
     let track_table = track_table_ui(
-        app.selected_playlist_tracks_names.clone(),
-        app.selected_playlist_tracks_artists.clone(),
-        app.selected_playlist_tracks_albums.clone(),
-        app.selected_playlist_tracks_duration.clone(),
+        search.selected_playlist_tracks_names.clone(),
+        search.selected_playlist_tracks_artists.clone(),
+        search.selected_playlist_tracks_albums.clone(),
+        search.selected_playlist_tracks_duration.clone(),
         playlist_block,
         theme.main_highlight_color,
         theme.main_background_color,
@@ -42,6 +44,6 @@ pub fn render_searched_playlist(
     f.render_stateful_widget(
         track_table,
         content_chunk[1],
-        &mut app.searched_playlist_state,
+        &mut search.searched_playlist_state,
     );
 }

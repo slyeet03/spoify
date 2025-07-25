@@ -1,6 +1,7 @@
 extern crate rspotify;
 extern crate serde_json;
 
+use crate::Search;
 use crate::app::App;
 use regex::Regex;
 use rspotify::model::{ArtistId, FullTrack};
@@ -62,12 +63,12 @@ fn save_tracks_to_json(app: &mut App, items: Vec<FullTrack>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
-pub fn process_user_artist_tracks(app: &mut App) {
+pub fn process_user_artist_tracks(app: &mut App, search: &mut Search) {
     // Clear any existing user track data in the app before processing
     app.user_artist_track_names.clear();
     app.user_artist_track_album.clear();
     app.user_artist_track_duration.clear();
-    app.selected_artist_tracks_links.clear();
+    search.selected_artist_tracks_links.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository

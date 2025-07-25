@@ -3,42 +3,43 @@ use ratatui::widgets::{ListState, TableState};
 use crate::{
     app::App,
     enums::{InputMode, SearchMenu},
+    structs::Search,
 };
 
 // Helper functions for cursor movement and character deletion
-pub fn move_cursor_left(app: &mut App) {
-    let cursor_moved_left = app.cursor_position.saturating_sub(1);
-    app.cursor_position = clamp_cursor(app, cursor_moved_left);
+pub fn move_cursor_left(app: &mut App,search: &mut Search) {
+    let cursor_moved_left = search.cursor_position.saturating_sub(1);
+    search.cursor_position = clamp_cursor(app, cursor_moved_left,search);
 }
 
-pub fn move_cursor_right(app: &mut App) {
-    let cursor_moved_right = app.cursor_position.saturating_add(1);
-    app.cursor_position = clamp_cursor(app, cursor_moved_right);
+pub fn move_cursor_right(app: &mut App, search: &mut Search) {
+    let cursor_moved_right = search.cursor_position.saturating_add(1);
+    search.cursor_position = clamp_cursor(app, cursor_moved_right,search);
 }
 
-pub fn delete_char(app: &mut App) {
-    let is_not_cursor_leftmost = app.cursor_position != 0;
+pub fn delete_char(app: &mut App, search: &mut Search) {
+    let is_not_cursor_leftmost = search.cursor_position != 0;
     if is_not_cursor_leftmost {
-        let current_index = app.cursor_position;
+        let current_index = search.cursor_position;
         let from_left_to_current_index = current_index - 1;
 
         // Getting all characters before the selected character.
-        let before_char_to_delete = app.input.chars().take(from_left_to_current_index);
+        let before_char_to_delete = search.input.chars().take(from_left_to_current_index);
         // Getting all characters after selected character.
-        let after_char_to_delete = app.input.chars().skip(current_index);
+        let after_char_to_delete = search.input.chars().skip(current_index);
 
         // Put all characters together except the selected one.
         // By leaving the selected one out, it is forgotten and therefore deleted.
-        app.input = before_char_to_delete.chain(after_char_to_delete).collect();
-        move_cursor_left(app);
+        search.input = before_char_to_delete.chain(after_char_to_delete).collect();
+        move_cursor_left(app,search);
     }
 }
 
-pub fn clamp_cursor(app: &mut App, new_cursor_pos: usize) -> usize {
-    new_cursor_pos.clamp(0, app.input.len())
+pub fn clamp_cursor(app: &mut App, new_cursor_pos: usize, search: &mut Search) -> usize {
+    new_cursor_pos.clamp(0, search.input.len())
 }
-pub fn reset_cursor(app: &mut App) {
-    app.cursor_position = 0;
+pub fn reset_cursor(app: &mut App, search: &mut Search) {
+    search.cursor_position = 0;
 }
 
 pub fn down_key_for_table(names: Vec<String>, mut state: TableState) -> (TableState, usize) {
@@ -81,20 +82,20 @@ pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, 
     (state, prev_index)
 }
 
-pub fn default(app: &mut App) {
-    app.search_results_rendered = false;
-    app.input_mode = InputMode::Normal;
+pub fn default(app: &mut App, search: &mut Search) {
+    search.search_results_rendered = false;
+    search.input_mode = InputMode::Normal;
     app.user_playlist_display = false;
     app.liked_song_display = false;
-    app.selected_search = false;
+    search.selected_search = false;
     app.user_album_display = false;
     app.recently_played_display = false;
     app.can_navigate_menu = true;
     app.podcast_display = false;
     app.user_artist_display = false;
-    app.searched_album_selected = false;
-    app.searched_artist_selected = false;
-    app.searched_playlist_selected = false;
+    search.searched_album_selected = false;
+    search.searched_artist_selected = false;
+    search.searched_playlist_selected = false;
     app.made_fy_display = false;
     app.made_fy_track_display = false;
     app.made_fy_track_selected = false;
@@ -115,11 +116,11 @@ pub fn default(app: &mut App) {
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
     app.is_in_track = false;
-    app.search_menu = SearchMenu::Default;
+    search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App) {
-    app.search_results_rendered = false;
+pub fn default_nav(app: &mut App, search: &mut Search) {
+    search.search_results_rendered = false;
     app.liked_song_display = false;
     app.user_album_display = false;
     app.recently_played_display = false;
@@ -146,21 +147,21 @@ pub fn default_nav(app: &mut App) {
     app.is_in_track = false;
 }
 
-pub fn default_search(app: &mut App) {
-    app.search_results_rendered = false;
+pub fn default_search(app: &mut App, search: &mut Search) {
+    search.search_results_rendered = false;
     app.liked_song_display = false;
     app.user_album_display = false;
     app.recently_played_display = false;
     app.can_navigate_menu = true;
     app.podcast_display = false;
     app.user_artist_display = false;
-    app.searched_album_selected = false;
-    app.searched_artist_selected = false;
-    app.searched_album_selected = false;
-    app.searched_playlist_selected = false;
-    app.selected_search = false;
+    search.searched_album_selected = false;
+    search.searched_artist_selected = false;
+    search.searched_album_selected = false;
+    search.searched_playlist_selected = false;
+    search.selected_search = false;
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
     app.is_in_track = false;
-    app.search_menu = SearchMenu::Default;
+    search.search_menu = SearchMenu::Default;
 }

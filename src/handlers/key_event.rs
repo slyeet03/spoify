@@ -34,7 +34,7 @@ use super::util::{default_nav, delete_char, move_cursor_left, move_cursor_right,
 use crate::app::App;
 use crate::enums::{InputMode, Menu};
 use crate::spotify::search::search::process_search;
-use crate::structs::{Key, Settings, Themes};
+use crate::structs::{Key, Settings, Themes, Search};
 use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 use std::io::{self, Write};
 
@@ -45,6 +45,7 @@ pub fn handle_key_event(
     key: &mut Key,
     theme: &mut Themes,
     settings: &mut Settings,
+    search: &mut Search,
 ) {
     let go_to_search_key: char = key.go_to_search_key;
     let go_to_library_key: char = key.go_to_library_key;
@@ -70,7 +71,7 @@ pub fn handle_key_event(
             }
             // Open the configuration folder
             code if code == KeyCode::Char(open_config_fold_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
                 open_config_folder(app, key);
             }
@@ -81,12 +82,12 @@ pub fn handle_key_event(
             }
 
             KeyCode::Char('p') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
-                add_track_to_playlist_event(app);
+                add_track_to_playlist_event(app,search);
             }
 
             // Follow Playlist
             KeyCode::Char('f') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
-                follow_playlist_event(app);
+                follow_playlist_event(app,search);
             }
 
             //Unfollow/Delete Playlist
@@ -96,13 +97,13 @@ pub fn handle_key_event(
 
             // Exit the application when 'q' is pressed in Normal mode
             code if code == KeyCode::Char(exit_application_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
                 exit_event(app);
             }
 
             // Run the startup function again
-            code if code == KeyCode::Char(refresh_key) && app.input_mode != InputMode::Editing => {
+            code if code == KeyCode::Char(refresh_key) && search.input_mode != InputMode::Editing => {
                 refresh_event(app, key, theme, settings);
             }
 
@@ -110,101 +111,101 @@ pub fn handle_key_event(
 
             // Go to Library Menu
             code if code == KeyCode::Char(go_to_library_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
-                go_to_library_event(app);
+                go_to_library_event(app,search);
             }
 
             // Go to user playlist menu
             code if code == KeyCode::Char(go_to_user_playlists_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
-                go_to_user_playlists_event(app);
+                go_to_user_playlists_event(app,search);
             }
 
             // Go to search menu
             code if code == KeyCode::Char(go_to_search_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
-                go_to_search_event(app);
+                go_to_search_event(app,search);
             }
 
             // Go to help menu
-            code if code == KeyCode::Char(help_key) && app.input_mode != InputMode::Editing => {
+            code if code == KeyCode::Char(help_key) && search.input_mode != InputMode::Editing => {
                 go_to_help_event(app);
             }
 
             // Enter fullscreen mode for the player
             code if code == KeyCode::Char(player_fullscreen_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
                 fullscreen_player_event(app);
             }
 
             // Go to New Release Menu
             code if code == KeyCode::Char(new_release_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
-                go_to_new_release_event(app);
+                go_to_new_release_event(app,search);
             }
 
             // Keys for Volume Control
             code if code == KeyCode::Char(volume_down_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
                 volume_decreament_event(app, settings);
             }
 
             code if code == KeyCode::Char(volume_up_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
                 volume_increment_event(app, settings);
             }
 
             // Keys for next and previous track
             code if code == KeyCode::Char(next_track_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
                 next_track_event(app);
             }
             code if code == KeyCode::Char(previous_track_key)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
                 previous_track_event(app);
             }
 
             // Key for Error Screen
-            code if code == KeyCode::Char(error_key) && app.input_mode != InputMode::Editing => {
+            code if code == KeyCode::Char(error_key) && search.input_mode != InputMode::Editing => {
                 go_to_error_event(app);
             }
 
             code if code == KeyCode::Char(change_keybind)
-                && app.input_mode != InputMode::Editing =>
+                && search.input_mode != InputMode::Editing =>
             {
                 change_keybindings(app, key);
             }
 
             // Down keybinding for all the menus
-            KeyCode::Down if app.input_mode != InputMode::Editing => {
+            KeyCode::Down if search.input_mode != InputMode::Editing => {
                 library_down_event(app);
-                new_release_down_event(app);
-                user_playlist_down_event(app);
-                search_down_event(app);
+                new_release_down_event(app,search);
+                user_playlist_down_event(app,search);
+                search_down_event(app,search);
                 add_track_to_playlist_down_event(app);
 
                 if app.can_navigate_menu {
                     let next_index: usize = app.library_state.selected().unwrap_or(0) + 1;
                     app.library_state.select(Some(next_index % 6)); //wrapping around the last option
-                    default_nav(app);
+                    default_nav(app,search);
                 }
             }
 
             // Up keybinding for all the menus
-            KeyCode::Up if app.input_mode != InputMode::Editing => {
+            KeyCode::Up if search.input_mode != InputMode::Editing => {
                 library_up_event(app);
-                new_release_up_event(app);
-                user_playlist_up_event(app);
-                search_up_event(app);
+                new_release_up_event(app,search);
+                user_playlist_up_event(app,search);
+                search_up_event(app,search);
                 add_track_to_playlist_up_event(app);
 
                 if app.can_navigate_menu {
@@ -214,43 +215,43 @@ pub fn handle_key_event(
                         app.library_state.selected().unwrap_or(0) - 1
                     };
                     app.library_state.select(Some(prev_index));
-                    default_nav(app);
+                    default_nav(app,search);
                 }
             }
 
             // Enter keybinding for all the menus
-            KeyCode::Enter if app.input_mode != InputMode::Editing => {
-                user_playlist_enter_event(app);
-                new_release_enter_event(app);
-                library_enter_event(app);
-                search_enter_event(app);
+            KeyCode::Enter if search.input_mode != InputMode::Editing => {
+                user_playlist_enter_event(app,search);
+                new_release_enter_event(app,search);
+                library_enter_event(app,search);
+                search_enter_event(app,search);
                 add_track_to_playlist_enter_event(app);
             }
 
             // Tab keybinding for all the menus
-            KeyCode::Tab if app.input_mode != InputMode::Editing => {
+            KeyCode::Tab if search.input_mode != InputMode::Editing => {
                 user_playlist_tab_event(app);
                 new_release_tab_event(app);
                 library_tab_event(app);
-                search_tab_event(app);
+                search_tab_event(app,search);
             }
 
             // Pause/Play using Spacebar
-            KeyCode::Char(' ') if app.input_mode != InputMode::Editing => {
+            KeyCode::Char(' ') if search.input_mode != InputMode::Editing => {
                 play_pause_event(app);
             }
 
             // Just exit from Search Menu
-            KeyCode::Esc if app.input_mode != InputMode::Editing => {
+            KeyCode::Esc if search.input_mode != InputMode::Editing => {
                 app.selected_menu = Menu::Default;
             }
 
             // Handle character input in search mode
-            KeyCode::Char(c) if app.input_mode == InputMode::Editing => {
+            KeyCode::Char(c) if search.input_mode == InputMode::Editing => {
                 // Handle character input in search mode
                 if !c.is_control() {
-                    app.input.push(c);
-                    move_cursor_right(app);
+                    search.input.push(c);
+                    move_cursor_right(app,search);
                 }
             }
 
@@ -260,34 +261,34 @@ pub fn handle_key_event(
 }
 
 /// Function to handle search input and related key events
-pub fn search_input(app: &mut App, key_event: KeyEvent) -> io::Result<()> {
+pub fn search_input(app: &mut App,search: &mut Search, key_event: KeyEvent) -> io::Result<()> {
     if key_event.kind == KeyEventKind::Press {
-        match app.input_mode {
+        match search.input_mode {
             InputMode::Editing => match key_event.code {
                 // Submit the search query when Enter is pressed
                 KeyCode::Enter => {
-                    submit_message(app);
+                    submit_message(app,search);
                     std::io::sink().write_all(&[0])?;
                 }
                 // Delete a character when Backspace is pressed
                 KeyCode::Backspace => {
-                    delete_char(app);
+                    delete_char(app,search);
                     std::io::sink().write_all(&[0])?;
                 }
                 // Move the cursor left when Left arrow is pressed
                 KeyCode::Left => {
-                    move_cursor_left(app);
+                    move_cursor_left(app,search);
                     std::io::sink().write_all(&[0])?;
                 }
                 // Move the cursor right when Right arrow is pressed
                 KeyCode::Right => {
-                    move_cursor_right(app);
+                    move_cursor_right(app,search);
                     std::io::sink().write_all(&[0])?;
                 }
                 // Exit search mode when Esc is pressed
                 KeyCode::Esc => {
-                    app.input_mode = InputMode::Normal;
-                    app.search_results_rendered = false;
+                    search.input_mode = InputMode::Normal;
+                    search.search_results_rendered = false;
                     std::io::sink().write_all(&[0])?;
                 }
                 _ => {}
@@ -300,19 +301,19 @@ pub fn search_input(app: &mut App, key_event: KeyEvent) -> io::Result<()> {
 }
 
 // Submit the search query and process the search results
-fn submit_message(app: &mut App) {
-    app.search_query = app.input.clone();
+fn submit_message(app: &mut App,search: &mut Search) {
+    search.search_query = search.input.clone();
 
-    let binding = app.search_query.clone();
+    let binding = search.search_query.clone();
     let query = binding.as_str();
 
-    let _ = process_search(app, query);
+    let _ = process_search(app, query,search);
 
-    app.input.clear();
-    reset_cursor(app);
+    search.input.clear();
+    reset_cursor(app,search);
 
-    app.input_mode = InputMode::SearchResults;
-    app.search_results_rendered = true;
-    app.selected_search = true;
-    app.search_state.select(Some(0));
+    search.input_mode = InputMode::SearchResults;
+    search.search_results_rendered = true;
+    search.selected_search = true;
+    search.search_state.select(Some(0));
 }

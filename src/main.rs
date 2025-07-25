@@ -1,3 +1,4 @@
+use crate::structs::Search;
 use std::io;
 use std::sync::mpsc;
 use std::thread;
@@ -23,6 +24,7 @@ fn main() -> io::Result<()> {
     let mut key: Key = Key::default();
     let mut theme: Themes = Themes::default();
     let mut settings: Settings = Settings::default();
+    let mut search: Search = Search::default();
 
     app.file_name = "spoify".to_string(); //-0.2.12
 
@@ -50,7 +52,7 @@ fn main() -> io::Result<()> {
         });
 
         // Run the main app loop
-        app.run(&mut terminal, rx1, &mut key, &mut theme, &mut settings)?;
+        app.run(&mut terminal, rx1, &mut key, &mut theme, &mut settings, &mut search)?;
 
         // Wait for the spawned threads to complete
         if let Err(e) = player_info_thread.join() {

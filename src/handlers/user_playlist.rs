@@ -1,6 +1,7 @@
 use super::util::{default, down_key_for_table, up_key_for_table};
 use crate::{
     app::App,
+    structs::Search,
     enums::Menu,
     spotify::{
         player::start_playback::start_playback,
@@ -8,11 +9,11 @@ use crate::{
     },
 };
 
-pub fn go_to_user_playlists_event(app: &mut App) {
+pub fn go_to_user_playlists_event(app: &mut App,search:&mut Search) {
     if app.have_playlist {
         app.selected_menu = Menu::Playlists;
         app.user_playlist_state.select(Some(0));
-        default(app);
+        default(app,search);
         app.selected_playlist_uri = app.user_playlist_links[0].clone();
         app.current_user_playlist = app.user_playlist_names[0].clone();
     } else {
@@ -21,7 +22,7 @@ pub fn go_to_user_playlists_event(app: &mut App) {
     }
 }
 
-pub fn user_playlist_down_event(app: &mut App) {
+pub fn user_playlist_down_event(app: &mut App, search: &mut Search) {
     if app.selected_menu == Menu::Playlists {
         if app.user_playlist_tracks_selected {
             (app.user_playlist_tracks_state, app.user_playlist_index) = down_key_for_table(
@@ -32,7 +33,7 @@ pub fn user_playlist_down_event(app: &mut App) {
             let length: usize = app.user_playlist_names.len();
             let next_index: usize = app.user_playlist_state.selected().unwrap_or(0) + 1;
             app.user_playlist_state.select(Some(next_index % length));
-            app.search_results_rendered = false;
+            search.search_results_rendered = false;
             if next_index >= length {
             } else {
                 app.selected_playlist_uri = app.user_playlist_links[next_index].clone();
@@ -43,7 +44,7 @@ pub fn user_playlist_down_event(app: &mut App) {
     }
 }
 
-pub fn user_playlist_up_event(app: &mut App) {
+pub fn user_playlist_up_event(app: &mut App,search: &mut Search) {
     if app.selected_menu == Menu::Playlists {
         if app.user_playlist_tracks_selected {
             (app.user_playlist_tracks_state, app.user_playlist_index) = up_key_for_table(
@@ -58,7 +59,7 @@ pub fn user_playlist_up_event(app: &mut App) {
                 app.user_playlist_state.selected().unwrap_or(0) - 1
             };
             app.user_playlist_state.select(Some(prev_index));
-            app.search_results_rendered = false;
+            search.search_results_rendered = false;
             app.selected_playlist_uri = app.user_playlist_links[prev_index].clone();
             app.current_user_playlist = app.user_playlist_names[prev_index].clone();
             app.user_playlist_display = false;
@@ -66,7 +67,7 @@ pub fn user_playlist_up_event(app: &mut App) {
     }
 }
 
-pub fn user_playlist_enter_event(app: &mut App) {
+pub fn user_playlist_enter_event(app: &mut App, search: &mut Search) {
     if app.selected_menu == Menu::Playlists {
         if app.enter_for_playback_in_user_playlist {
             app.selected_link_for_playback =
@@ -80,9 +81,9 @@ pub fn user_playlist_enter_event(app: &mut App) {
             }
             process_playlist_tracks(app);
             app.user_playlist_display = true;
-            app.searched_album_selected = false;
-            app.searched_artist_selected = false;
-            app.searched_playlist_selected = false;
+            search.searched_album_selected = false;
+            search.searched_artist_selected = false;
+            search.searched_playlist_selected = false;
             app.enter_for_playback_in_user_playlist = true;
         }
     }

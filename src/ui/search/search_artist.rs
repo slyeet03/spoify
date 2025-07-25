@@ -1,3 +1,4 @@
+use crate::structs::Search;
 use ratatui::{
     layout::Rect,
     style::Style,
@@ -13,14 +14,15 @@ pub fn render_searched_artist(
     content_chunk: &[Rect],
     app: &mut App,
     theme: &mut Themes,
+    search: &mut Search,
 ) {
     f.render_widget(Clear, content_chunk[1]);
-    let current_artist = &app.artist_names_search_results[app.artist_index];
+    let current_artist = &search.artist_names_search_results[search.artist_index];
 
     let artist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(current_artist.to_string()))
-        .border_style(if app.searched_artist_selected {
+        .border_style(if search.searched_artist_selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -28,9 +30,9 @@ pub fn render_searched_artist(
         .style(Style::default().bg(theme.main_background_color));
 
     let track_table = searched_track_table_for_artist_ui(
-        app.selected_artist_tracks_names.clone(),
-        app.selected_artist_track_album_names.clone(),
-        app.selected_artist_tracks_duration.clone(),
+        search.selected_artist_tracks_names.clone(),
+        search.selected_artist_track_album_names.clone(),
+        search.selected_artist_tracks_duration.clone(),
         artist_block,
         theme.main_highlight_color,
         theme.main_background_color,
@@ -42,6 +44,6 @@ pub fn render_searched_artist(
     f.render_stateful_widget(
         track_table,
         content_chunk[1],
-        &mut app.searched_artist_state,
+        &mut search.searched_artist_state,
     );
 }

@@ -1,3 +1,4 @@
+use crate::structs::Search;
 use ratatui::{
     layout::Rect,
     style::Style,
@@ -26,6 +27,7 @@ pub fn render_search(
     content_chunk: &[Rect],
     app: &mut App,
     theme: &mut Themes,
+    search: &mut Search,
 ) {
     let search_block = Block::default()
         .borders(Borders::ALL)
@@ -37,7 +39,7 @@ pub fn render_search(
     let album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
-        .border_style(if app.selected_album_in_search_result {
+        .border_style(if search.selected_album_in_search_result {
             Style::default().fg(theme.search_border_color)
         } else {
             Style::default().fg(theme.search_inactive_border_color)
@@ -46,7 +48,7 @@ pub fn render_search(
     let artist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Artists"))
-        .border_style(if app.selected_artist_in_search_result {
+        .border_style(if search.selected_artist_in_search_result {
             Style::default().fg(theme.search_border_color)
         } else {
             Style::default().fg(theme.search_inactive_border_color)
@@ -55,7 +57,7 @@ pub fn render_search(
     let song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Songs"))
-        .border_style(if app.selected_track_in_search_result {
+        .border_style(if search.selected_track_in_search_result {
             Style::default().fg(theme.search_border_color)
         } else {
             Style::default().fg(theme.search_inactive_border_color)
@@ -64,7 +66,7 @@ pub fn render_search(
     let playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlists"))
-        .border_style(if app.selected_playlist_in_search_result {
+        .border_style(if search.selected_playlist_in_search_result {
             Style::default().fg(theme.search_border_color)
         } else {
             Style::default().fg(theme.search_inactive_border_color)
@@ -72,8 +74,8 @@ pub fn render_search(
         .style(Style::default().bg(theme.search_background_color));
 
     // Create a Paragraph widget for displaying the search input text
-    let search_input = Paragraph::new(app.input.as_str())
-        .style(match app.input_mode {
+    let search_input = Paragraph::new(search.input.as_str())
+        .style(match search.input_mode {
             InputMode::Normal => Style::default(),
             InputMode::Editing => Style::default().fg(theme.search_border_color),
             InputMode::SearchResults => Style::default(),
@@ -88,24 +90,24 @@ pub fn render_search(
     f.render_widget(search_block, header_chunk[0]);
 
     // Render search input or search results depending on the input mode
-    match app.input_mode {
+    match search.input_mode {
         InputMode::Normal => {}
         InputMode::Editing => {
             // Render the search input with a cursor at the current position
             f.render_widget(search_input, header_chunk[0]);
             f.set_cursor(
-                header_chunk[0].x + app.cursor_position as u16 + 1,
+                header_chunk[0].x + search.cursor_position as u16 + 1,
                 header_chunk[0].y + 1,
             );
         }
-        InputMode::SearchResults if app.search_results_rendered => {
+        InputMode::SearchResults if search.search_results_rendered => {
             f.render_widget(Clear, content_chunk[1]);
             f.render_widget(Clear, main_chunk_upper[0]);
 
-            let album_names_list = convert_to_list(&app.album_names_search_results);
-            let track_names_list = convert_to_list(&app.track_names_search_results);
-            let artist_names_list = convert_to_list(&app.artist_names_search_results);
-            let playlist_names_list = convert_to_list(&app.playlist_names_search_results);
+            let album_names_list = convert_to_list(&search.album_names_search_results);
+            let track_names_list = convert_to_list(&search.track_names_search_results);
+            let artist_names_list = convert_to_list(&search.artist_names_search_results);
+            let playlist_names_list = convert_to_list(&search.playlist_names_search_results);
 
             let album_list = List::new(album_names_list)
                 .block(album_block.clone())
@@ -126,40 +128,40 @@ pub fn render_search(
             f.render_stateful_widget(
                 song_list,
                 main_chunk_upper[0],
-                &mut app.track_state_in_search_result,
+                &mut search.track_state_in_search_result,
             );
             f.render_stateful_widget(
                 artist_list,
                 main_chunk_upper[1],
-                &mut app.artist_state_in_search_result,
+                &mut search.artist_state_in_search_result,
             );
             f.render_stateful_widget(
                 album_list,
                 main_chunk_lower[0],
-                &mut app.album_state_in_search_result,
+                &mut search.album_state_in_search_result,
             );
             f.render_stateful_widget(
                 playlist_list,
                 main_chunk_lower[1],
-                &mut app.playlist_state_in_search_result,
+                &mut search.playlist_state_in_search_result,
             );
         }
         _ => {}
     }
-    match app.search_menu {
+    match search.search_menu {
         SearchMenu::Default => {}
         SearchMenu::SearchedTrack => {}
         SearchMenu::SearchedAlbum => {
             f.render_widget(Clear, content_chunk[1]);
-            render_searched_album(f, content_chunk, app, theme);
+            render_searched_album(f, content_chunk, app, theme,search);
         }
         SearchMenu::SearchedArtist => {
             f.render_widget(Clear, content_chunk[1]);
-            render_searched_artist(f, content_chunk, app, theme);
+            render_searched_artist(f, content_chunk, app, theme,search);
         }
         SearchMenu::SearchedPlaylist => {
             f.render_widget(Clear, content_chunk[1]);
-            render_searched_playlist(f, content_chunk, app, theme);
+            render_searched_playlist(f, content_chunk, app, theme,search);
         }
     }
 }

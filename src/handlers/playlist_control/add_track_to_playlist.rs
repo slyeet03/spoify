@@ -2,8 +2,9 @@ use crate::app::App;
 use crate::enums::{Library, Menu, SearchMenu};
 use crate::handlers::util::{down_key_for_list, up_key_for_list};
 use crate::spotify::playlist_control::add_track_to_playlist::add_track_to_playlist;
+use crate::structs::Search;
 
-pub fn add_track_to_playlist_event(app: &mut App) {
+pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search) {
     if app.selected_menu == Menu::Library {
         if app.selected_library == Library::RecentlyPlayed {
             app.track_added_to_playlist_link =
@@ -44,19 +45,19 @@ pub fn add_track_to_playlist_event(app: &mut App) {
     } else if app.selected_menu == Menu::Search {
         if app.is_in_track {
             app.track_added_to_playlist_link =
-                app.track_links_search_results[app.track_index].clone();
+                search.track_links_search_results[search.track_index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
-        } else if app.search_menu == SearchMenu::SearchedAlbum {
+        } else if search.search_menu == SearchMenu::SearchedAlbum {
             app.track_added_to_playlist_link =
-                app.selected_album_tracks_links[app.searched_album_index].clone();
+                search.selected_album_tracks_links[search.searched_album_index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
-        } else if app.search_menu == SearchMenu::SearchedArtist {
+        } else if search.search_menu == SearchMenu::SearchedArtist {
             app.track_added_to_playlist_link =
-                app.selected_artist_tracks_links[app.searched_artist_index].clone();
+                search.selected_artist_tracks_links[search.searched_artist_index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
-        } else if app.search_menu == SearchMenu::SearchedPlaylist {
+        } else if search.search_menu == SearchMenu::SearchedPlaylist {
             app.track_added_to_playlist_link =
-                app.selected_playlist_tracks_links[app.searched_playlist_index].clone();
+                search.selected_playlist_tracks_links[search.searched_playlist_index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
         }
     }

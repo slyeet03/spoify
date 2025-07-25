@@ -21,10 +21,11 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use crate::app::App;
+use crate::structs::Search;
 
 // Main function to perform the search and store the results in JSON files
 #[tokio::main]
-pub async fn search(user_query: &str, app: &mut App) -> Result<(), std::io::Error> {
+pub async fn perform_search(user_query: &str, app: &mut App) -> Result<(), std::io::Error> {
     let client_id = &app.client_id;
     let client_secret_id = &app.client_secret;
 
@@ -111,26 +112,26 @@ pub async fn search(user_query: &str, app: &mut App) -> Result<(), std::io::Erro
 }
 
 // Function to process the search results and store them in the application state
-pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
-    app.album_names_search_results.clear();
-    app.artist_names_search_results.clear();
-    app.track_names_search_results.clear();
-    app.playlist_names_search_results.clear();
+pub fn process_search(app: &mut App, query: &str, search: &mut Search) -> io::Result<()> {
+    search.album_names_search_results.clear();
+    search.artist_names_search_results.clear();
+    search.track_names_search_results.clear();
+    search.playlist_names_search_results.clear();
 
-    app.album_links_search_results.clear();
-    app.artist_links_search_results.clear();
-    app.track_links_search_results.clear();
-    app.playlist_links_search_results.clear();
+    search.album_links_search_results.clear();
+    search.artist_links_search_results.clear();
+    search.track_links_search_results.clear();
+    search.playlist_links_search_results.clear();
 
     let mut spotify_cache_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     spotify_cache_path.push("..");
     spotify_cache_path.push(app.file_name.clone());
     spotify_cache_path.push("spotify_cache");
 
-    if search(query, app).is_ok() {
+    if perform_search(query, app).is_ok() {
         (
-            app.album_names_search_results,
-            app.album_links_search_results,
+            search.album_names_search_results,
+            search.album_links_search_results,
         ) = match album_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
@@ -140,8 +141,8 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
         };
 
         (
-            app.track_names_search_results,
-            app.track_links_search_results,
+            search.track_names_search_results,
+            search.track_links_search_results,
         ) = match track_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
@@ -151,8 +152,8 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
         };
 
         (
-            app.artist_names_search_results,
-            app.artist_links_search_results,
+            search.artist_names_search_results,
+            search.artist_links_search_results,
         ) = match artist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
@@ -162,8 +163,8 @@ pub fn process_search(app: &mut App, query: &str) -> io::Result<()> {
         };
 
         (
-            app.playlist_names_search_results,
-            app.playlist_links_search_results,
+            search.playlist_names_search_results,
+            search.playlist_links_search_results,
         ) = match playlist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {

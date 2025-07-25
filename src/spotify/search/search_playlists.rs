@@ -1,6 +1,7 @@
 extern crate rspotify;
 extern crate serde_json;
 
+use crate::structs::Search;
 use crate::app::App;
 use futures::{FutureExt, TryStreamExt};
 use rspotify::model::{PlaylistId, PlaylistItem};
@@ -12,7 +13,7 @@ use std::io::{BufReader, Write};
 use std::path::PathBuf;
 
 #[tokio::main]
-pub async fn search_selected_playlist_tracks(app: &mut App) -> Result<(), ClientError> {
+pub async fn search_selected_playlist_tracks(app: &mut App, search: &mut Search) -> Result<(), ClientError> {
     let client_id = &app.client_id;
     let client_secret_id = &app.client_secret;
 
@@ -29,7 +30,7 @@ pub async fn search_selected_playlist_tracks(app: &mut App) -> Result<(), Client
     spotify.request_token().await.unwrap();
 
     // Extract the playlist URI from the app's selected playlist URL
-    let playlist_url = app.playlist_links_search_results[app.playlist_index].as_str();
+    let playlist_url = search.playlist_links_search_results[search.playlist_index].as_str();
     let playlist_id = PlaylistId::from_id(playlist_url).unwrap();
 
     // Collect information about the playlist items (tracks)
@@ -65,12 +66,12 @@ fn save_tracks_to_json(app: &mut App, items: Vec<PlaylistItem>) {
     let _ = file.write_all(json_data.to_string().as_bytes());
 }
 
-pub fn process_selected_playlist_tracks(app: &mut App) {
-    app.selected_playlist_tracks_names.clear();
-    app.selected_playlist_tracks_albums.clear();
-    app.selected_playlist_tracks_artists.clear();
-    app.selected_playlist_tracks_duration.clear();
-    app.selected_playlist_tracks_links.clear();
+pub fn process_selected_playlist_tracks(app: &mut App, search: &mut Search) {
+    search.selected_playlist_tracks_names.clear();
+    search.selected_playlist_tracks_albums.clear();
+    search.selected_playlist_tracks_artists.clear();
+    search.selected_playlist_tracks_duration.clear();
+    search.selected_playlist_tracks_links.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -94,7 +95,7 @@ pub fn process_selected_playlist_tracks(app: &mut App) {
                     .and_then(|v| v.get("name"))
                     .and_then(|v| v.as_str())
                 {
-                    app.selected_playlist_tracks_names.push(name.to_owned());
+                    search.selected_playlist_tracks_names.push(name.to_owned());
                 }
 
                 // Extract artists
@@ -105,7 +106,7 @@ pub fn process_selected_playlist_tracks(app: &mut App) {
                 {
                     for artist in artists {
                         if let Some(artist_name) = artist.get("name").and_then(|v| v.as_str()) {
-                            app.selected_playlist_tracks_artists
+                            search.selected_playlist_tracks_artists
                                 .push(artist_name.to_owned());
                         }
                     }
@@ -118,7 +119,7 @@ pub fn process_selected_playlist_tracks(app: &mut App) {
                     .and_then(|v| v.get("name"))
                     .and_then(|v| v.as_str())
                 {
-                    app.selected_playlist_tracks_albums
+                    search.selected_playlist_tracks_albums
                         .push(album_name.to_owned());
                 }
 
@@ -128,7 +129,7 @@ pub fn process_selected_playlist_tracks(app: &mut App) {
                     .and_then(|v| v.get("duration_ms"))
                     .and_then(|v| v.as_i64())
                 {
-                    app.selected_playlist_tracks_duration.push(duration);
+                    search.selected_playlist_tracks_duration.push(duration);
                 }
 
                 // Extract external Spotify URL
@@ -138,7 +139,7 @@ pub fn process_selected_playlist_tracks(app: &mut App) {
                     .and_then(|v| v.get("spotify"))
                     .and_then(|v| v.as_str())
                 {
-                    app.selected_playlist_tracks_links.push(url.to_owned());
+                    search.selected_playlist_tracks_links.push(url.to_owned());
                 }
             }
         }

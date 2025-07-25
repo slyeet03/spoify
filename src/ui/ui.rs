@@ -1,3 +1,4 @@
+use crate::structs::Search;
 use crate::app::App;
 use crate::enums::Menu;
 use crate::structs::{Key, Themes};
@@ -22,6 +23,7 @@ pub fn render_frame(
     app: &mut App,
     key: &mut Key,
     theme: &mut Themes,
+    search: &mut Search,
 ) {
     // Calculate the layout constraints
     let size = f.size();
@@ -133,6 +135,7 @@ pub fn render_frame(
                 &content_chunk,
                 app,
                 theme,
+                search,
             );
         }
         Menu::Help => {
