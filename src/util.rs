@@ -2,6 +2,7 @@ extern crate serde_json;
 extern crate serde_yaml;
 extern crate yaml_rust;
 
+use crate::UserPlaylist;
 use crate::app::App;
 use crate::settings::keybindings::{parse_keybindings, read_keybindings, set_keybindings};
 use crate::settings::settings::set_settings_values;
@@ -37,7 +38,7 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App, settings: &mut Se
 }
 
 /// Function to run before starting the main app loop
-pub fn startup(app: &mut App, key: &mut Key, theme: &mut Themes, settings: &mut Settings) {
+pub fn startup(app: &mut App, key: &mut Key, theme: &mut Themes, settings: &mut Settings, userplaylist: &mut UserPlaylist) {
     key.tasks.clear();
     key.first_keys.clear();
 
@@ -59,7 +60,7 @@ pub fn startup(app: &mut App, key: &mut Key, theme: &mut Themes, settings: &mut 
 
     // Fetch user playlists from spotify
     get_playlists(app);
-    process_user_playlists(app);
+    process_user_playlists(app,userplaylist);
 
     let _ = top_tracks(app);
 }

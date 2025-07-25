@@ -1,4 +1,5 @@
 // This section handles fetching and processing the user's Spotify playlists
+use crate::UserPlaylist;
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
 use futures_util::TryStreamExt;
@@ -59,9 +60,9 @@ pub async fn get_playlists(app: &mut App) {
 }
 
 /// Processes the playlist data stored in the cache file and populates the app's data structures
-pub fn process_user_playlists(app: &mut App) {
-    app.user_playlist_names.clear();
-    app.user_playlist_links.clear();
+pub fn process_user_playlists(app: &mut App, userplaylist: &mut UserPlaylist) {
+    userplaylist.user_playlist_names.clear();
+    userplaylist.user_playlist_links.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -79,7 +80,7 @@ pub fn process_user_playlists(app: &mut App) {
         for playlist in playlists {
             if let Value::Object(playlist_obj) = playlist {
                 if let Some(name) = playlist_obj.get("name").and_then(Value::as_str) {
-                    app.user_playlist_names.push(name.to_string());
+                    userplaylist.user_playlist_names.push(name.to_string());
                 }
 
                 if let Some(link) = playlist_obj
@@ -88,7 +89,7 @@ pub fn process_user_playlists(app: &mut App) {
                     .and_then(|urls| urls.get("spotify"))
                     .and_then(Value::as_str)
                 {
-                    app.user_playlist_links.push(link.to_string());
+                    userplaylist.user_playlist_links.push(link.to_string());
                 }
             }
         }

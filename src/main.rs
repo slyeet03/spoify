@@ -4,7 +4,7 @@ use std::sync::mpsc;
 use std::thread;
 
 use settings::creds::{read_creds, set_creds};
-use structs::{Key, Settings, Themes};
+use structs::{Key, Settings, Themes, UserPlaylist};
 use ui::tui;
 use util::{instruction, save_creds_to_yml, startup, update_player_info};
 
@@ -25,6 +25,7 @@ fn main() -> io::Result<()> {
     let mut theme: Themes = Themes::default();
     let mut settings: Settings = Settings::default();
     let mut search: Search = Search::default();
+    let mut userplaylist: UserPlaylist = UserPlaylist::default();
 
     app.file_name = "spoify".to_string(); //-0.2.12
 
@@ -37,7 +38,7 @@ fn main() -> io::Result<()> {
         save_creds_to_yml(&mut app);
     } else {
         // Fetch user's playlists, new releases, set keybinds and themes before the main app starts
-        startup(&mut app, &mut key, &mut theme, &mut settings);
+        startup(&mut app, &mut key, &mut theme, &mut settings,&mut userplaylist);
 
         let mut terminal = tui::init()?;
 
@@ -52,7 +53,15 @@ fn main() -> io::Result<()> {
         });
 
         // Run the main app loop
-        app.run(&mut terminal, rx1, &mut key, &mut theme, &mut settings, &mut search)?;
+        app.run(
+            &mut terminal,
+            rx1,
+            &mut key,
+            &mut theme,
+            &mut settings,
+            &mut search,
+            &mut userplaylist,
+        )?;
 
         // Wait for the spawned threads to complete
         if let Err(e) = player_info_thread.join() {

@@ -1,3 +1,4 @@
+use crate::UserPlaylist;
 use super::util::{default, down_key_for_table, up_key_for_table};
 use crate::{
     app::App,
@@ -11,10 +12,10 @@ use crate::{
     },
 };
 
-pub fn go_to_new_release_event(app: &mut App, search:&mut Search) {
+pub fn go_to_new_release_event(app: &mut App, search:&mut Search, userplaylist: &mut UserPlaylist) {
     app.selected_menu = Menu::NewRelease;
     app.new_release_state.select(Some(0));
-    default(app,search);
+    default(app,search,userplaylist);
 }
 
 pub fn new_release_down_event(app: &mut App, search: &mut Search) {

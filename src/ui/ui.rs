@@ -1,3 +1,4 @@
+use crate::UserPlaylist;
 use crate::structs::Search;
 use crate::app::App;
 use crate::enums::Menu;
@@ -24,6 +25,7 @@ pub fn render_frame(
     key: &mut Key,
     theme: &mut Themes,
     search: &mut Search,
+    userplaylist: &mut UserPlaylist
 ) {
     // Calculate the layout constraints
     let size = f.size();
@@ -106,7 +108,7 @@ pub fn render_frame(
     // Render the default UI
     render_default_search(f, &header_chunk, theme);
     render_default_library(f, &content_sub_chunk, theme);
-    render_default_user_playlist(f, &content_chunk, app, theme);
+    render_default_user_playlist(f, &content_chunk, app, theme,userplaylist);
     render_player(f, &player_layout, app, theme);
     render_main_area(f, &content_chunk, &front_chunk, app, theme);
     render_default_help(f, &header_chunk, theme);
@@ -124,7 +126,7 @@ pub fn render_frame(
             render_library(f, &content_sub_chunk, &content_chunk, app, theme);
         }
         Menu::Playlists => {
-            render_user_playlist(f, &content_chunk, app, theme);
+            render_user_playlist(f, &content_chunk, app, theme,userplaylist);
         }
         Menu::Search => {
             render_search(
@@ -157,7 +159,7 @@ pub fn render_frame(
             );
         }
         Menu::AddTrackToPlaylist => {
-            render_add_track_to_playlist_screen(f, app, key, theme);
+            render_add_track_to_playlist_screen(f, app, key, theme,userplaylist);
         }
     }
 }

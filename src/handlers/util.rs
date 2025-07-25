@@ -1,3 +1,4 @@
+use crate::UserPlaylist;
 use ratatui::widgets::{ListState, TableState};
 
 use crate::{
@@ -82,10 +83,10 @@ pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, 
     (state, prev_index)
 }
 
-pub fn default(app: &mut App, search: &mut Search) {
+pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist) {
     search.search_results_rendered = false;
     search.input_mode = InputMode::Normal;
-    app.user_playlist_display = false;
+    userplaylist.user_playlist_display = false;
     app.liked_song_display = false;
     search.selected_search = false;
     app.user_album_display = false;
@@ -111,7 +112,7 @@ pub fn default(app: &mut App, search: &mut Search) {
     app.enter_for_playback_in_user_album = false;
     app.enter_for_playback_in_recently_played = false;
     app.enter_for_playback_in_saved_artist = false;
-    app.enter_for_playback_in_user_playlist = false;
+    userplaylist.enter_for_playback_in_user_playlist = false;
     app.enter_for_playback_in_new_release = false;
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
@@ -119,7 +120,7 @@ pub fn default(app: &mut App, search: &mut Search) {
     search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App, search: &mut Search) {
+pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist) {
     search.search_results_rendered = false;
     app.liked_song_display = false;
     app.user_album_display = false;
@@ -140,7 +141,7 @@ pub fn default_nav(app: &mut App, search: &mut Search) {
     app.enter_for_playback_in_user_album = false;
     app.enter_for_playback_in_recently_played = false;
     app.enter_for_playback_in_saved_artist = false;
-    app.enter_for_playback_in_user_playlist = false;
+    userplaylist.enter_for_playback_in_user_playlist = false;
     app.enter_for_playback_in_new_release = false;
     app.is_only_id = false;
     app.selected_link_for_playback.clear();

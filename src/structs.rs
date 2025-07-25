@@ -278,3 +278,44 @@ impl Default for Search {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct UserPlaylist {
+    pub user_playlist_names: Vec<String>,
+    pub user_playlist_artist_names: Vec<String>,
+    pub user_playlist_track_names: Vec<String>,
+    pub user_playlist_album_names: Vec<String>,
+    pub user_playlist_links: Vec<String>,
+    pub user_playlist_track_links: Vec<String>,
+    pub user_playlist_track_duration: Vec<i64>,
+    pub current_user_playlist: String,
+    pub selected_playlist_uri: String,
+    pub user_playlist_display: bool,
+    pub user_playlist_tracks_selected: bool,
+    pub user_playlist_state: ListState,
+    pub user_playlist_tracks_state: TableState,
+    pub user_playlist_index: usize,
+    pub enter_for_playback_in_user_playlist: bool,
+}
+
+impl Default for UserPlaylist {
+    fn default() -> Self {
+        Self {
+            user_playlist_state: ListState::default(),
+            user_playlist_names: Vec::new(),
+            user_playlist_links: Vec::new(),
+            user_playlist_track_names: Vec::new(),
+            user_playlist_track_duration: Vec::new(),
+            user_playlist_artist_names: Vec::new(),
+            user_playlist_track_links: Vec::new(),
+            user_playlist_album_names: Vec::new(),
+            selected_playlist_uri: String::new(),
+            current_user_playlist: String::new(),
+            user_playlist_display: false,
+            user_playlist_tracks_selected: false,
+            user_playlist_tracks_state: TableState::default(),
+            user_playlist_index: 0,
+            enter_for_playback_in_user_playlist: false,
+        }
+    }
+}

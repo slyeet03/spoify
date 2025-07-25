@@ -1,3 +1,4 @@
+use crate::UserPlaylist;
 use ratatui::{
     style::Style,
     widgets::{block::Title, Block, Borders, Clear, List},
@@ -15,7 +16,8 @@ pub fn render_add_track_to_playlist_screen(
     f: &mut Frame,
     app: &mut App,
     key: &mut Key,
-    theme: &mut Themes,
+    theme: &mut Themes, 
+    userplaylist: &mut UserPlaylist,
 ) {
     let add_playlist_label = format!(
         "Select a playlist to add {} to (press {} to cancel)",
@@ -29,7 +31,7 @@ pub fn render_add_track_to_playlist_screen(
         .border_style(Style::new().fg(theme.playlist_border_color))
         .style(Style::default().bg(theme.playlist_background_color));
 
-    let add_to_playlist_names = convert_to_list(&app.user_playlist_names);
+    let add_to_playlist_names = convert_to_list(&userplaylist.user_playlist_names);
     let add_to_playlist_list = List::new(add_to_playlist_names)
         .block(add_playlist_block.clone())
         .highlight_style(Style::default().fg(theme.playlist_highlight_color));

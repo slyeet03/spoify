@@ -1,4 +1,5 @@
-use crate::enums::{InputMode, Library, Menu, SearchMenu};
+use crate::UserPlaylist;
+use crate::enums::{InputMode, Library, Menu};
 use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
 use crate::spotify::player::player::process_currently_playing;
@@ -30,27 +31,6 @@ pub struct App {
 
     // Handles Search function
     // Handles User's playlists
-    pub user_playlist_names: Vec<String>,
-    pub user_playlist_artist_names: Vec<String>,
-    pub user_playlist_track_names: Vec<String>,
-    pub user_playlist_album_names: Vec<String>,
-
-    pub user_playlist_links: Vec<String>,
-    pub user_playlist_track_links: Vec<String>,
-
-    pub user_playlist_track_duration: Vec<i64>,
-
-    pub current_user_playlist: String,
-    pub selected_playlist_uri: String,
-
-    pub user_playlist_display: bool,
-    pub user_playlist_tracks_selected: bool,
-
-    pub user_playlist_state: ListState,
-    pub user_playlist_tracks_state: TableState,
-    pub user_playlist_index: usize,
-
-    pub enter_for_playback_in_user_playlist: bool,
 
     // Handles User's Liked Songs
     pub liked_song_names: Vec<String>,
@@ -220,7 +200,8 @@ impl App {
         keys: &mut Key,
         theme: &mut Themes,
         settings: &mut Settings,
-        search: &mut Search,
+        search: &mut Search, 
+        userplaylist: &mut UserPlaylist
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -230,7 +211,7 @@ impl App {
             // Handling user inputs
             if event::poll(timeout)? {
                 if let Event::Key(key_event) = event::read()? {
-                    handle_key_event(self, key_event, keys, theme, settings, search);
+                    handle_key_event(self, key_event, keys, theme, settings, search,userplaylist);
 
                     // In editing mode, handle search input
                     if search.input_mode == InputMode::Editing {
@@ -250,8 +231,9 @@ impl App {
                 }
 
                 // Draw the UI
-                terminal
-                    .draw(|frame| render_frame(frame, self.selected_menu, self, keys, theme, search))?;
+                terminal.draw(|frame| {
+                    render_frame(frame, self.selected_menu, self, keys, theme, search,userplaylist)
+                })?;
             }
         }
 
@@ -272,21 +254,6 @@ impl Default for App {
 
             selected_library: Library::MadeFY,
             library_state: ListState::default(),
-
-            user_playlist_state: ListState::default(),
-
-            user_playlist_names: Vec::new(),
-            user_playlist_links: Vec::new(),
-            user_playlist_track_names: Vec::new(),
-            user_playlist_track_duration: Vec::new(),
-            user_playlist_artist_names: Vec::new(),
-            user_playlist_track_links: Vec::new(),
-            user_playlist_album_names: Vec::new(),
-            selected_playlist_uri: String::new(),
-            current_user_playlist: String::new(),
-            user_playlist_display: false,
-            user_playlist_tracks_selected: false,
-            user_playlist_tracks_state: TableState::default(),
 
             liked_songs_state: TableState::default(),
             liked_song_names: Vec::new(),
@@ -365,7 +332,6 @@ impl Default for App {
             client_id: String::new(),
             client_secret: String::new(),
 
-            user_playlist_index: 0,
             liked_songs_index: 0,
             user_album_index: 0,
             podcast_index: 0,
@@ -415,7 +381,6 @@ impl Default for App {
 
             selected_link_for_playback: String::new(),
 
-            enter_for_playback_in_user_playlist: false,
             enter_for_playback_in_liked_song: false,
             enter_for_playback_in_user_album: false,
             enter_for_playback_in_recently_played: false,

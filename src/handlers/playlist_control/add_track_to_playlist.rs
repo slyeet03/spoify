@@ -1,10 +1,11 @@
+use crate::UserPlaylist;
 use crate::app::App;
 use crate::enums::{Library, Menu, SearchMenu};
 use crate::handlers::util::{down_key_for_list, up_key_for_list};
 use crate::spotify::playlist_control::add_track_to_playlist::add_track_to_playlist;
 use crate::structs::Search;
 
-pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search) {
+pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist) {
     if app.selected_menu == Menu::Library {
         if app.selected_library == Library::RecentlyPlayed {
             app.track_added_to_playlist_link =
@@ -37,9 +38,9 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search) {
             app.selected_menu = Menu::AddTrackToPlaylist;
         }
     } else if app.selected_menu == Menu::Playlists {
-        if app.enter_for_playback_in_user_playlist {
+        if userplaylist.enter_for_playback_in_user_playlist {
             app.track_added_to_playlist_link =
-                app.user_playlist_track_links[app.user_playlist_index].clone();
+                userplaylist.user_playlist_track_links[userplaylist.user_playlist_index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
         }
     } else if app.selected_menu == Menu::Search {
@@ -63,10 +64,10 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search) {
     }
 }
 
-pub fn add_track_to_playlist_enter_event(app: &mut App) {
+pub fn add_track_to_playlist_enter_event(app: &mut App, userplaylist: &mut UserPlaylist) {
     if app.selected_menu == Menu::AddTrackToPlaylist {
         app.playlist_link_for_track_addition =
-            app.user_playlist_links[app.playlist_index_for_track_addition].clone();
+            userplaylist.user_playlist_links[app.playlist_index_for_track_addition].clone();
         if let Err(e) = add_track_to_playlist(app) {
             println!("{}", e);
         }
@@ -74,25 +75,25 @@ pub fn add_track_to_playlist_enter_event(app: &mut App) {
     }
 }
 
-pub fn add_track_to_playlist_up_event(app: &mut App) {
+pub fn add_track_to_playlist_up_event(app: &mut App, userplaylist: &mut UserPlaylist) {
     if app.selected_menu == Menu::AddTrackToPlaylist {
         (
             app.add_track_to_playlist_state,
             app.playlist_index_for_track_addition,
         ) = up_key_for_list(
-            app.user_playlist_names.clone(),
+            userplaylist.user_playlist_names.clone(),
             app.add_track_to_playlist_state.clone(),
         );
     }
 }
 
-pub fn add_track_to_playlist_down_event(app: &mut App) {
+pub fn add_track_to_playlist_down_event(app: &mut App, userplaylist: &mut UserPlaylist) {
     if app.selected_menu == Menu::AddTrackToPlaylist {
         (
             app.add_track_to_playlist_state,
             app.playlist_index_for_track_addition,
         ) = down_key_for_list(
-            app.user_playlist_names.clone(),
+            userplaylist.user_playlist_names.clone(),
             app.add_track_to_playlist_state.clone(),
         );
     }
