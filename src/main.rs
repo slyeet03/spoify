@@ -24,7 +24,7 @@ fn main() -> io::Result<()> {
     let mut theme: Themes = Themes::default();
     let mut settings: Settings = Settings::default();
 
-    app.file_name = "spoify-0.2.12".to_string(); //-0.2.12
+    app.file_name = "spoify".to_string(); //-0.2.12
 
     // Set the creds from the configure files
     read_creds(&mut app);

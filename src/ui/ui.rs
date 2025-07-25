@@ -30,9 +30,9 @@ pub fn render_frame(
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(7),
-            Constraint::Percentage(83),
             Constraint::Percentage(10),
+            Constraint::Percentage(77),
+            Constraint::Percentage(14),
         ])
         .split(size);
 
