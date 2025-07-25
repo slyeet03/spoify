@@ -319,3 +319,34 @@ impl Default for UserPlaylist {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct LikedSongs {
+    pub liked_song_names: Vec<String>,
+    pub liked_song_links: Vec<String>,
+    pub liked_song_duration: Vec<i64>,
+    pub liked_song_artist_names: Vec<String>,
+    pub liked_song_album_names: Vec<String>,
+    pub liked_songs_selected: bool,
+    pub liked_song_display: bool,
+    pub liked_songs_state: TableState,
+    pub liked_songs_index: usize,
+    pub enter_for_playback_in_liked_song: bool,
+}
+
+impl Default for LikedSongs {
+    fn default() -> Self {
+        Self {
+            liked_songs_state: TableState::default(),
+            liked_song_names: Vec::new(),
+            liked_song_links: Vec::new(),
+            liked_song_duration: Vec::new(),
+            liked_song_artist_names: Vec::new(),
+            liked_songs_selected: false,
+            liked_song_display: false,
+            liked_song_album_names: Vec::new(),
+            liked_songs_index: 0,
+            enter_for_playback_in_liked_song: false,
+        }
+    }
+}

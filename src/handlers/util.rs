@@ -1,3 +1,4 @@
+use crate::LikedSongs;
 use crate::UserPlaylist;
 use ratatui::widgets::{ListState, TableState};
 
@@ -83,11 +84,11 @@ pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, 
     (state, prev_index)
 }
 
-pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist) {
+pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs) {
     search.search_results_rendered = false;
     search.input_mode = InputMode::Normal;
     userplaylist.user_playlist_display = false;
-    app.liked_song_display = false;
+    likedsongs.liked_song_display = false;
     search.selected_search = false;
     app.user_album_display = false;
     app.recently_played_display = false;
@@ -108,7 +109,7 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     app.user_artist_track_selected = false;
     app.user_artist_track_display = false;
     app.enter_for_playback_in_made_fy = false;
-    app.enter_for_playback_in_liked_song = false;
+    likedsongs.enter_for_playback_in_liked_song = false;
     app.enter_for_playback_in_user_album = false;
     app.enter_for_playback_in_recently_played = false;
     app.enter_for_playback_in_saved_artist = false;
@@ -120,9 +121,9 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist) {
+pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs) {
     search.search_results_rendered = false;
-    app.liked_song_display = false;
+    likedsongs.liked_song_display = false;
     app.user_album_display = false;
     app.recently_played_display = false;
     app.podcast_display = false;
@@ -137,7 +138,7 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     app.user_artist_track_selected = false;
     app.user_artist_track_display = false;
     app.enter_for_playback_in_made_fy = false;
-    app.enter_for_playback_in_liked_song = false;
+    likedsongs.enter_for_playback_in_liked_song = false;
     app.enter_for_playback_in_user_album = false;
     app.enter_for_playback_in_recently_played = false;
     app.enter_for_playback_in_saved_artist = false;
@@ -148,9 +149,9 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     app.is_in_track = false;
 }
 
-pub fn default_search(app: &mut App, search: &mut Search) {
+pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs) {
     search.search_results_rendered = false;
-    app.liked_song_display = false;
+    likedsongs.liked_song_display = false;
     app.user_album_display = false;
     app.recently_played_display = false;
     app.can_navigate_menu = true;

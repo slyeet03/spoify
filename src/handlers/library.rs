@@ -1,3 +1,4 @@
+use crate::LikedSongs;
 use crate::UserPlaylist;
 use super::util::{default, down_key_for_table, up_key_for_table};
 use crate::{
@@ -20,13 +21,13 @@ use crate::{
     },
 };
 
-pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist) {
+pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs) {
     app.selected_menu = Menu::Library;
     app.library_state.select(Some(0)); //reseting the library state
-    default(app,search,userplaylist);
+    default(app,search,userplaylist,likedsongs);
 }
 
-pub fn library_down_event(app: &mut App) {
+pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs) {
     if app.selected_menu == Menu::Library {
         if app.library_state.selected() == Some(0) {
             if app.made_fy_selected {
@@ -43,9 +44,9 @@ pub fn library_down_event(app: &mut App) {
             }
         }
         if app.library_state.selected() == Some(2) {
-            if app.liked_songs_selected {
-                (app.liked_songs_state, app.liked_songs_index) =
-                    down_key_for_table(app.liked_song_names.clone(), app.liked_songs_state.clone());
+            if likedsongs.liked_songs_selected {
+                (likedsongs.liked_songs_state, likedsongs.liked_songs_index) =
+                    down_key_for_table(likedsongs.liked_song_names.clone(), likedsongs.liked_songs_state.clone());
             }
         } else if app.library_state.selected() == Some(3) {
             if app.user_album_selected {
@@ -87,7 +88,7 @@ pub fn library_down_event(app: &mut App) {
     }
 }
 
-pub fn library_up_event(app: &mut App) {
+pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs) {
     if app.selected_menu == Menu::Library {
         if app.library_state.selected() == Some(0) {
             if app.made_fy_selected {
@@ -104,9 +105,9 @@ pub fn library_up_event(app: &mut App) {
             }
         }
         if app.library_state.selected() == Some(2) {
-            if app.liked_songs_selected {
-                (app.liked_songs_state, app.liked_songs_index) =
-                    up_key_for_table(app.liked_song_names.clone(), app.liked_songs_state.clone());
+            if likedsongs.liked_songs_selected {
+                (likedsongs.liked_songs_state, likedsongs.liked_songs_index) =
+                    up_key_for_table(likedsongs.liked_song_names.clone(), likedsongs.liked_songs_state.clone());
             }
         } else if app.library_state.selected() == Some(3) {
             if app.user_album_selected {
@@ -146,7 +147,7 @@ pub fn library_up_event(app: &mut App) {
     }
 }
 
-pub fn library_enter_event(app: &mut App,search: &mut Search) {
+pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut LikedSongs) {
     if app.selected_menu == Menu::Library {
         search.searched_album_selected = false;
         search.searched_artist_selected = false;
@@ -181,9 +182,9 @@ pub fn library_enter_event(app: &mut App,search: &mut Search) {
             }
         } else if app.library_state.selected() == Some(2) {
             app.selected_library = Library::LikedSongs;
-            if app.enter_for_playback_in_liked_song {
+            if likedsongs.enter_for_playback_in_liked_song {
                 app.selected_link_for_playback =
-                    app.liked_song_links[app.liked_songs_index].clone();
+                    likedsongs.liked_song_links[likedsongs.liked_songs_index].clone();
                 if let Err(e) = start_playback(app) {
                     println!("{}", e);
                 }
@@ -191,9 +192,9 @@ pub fn library_enter_event(app: &mut App,search: &mut Search) {
                 if let Err(e) = liked_tracks(app) {
                     println!("{}", e);
                 }
-                process_liked_tracks(app);
-                app.liked_song_display = true;
-                app.enter_for_playback_in_liked_song = true;
+                process_liked_tracks(app,likedsongs);
+                likedsongs.liked_song_display = true;
+                likedsongs.enter_for_playback_in_liked_song = true;
             }
         } else if app.library_state.selected() == Some(3) {
             app.selected_library = Library::Albums;
@@ -278,15 +279,15 @@ pub fn library_enter_event(app: &mut App,search: &mut Search) {
     }
 }
 
-pub fn library_tab_event(app: &mut App) {
+pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs) {
     if app.selected_menu == Menu::Library {
         app.can_navigate_menu = !app.can_navigate_menu;
         if app.library_state.selected() == Some(0) && app.made_fy_display {
             app.made_fy_state.select(Some(0));
             app.made_fy_selected = !app.made_fy_selected;
-        } else if app.library_state.selected() == Some(2) && app.liked_song_display {
-            app.liked_songs_state.select(Some(0));
-            app.liked_songs_selected = !app.liked_songs_selected;
+        } else if app.library_state.selected() == Some(2) && likedsongs.liked_song_display {
+            likedsongs.liked_songs_state.select(Some(0));
+            likedsongs.liked_songs_selected = !likedsongs.liked_songs_selected;
         } else if app.library_state.selected() == Some(3) && app.user_album_display {
             app.user_album_state.select(Some(0));
             app.user_album_selected = !app.user_album_selected;

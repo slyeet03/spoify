@@ -1,3 +1,4 @@
+use crate::structs::LikedSongs;
 use std::fs::File;
 use std::io::{BufReader, Write};
 use std::path::PathBuf;
@@ -51,13 +52,13 @@ fn save_liked_songs_to_json(app: &mut App, liked_songs: Vec<SavedTrack>) {
 }
 
 /// Processes the liked songs data stored in the cache file and populates the app's data structures
-pub fn process_liked_tracks(app: &mut App) {
+pub fn process_liked_tracks(app: &mut App, likedsongs: &mut LikedSongs) {
     // Clear any existing liked song data in the app before processing
-    app.liked_song_links.clear();
-    app.liked_song_names.clear();
-    app.liked_song_duration.clear();
-    app.liked_song_artist_names.clear();
-    app.liked_song_album_names.clear();
+    likedsongs.liked_song_links.clear();
+    likedsongs.liked_song_names.clear();
+    likedsongs.liked_song_duration.clear();
+    likedsongs.liked_song_artist_names.clear();
+    likedsongs.liked_song_album_names.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -76,13 +77,13 @@ pub fn process_liked_tracks(app: &mut App) {
             if let Value::Object(track_obj) = track {
                 if let Some(track_info) = track_obj.get("track").and_then(Value::as_object) {
                     if let Some(track_name) = track_info.get("name").and_then(Value::as_str) {
-                        app.liked_song_names.push(track_name.to_string());
+                        likedsongs.liked_song_names.push(track_name.to_string());
                     }
 
                     if let Some(track_duration) =
                         track_info.get("duration_ms").and_then(Value::as_u64)
                     {
-                        app.liked_song_duration.push(track_duration as i64);
+                        likedsongs.liked_song_duration.push(track_duration as i64);
                     }
 
                     if let Some(artists) = track_info.get("artists").and_then(Value::as_array) {
@@ -90,13 +91,13 @@ pub fn process_liked_tracks(app: &mut App) {
                             if let Some(artist_name) =
                                 first_artist.get("name").and_then(Value::as_str)
                             {
-                                app.liked_song_artist_names.push(artist_name.to_string());
+                                likedsongs.liked_song_artist_names.push(artist_name.to_string());
                             }
                         }
                     }
                     if let Some(albums) = track_info.get("album").and_then(Value::as_object) {
                         if let Some(album_name) = albums.get("name").and_then(Value::as_str) {
-                            app.liked_song_album_names.push(album_name.to_string());
+                            likedsongs.liked_song_album_names.push(album_name.to_string());
                         }
                     }
                     if let Some(external_urls) =
@@ -105,7 +106,7 @@ pub fn process_liked_tracks(app: &mut App) {
                         if let Some(track_link) =
                             external_urls.get("spotify").and_then(Value::as_str)
                         {
-                            app.liked_song_links.push(track_link.to_string());
+                            likedsongs.liked_song_links.push(track_link.to_string());
                         }
                     }
                 }

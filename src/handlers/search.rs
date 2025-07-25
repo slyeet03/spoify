@@ -1,3 +1,4 @@
+use crate::LikedSongs;
 use crate::UserPlaylist;
 use super::util::{
     default, default_search, down_key_for_list, down_key_for_table, up_key_for_list,
@@ -17,9 +18,9 @@ use crate::{
     },
 };
 
-pub fn go_to_search_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist) {
+pub fn go_to_search_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs) {
     app.selected_menu = Menu::Search;
-    default(app,search,userplaylist);
+    default(app,search,userplaylist,likedsongs);
     search.input_mode = InputMode::Editing;
 }
 
@@ -121,7 +122,7 @@ pub fn search_up_event(app: &mut App, search: &mut Search) {
     }
 }
 
-pub fn search_enter_event(app: &mut App, search: &mut Search) {
+pub fn search_enter_event(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs) {
     if app.selected_menu == Menu::Search {
         if app.is_in_track {
             app.is_only_id = true;
@@ -144,7 +145,7 @@ pub fn search_enter_event(app: &mut App, search: &mut Search) {
                 println!("{}", e);
             }
             process_selected_album_tracks(app,search);
-            default_search(app,search);
+            default_search(app,search,likedsongs);
             search.search_menu = SearchMenu::SearchedAlbum;
             search.searched_album_selected = true;
         }
@@ -161,7 +162,7 @@ pub fn search_enter_event(app: &mut App, search: &mut Search) {
                 println!("{}", e);
             }
             process_selected_artist_tracks(app,search);
-            default_search(app,search);
+            default_search(app,search,likedsongs);
             search.search_menu = SearchMenu::SearchedArtist;
             search.searched_artist_selected = true;
         }
@@ -178,7 +179,7 @@ pub fn search_enter_event(app: &mut App, search: &mut Search) {
                 println!("{}", e);
             }
             process_selected_playlist_tracks(app,search);
-            default_search(app,search);
+            default_search(app,search,likedsongs);
             search.search_menu = SearchMenu::SearchedPlaylist;
             search.searched_playlist_selected = true;
         }

@@ -1,3 +1,4 @@
+use crate::structs::LikedSongs;
 use ratatui::{
     layout::Rect,
     style::Style,
@@ -20,6 +21,7 @@ pub fn render_library(
     content_chunk: &[Rect],
     app: &mut App,
     theme: &mut Themes,
+    likedsongs: &mut LikedSongs,
 ) {
     let library_block = Block::default()
         .borders(Borders::ALL)
@@ -30,7 +32,7 @@ pub fn render_library(
     let liked_song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Liked Songs"))
-        .border_style(if app.liked_songs_selected {
+        .border_style(if likedsongs.liked_songs_selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -159,14 +161,14 @@ pub fn render_library(
         );
     }
 
-    if app.liked_song_display {
+    if likedsongs.liked_song_display {
         f.render_widget(Clear, content_chunk[1]);
 
         let liked_songs_table = track_table_ui(
-            app.liked_song_names.clone(),
-            app.liked_song_artist_names.clone(),
-            app.liked_song_album_names.clone(),
-            app.liked_song_duration.clone(),
+            likedsongs.liked_song_names.clone(),
+            likedsongs.liked_song_artist_names.clone(),
+            likedsongs.liked_song_album_names.clone(),
+            likedsongs.liked_song_duration.clone(),
             liked_song_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -178,7 +180,7 @@ pub fn render_library(
         f.render_stateful_widget(
             liked_songs_table,
             content_chunk[1],
-            &mut app.liked_songs_state,
+            &mut likedsongs.liked_songs_state,
         );
     }
 

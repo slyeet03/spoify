@@ -1,4 +1,4 @@
-use crate::UserPlaylist;
+use crate::structs::LikedSongs;
 use crate::enums::{InputMode, Library, Menu};
 use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
@@ -6,6 +6,7 @@ use crate::spotify::player::player::process_currently_playing;
 use crate::structs::{Key, Search, Settings, Themes};
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
+use crate::UserPlaylist;
 use crossterm::event::{self, Event};
 use ratatui::widgets::{ListState, TableState};
 use std::io;
@@ -33,16 +34,6 @@ pub struct App {
     // Handles User's playlists
 
     // Handles User's Liked Songs
-    pub liked_song_names: Vec<String>,
-    pub liked_song_links: Vec<String>,
-    pub liked_song_duration: Vec<i64>,
-    pub liked_song_artist_names: Vec<String>,
-    pub liked_song_album_names: Vec<String>,
-    pub liked_songs_selected: bool,
-    pub liked_song_display: bool,
-    pub liked_songs_state: TableState,
-    pub liked_songs_index: usize,
-    pub enter_for_playback_in_liked_song: bool,
 
     // Handles User's Saved Albums
     pub user_album_names: Vec<String>,
@@ -200,8 +191,9 @@ impl App {
         keys: &mut Key,
         theme: &mut Themes,
         settings: &mut Settings,
-        search: &mut Search, 
-        userplaylist: &mut UserPlaylist
+        search: &mut Search,
+        userplaylist: &mut UserPlaylist,
+        likedsongs: &mut LikedSongs,
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -211,7 +203,7 @@ impl App {
             // Handling user inputs
             if event::poll(timeout)? {
                 if let Event::Key(key_event) = event::read()? {
-                    handle_key_event(self, key_event, keys, theme, settings, search,userplaylist);
+                    handle_key_event(self, key_event, keys, theme, settings, search, userplaylist,likedsongs);
 
                     // In editing mode, handle search input
                     if search.input_mode == InputMode::Editing {
@@ -232,7 +224,16 @@ impl App {
 
                 // Draw the UI
                 terminal.draw(|frame| {
-                    render_frame(frame, self.selected_menu, self, keys, theme, search,userplaylist)
+                    render_frame(
+                        frame,
+                        self.selected_menu,
+                        self,
+                        keys,
+                        theme,
+                        search,
+                        userplaylist,
+                        likedsongs,
+                    )
                 })?;
             }
         }
@@ -254,15 +255,6 @@ impl Default for App {
 
             selected_library: Library::MadeFY,
             library_state: ListState::default(),
-
-            liked_songs_state: TableState::default(),
-            liked_song_names: Vec::new(),
-            liked_song_links: Vec::new(),
-            liked_song_duration: Vec::new(),
-            liked_song_artist_names: Vec::new(),
-            liked_songs_selected: false,
-            liked_song_display: false,
-            liked_song_album_names: Vec::new(),
 
             user_album_display: false,
             user_album_selected: false,
@@ -332,7 +324,6 @@ impl Default for App {
             client_id: String::new(),
             client_secret: String::new(),
 
-            liked_songs_index: 0,
             user_album_index: 0,
             podcast_index: 0,
             recently_played_index: 0,
@@ -381,7 +372,6 @@ impl Default for App {
 
             selected_link_for_playback: String::new(),
 
-            enter_for_playback_in_liked_song: false,
             enter_for_playback_in_user_album: false,
             enter_for_playback_in_recently_played: false,
             enter_for_playback_in_saved_artist: false,
