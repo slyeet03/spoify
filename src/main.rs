@@ -1,3 +1,4 @@
+use crate::structs::UserSavedAlbums;
 use crate::structs::LikedSongs;
 use crate::structs::Search;
 use std::io;
@@ -28,6 +29,7 @@ fn main() -> io::Result<()> {
     let mut search: Search = Search::default();
     let mut userplaylist: UserPlaylist = UserPlaylist::default();
     let mut likedsongs: LikedSongs = LikedSongs::default();
+    let mut useralbum: UserSavedAlbums = UserSavedAlbums::default();
 
     app.file_name = "spoify".to_string(); //-0.2.12
 
@@ -64,6 +66,7 @@ fn main() -> io::Result<()> {
             &mut search,
             &mut userplaylist,
             &mut likedsongs,
+            &mut useralbum,
         )?;
 
         // Wait for the spawned threads to complete

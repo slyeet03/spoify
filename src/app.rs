@@ -1,8 +1,9 @@
-use crate::structs::LikedSongs;
+use crate::structs::UserSavedAlbums;
 use crate::enums::{InputMode, Library, Menu};
 use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
 use crate::spotify::player::player::process_currently_playing;
+use crate::structs::LikedSongs;
 use crate::structs::{Key, Search, Settings, Themes};
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
@@ -36,25 +37,6 @@ pub struct App {
     // Handles User's Liked Songs
 
     // Handles User's Saved Albums
-    pub user_album_names: Vec<String>,
-    pub user_album_links: Vec<String>,
-    pub user_album_artist_names: Vec<String>,
-    pub user_album_tracks: Vec<usize>,
-    pub user_album_selected: bool,
-    pub user_album_display: bool,
-    pub user_album_state: TableState,
-    pub user_album_index: usize,
-
-    pub user_album_track_names: Vec<String>,
-    pub user_album_track_artist: Vec<String>,
-    pub user_album_track_duration: Vec<i64>,
-    pub user_album_track_index: usize,
-    pub user_album_track_state: TableState,
-    pub user_album_track_display: bool,
-    pub user_album_track_selected: bool, // for a track list that is selected
-    pub user_album_current_album_selected: bool, // for a album that is selected
-    pub user_album_track_links: Vec<String>,
-    pub enter_for_playback_in_user_album: bool,
 
     // Handles User's Saved Podcasts
     pub podcast_names: Vec<String>,
@@ -194,6 +176,7 @@ impl App {
         search: &mut Search,
         userplaylist: &mut UserPlaylist,
         likedsongs: &mut LikedSongs,
+        useralbum: &mut UserSavedAlbums,
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -203,7 +186,17 @@ impl App {
             // Handling user inputs
             if event::poll(timeout)? {
                 if let Event::Key(key_event) = event::read()? {
-                    handle_key_event(self, key_event, keys, theme, settings, search, userplaylist,likedsongs);
+                    handle_key_event(
+                        self,
+                        key_event,
+                        keys,
+                        theme,
+                        settings,
+                        search,
+                        userplaylist,
+                        likedsongs,
+                        useralbum
+                    );
 
                     // In editing mode, handle search input
                     if search.input_mode == InputMode::Editing {
@@ -233,6 +226,7 @@ impl App {
                         search,
                         userplaylist,
                         likedsongs,
+                        useralbum,
                     )
                 })?;
             }
@@ -256,13 +250,6 @@ impl Default for App {
             selected_library: Library::MadeFY,
             library_state: ListState::default(),
 
-            user_album_display: false,
-            user_album_selected: false,
-            user_album_state: TableState::default(),
-            user_album_names: Vec::new(),
-            user_album_links: Vec::new(),
-            user_album_artist_names: Vec::new(),
-            user_album_tracks: Vec::new(),
             can_navigate_menu: true,
 
             recently_played_names: Vec::new(),
@@ -324,7 +311,6 @@ impl Default for App {
             client_id: String::new(),
             client_secret: String::new(),
 
-            user_album_index: 0,
             podcast_index: 0,
             recently_played_index: 0,
             user_artist_index: 0,
@@ -350,16 +336,6 @@ impl Default for App {
             made_fy_track_selected: false,
             made_fy_track_index: 0,
 
-            user_album_track_names: Vec::new(),
-            user_album_track_artist: Vec::new(),
-            user_album_track_duration: Vec::new(),
-            user_album_track_index: 0,
-            user_album_track_state: TableState::default(),
-            user_album_track_display: false,
-            user_album_track_selected: false,
-            user_album_track_links: Vec::new(),
-            user_album_current_album_selected: false,
-
             user_artist_track_names: Vec::new(),
             user_artist_track_album: Vec::new(),
             user_artist_track_duration: Vec::new(),
@@ -372,7 +348,6 @@ impl Default for App {
 
             selected_link_for_playback: String::new(),
 
-            enter_for_playback_in_user_album: false,
             enter_for_playback_in_recently_played: false,
             enter_for_playback_in_saved_artist: false,
             enter_for_playback_in_made_fy: false,

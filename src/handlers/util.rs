@@ -1,3 +1,4 @@
+use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
 use ratatui::widgets::{ListState, TableState};
@@ -84,13 +85,13 @@ pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, 
     (state, prev_index)
 }
 
-pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs) {
+pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
     search.search_results_rendered = false;
     search.input_mode = InputMode::Normal;
     userplaylist.user_playlist_display = false;
     likedsongs.liked_song_display = false;
     search.selected_search = false;
-    app.user_album_display = false;
+    useralbum.user_album_display = false;
     app.recently_played_display = false;
     app.can_navigate_menu = true;
     app.podcast_display = false;
@@ -102,15 +103,15 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     app.made_fy_track_display = false;
     app.made_fy_track_selected = false;
     app.made_fy_current_playlist_selected = false;
-    app.user_album_current_album_selected = false;
-    app.user_album_track_selected = false;
-    app.user_album_track_display = false;
+    useralbum.user_album_current_album_selected = false;
+    useralbum.user_album_track_selected = false;
+    useralbum.user_album_track_display = false;
     app.user_artist_current_artist_selected = false;
     app.user_artist_track_selected = false;
     app.user_artist_track_display = false;
     app.enter_for_playback_in_made_fy = false;
     likedsongs.enter_for_playback_in_liked_song = false;
-    app.enter_for_playback_in_user_album = false;
+    useralbum.enter_for_playback_in_user_album = false;
     app.enter_for_playback_in_recently_played = false;
     app.enter_for_playback_in_saved_artist = false;
     userplaylist.enter_for_playback_in_user_playlist = false;
@@ -121,25 +122,25 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs) {
+pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
-    app.user_album_display = false;
+    useralbum.user_album_display = false;
     app.recently_played_display = false;
     app.podcast_display = false;
     app.user_artist_display = false;
     app.made_fy_display = false;
     app.made_fy_track_display = false;
     app.made_fy_track_selected = false;
-    app.user_album_current_album_selected = false;
-    app.user_album_track_selected = false;
-    app.user_album_track_display = false;
+    useralbum.user_album_current_album_selected = false;
+    useralbum.user_album_track_selected = false;
+    useralbum.user_album_track_display = false;
     app.user_artist_current_artist_selected = false;
     app.user_artist_track_selected = false;
     app.user_artist_track_display = false;
     app.enter_for_playback_in_made_fy = false;
     likedsongs.enter_for_playback_in_liked_song = false;
-    app.enter_for_playback_in_user_album = false;
+    useralbum.enter_for_playback_in_user_album = false;
     app.enter_for_playback_in_recently_played = false;
     app.enter_for_playback_in_saved_artist = false;
     userplaylist.enter_for_playback_in_user_playlist = false;
@@ -149,10 +150,10 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     app.is_in_track = false;
 }
 
-pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs) {
+pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
-    app.user_album_display = false;
+    useralbum.user_album_display = false;
     app.recently_played_display = false;
     app.can_navigate_menu = true;
     app.podcast_display = false;

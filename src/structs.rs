@@ -350,3 +350,50 @@ impl Default for LikedSongs {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct UserSavedAlbums {
+    pub user_album_names: Vec<String>,
+    pub user_album_links: Vec<String>,
+    pub user_album_artist_names: Vec<String>,
+    pub user_album_tracks: Vec<usize>,
+    pub user_album_selected: bool,
+    pub user_album_display: bool,
+    pub user_album_state: TableState,
+    pub user_album_index: usize,
+    pub user_album_track_names: Vec<String>,
+    pub user_album_track_artist: Vec<String>,
+    pub user_album_track_duration: Vec<i64>,
+    pub user_album_track_index: usize,
+    pub user_album_track_state: TableState,
+    pub user_album_track_display: bool,
+    pub user_album_track_selected: bool, // for a track list that is selected
+    pub user_album_current_album_selected: bool, // for a album that is selected
+    pub user_album_track_links: Vec<String>,
+    pub enter_for_playback_in_user_album: bool,
+}
+
+impl Default for UserSavedAlbums {
+    fn default() -> Self {
+        Self {
+            user_album_display: false,
+            user_album_selected: false,
+            user_album_state: TableState::default(),
+            user_album_names: Vec::new(),
+            user_album_links: Vec::new(),
+            user_album_artist_names: Vec::new(),
+            user_album_tracks: Vec::new(),
+            user_album_index: 0,
+            user_album_track_names: Vec::new(),
+            user_album_track_artist: Vec::new(),
+            user_album_track_duration: Vec::new(),
+            user_album_track_index: 0,
+            user_album_track_state: TableState::default(),
+            user_album_track_display: false,
+            user_album_track_selected: false,
+            user_album_track_links: Vec::new(),
+            user_album_current_album_selected: false,
+            enter_for_playback_in_user_album: false,
+        }
+    }
+}

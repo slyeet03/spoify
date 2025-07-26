@@ -1,9 +1,10 @@
+use crate::UserSavedAlbums;
 use crate::{
     app::App,
     enums::{Library, Menu},
 };
 
-pub fn exit_event(app: &mut App) {
+pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums) {
     if app.selected_menu == Menu::Search {
         app.selected_menu = Menu::Default;
     } else if app.selected_menu == Menu::Library {
@@ -17,12 +18,12 @@ pub fn exit_event(app: &mut App) {
                 app.selected_menu = Menu::Default;
             }
         } else if app.selected_library == Library::Albums {
-            if app.user_album_track_selected {
-                app.user_album_track_selected = false;
-                app.user_album_track_display = false;
-                app.user_album_current_album_selected = true;
-                app.user_album_display = true;
-                app.user_album_selected = true;
+            if useralbum.user_album_track_selected {
+                useralbum.user_album_track_selected = false;
+                useralbum.user_album_track_display = false;
+                useralbum.user_album_current_album_selected = true;
+                useralbum.user_album_display = true;
+                useralbum.user_album_selected = true;
             } else {
                 app.selected_menu = Menu::Default;
             }

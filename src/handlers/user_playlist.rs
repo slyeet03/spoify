@@ -1,3 +1,4 @@
+use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
 use super::util::{default, down_key_for_table, up_key_for_table};
@@ -11,11 +12,11 @@ use crate::{
     },
 };
 
-pub fn go_to_user_playlists_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs) {
+pub fn go_to_user_playlists_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
     if app.have_playlist {
         app.selected_menu = Menu::Playlists;
         userplaylist.user_playlist_state.select(Some(0));
-        default(app,search,userplaylist,likedsongs);
+        default(app,search,userplaylist,likedsongs,useralbum);
         userplaylist.selected_playlist_uri = userplaylist.user_playlist_links[0].clone();
         userplaylist.current_user_playlist = userplaylist.user_playlist_names[0].clone();
     } else {

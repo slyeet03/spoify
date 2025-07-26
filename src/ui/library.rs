@@ -7,7 +7,7 @@ use ratatui::{
 };
 
 use crate::ui::util::{album_table_ui, artist_table_ui, podcast_table_ui, track_table_ui};
-use crate::{app::App, structs::Themes};
+use crate::{app::App, structs::Themes, structs::UserSavedAlbums};
 
 use super::{
     search::util::{searched_track_table_for_album_ui, searched_track_table_for_artist_ui},
@@ -22,6 +22,7 @@ pub fn render_library(
     app: &mut App,
     theme: &mut Themes,
     likedsongs: &mut LikedSongs,
+    useralbum: &mut UserSavedAlbums,
 ) {
     let library_block = Block::default()
         .borders(Borders::ALL)
@@ -52,7 +53,7 @@ pub fn render_library(
     let user_album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
-        .border_style(if app.user_album_selected {
+        .border_style(if useralbum.user_album_selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -240,13 +241,13 @@ pub fn render_library(
         f.render_stateful_widget(artist_table, content_chunk[1], &mut app.user_artist_state);
     }
 
-    if app.user_album_display {
+    if useralbum.user_album_display {
         f.render_widget(Clear, content_chunk[1]);
 
         let user_album_table = album_table_ui(
-            app.user_album_names.clone(),
-            app.user_album_artist_names.clone(),
-            app.user_album_tracks.clone(),
+            useralbum.user_album_names.clone(),
+            useralbum.user_album_artist_names.clone(),
+            useralbum.user_album_tracks.clone(),
             user_album_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -258,16 +259,16 @@ pub fn render_library(
         f.render_stateful_widget(
             user_album_table,
             content_chunk[1],
-            &mut app.user_album_state,
+            &mut useralbum.user_album_state,
         );
     }
-    if app.user_album_track_display {
-        let user_album_track_label = app.user_album_names[app.user_album_index].to_string();
+    if useralbum.user_album_track_display {
+        let user_album_track_label = useralbum.user_album_names[useralbum.user_album_index].to_string();
 
         let user_album_track_block = Block::default()
             .borders(Borders::ALL)
             .title(Title::from(user_album_track_label))
-            .border_style(if app.user_album_track_selected {
+            .border_style(if useralbum.user_album_track_selected {
                 Style::default().fg(theme.main_border_color)
             } else {
                 Style::default().fg(theme.main_inactive_border_color)
@@ -277,9 +278,9 @@ pub fn render_library(
         f.render_widget(Clear, content_chunk[1]);
 
         let user_album_track_table = searched_track_table_for_album_ui(
-            app.user_album_track_names.clone(),
-            app.user_album_track_artist.clone(),
-            app.user_album_track_duration.clone(),
+            useralbum.user_album_track_names.clone(),
+            useralbum.user_album_track_artist.clone(),
+            useralbum.user_album_track_duration.clone(),
             user_album_track_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -291,7 +292,7 @@ pub fn render_library(
         f.render_stateful_widget(
             user_album_track_table,
             content_chunk[1],
-            &mut app.user_album_track_state,
+            &mut useralbum.user_album_track_state,
         );
     }
     if app.user_artist_track_display {

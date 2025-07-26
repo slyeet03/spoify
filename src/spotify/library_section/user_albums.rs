@@ -1,3 +1,4 @@
+use crate::structs::UserSavedAlbums;
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
 use futures::FutureExt;
@@ -50,12 +51,12 @@ fn save_albums_to_json(app: &mut App, albums: Vec<SavedAlbum>) {
 }
 
 /// Processes the saved albums data stored in the cache file and populates the app's data structures
-pub fn process_user_albums(app: &mut App) {
+pub fn process_user_albums(app: &mut App, useralbum: &mut UserSavedAlbums) {
     // Clear any existing user album data in the app before processing
-    app.user_album_names.clear();
-    app.user_album_links.clear();
-    app.user_album_tracks.clear();
-    app.user_album_artist_names.clear();
+    useralbum.user_album_names.clear();
+    useralbum.user_album_links.clear();
+    useralbum.user_album_tracks.clear();
+    useralbum.user_album_artist_names.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -74,7 +75,7 @@ pub fn process_user_albums(app: &mut App) {
             if let Value::Object(album_obj) = album {
                 if let Some(album_info) = album_obj.get("album").and_then(Value::as_object) {
                     if let Some(album_name) = album_info.get("name").and_then(Value::as_str) {
-                        app.user_album_names.push(album_name.to_string());
+                        useralbum.user_album_names.push(album_name.to_string());
                     }
 
                     if let Some(external_urls) =
@@ -83,7 +84,7 @@ pub fn process_user_albums(app: &mut App) {
                         if let Some(album_link) =
                             external_urls.get("spotify").and_then(Value::as_str)
                         {
-                            app.user_album_links.push(album_link.to_string());
+                            useralbum.user_album_links.push(album_link.to_string());
                         }
                     }
                     if let Some(artists) = album_info.get("artists").and_then(Value::as_array) {
@@ -91,13 +92,13 @@ pub fn process_user_albums(app: &mut App) {
                             if let Some(artist_name) =
                                 first_artist.get("name").and_then(Value::as_str)
                             {
-                                app.user_album_artist_names.push(artist_name.to_string());
+                                useralbum.user_album_artist_names.push(artist_name.to_string());
                             }
                         }
                     }
                     if let Some(tracks) = album_info.get("tracks").and_then(Value::as_object) {
                         if let Some(total_tracks) = tracks.get("total").and_then(Value::as_u64) {
-                            app.user_album_tracks.push(total_tracks as usize);
+                            useralbum.user_album_tracks.push(total_tracks as usize);
                         }
                     }
                 }
