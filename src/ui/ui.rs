@@ -1,3 +1,4 @@
+use crate::structs::MadeFY;
 use crate::structs::UserSavedAlbums;
 use crate::structs::LikedSongs;
 use crate::UserPlaylist;
@@ -29,7 +30,8 @@ pub fn render_frame(
     search: &mut Search,
     userplaylist: &mut UserPlaylist,
     likedsongs: &mut LikedSongs,
-    useralbum: &mut UserSavedAlbums,
+    useralbum: &mut UserSavedAlbums, 
+    madefy: &mut MadeFY
 ) {
     // Calculate the layout constraints
     let size = f.size();
@@ -127,7 +129,7 @@ pub fn render_frame(
             render_main_area(f, &content_chunk, &front_chunk, app, theme);
         }
         Menu::Library => {
-            render_library(f, &content_sub_chunk, &content_chunk, app, theme,likedsongs,useralbum);
+            render_library(f, &content_sub_chunk, &content_chunk, app, theme,likedsongs,useralbum,madefy);
         }
         Menu::Playlists => {
             render_user_playlist(f, &content_chunk, app, theme,userplaylist);

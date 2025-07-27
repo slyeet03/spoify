@@ -397,3 +397,50 @@ impl Default for UserSavedAlbums {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct MadeFY {
+    pub made_fy_playlist_names: Vec<String>,
+    pub made_fy_playlist_links: Vec<String>,
+    pub made_fy_selected: bool,
+    pub made_fy_display: bool,
+    pub made_fy_state: TableState,
+    pub made_fy_index: usize,
+    pub made_fy_playlist_track_total: Vec<i64>,
+    pub made_fy_track_links: Vec<String>,
+    pub made_fy_track_names: Vec<String>,
+    pub made_fy_track_duration: Vec<i64>,
+    pub made_fy_artist_names: Vec<String>,
+    pub made_fy_album_names: Vec<String>,
+    pub made_fy_track_display: bool,
+    pub made_fy_track_state: TableState,
+    pub made_fy_track_index: usize,
+    pub made_fy_track_selected: bool, // for a track list that is selected
+    pub made_fy_current_playlist_selected: bool, // for a playlist that is selected
+    pub enter_for_playback_in_made_fy: bool,
+}
+
+impl Default for MadeFY {
+    fn default() -> Self {
+        Self {
+            made_fy_playlist_names: Vec::new(),
+            made_fy_playlist_links: Vec::new(),
+            made_fy_selected: false,
+            made_fy_display: false,
+            made_fy_state: TableState::default(),
+            made_fy_index: 0,
+            made_fy_playlist_track_total: Vec::new(),
+            made_fy_track_links: Vec::new(),
+            made_fy_track_names: Vec::new(),
+            made_fy_track_duration: Vec::new(),
+            made_fy_artist_names: Vec::new(),
+            made_fy_album_names: Vec::new(),
+            made_fy_current_playlist_selected: false,
+            made_fy_track_display: false,
+            made_fy_track_state: TableState::default(),
+            made_fy_track_selected: false,
+            made_fy_track_index: 0,
+            enter_for_playback_in_made_fy: false,
+        }
+    }
+}

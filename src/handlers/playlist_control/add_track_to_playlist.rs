@@ -1,3 +1,4 @@
+use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
@@ -7,7 +8,7 @@ use crate::handlers::util::{down_key_for_list, up_key_for_list};
 use crate::spotify::playlist_control::add_track_to_playlist::add_track_to_playlist;
 use crate::structs::Search;
 
-pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
+pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
     if app.selected_menu == Menu::Library {
         if app.selected_library == Library::RecentlyPlayed {
             app.track_added_to_playlist_link =
@@ -17,9 +18,9 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplayl
             app.track_added_to_playlist_link = likedsongs.liked_song_links[likedsongs.liked_songs_index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
         } else if app.selected_library == Library::MadeFY {
-            if app.made_fy_track_selected {
+            if madefy.made_fy_track_selected {
                 app.track_added_to_playlist_link =
-                    app.made_fy_track_links[app.made_fy_track_index].clone();
+                    madefy.made_fy_track_links[madefy.made_fy_track_index].clone();
                 app.selected_menu = Menu::AddTrackToPlaylist;
             }
         } else if app.selected_library == Library::Albums {

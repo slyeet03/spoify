@@ -1,19 +1,20 @@
+use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::{
     app::App,
     enums::{Library, Menu},
 };
 
-pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums) {
+pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
     if app.selected_menu == Menu::Search {
         app.selected_menu = Menu::Default;
     } else if app.selected_menu == Menu::Library {
         if app.selected_library == Library::MadeFY {
-            if app.made_fy_track_selected {
-                app.made_fy_track_selected = false;
-                app.made_fy_track_display = false;
-                app.made_fy_selected = true;
-                app.made_fy_display = true;
+            if madefy.made_fy_track_selected {
+                madefy.made_fy_track_selected = false;
+                madefy.made_fy_track_display = false;
+                madefy.made_fy_selected = true;
+                madefy.made_fy_display = true;
             } else {
                 app.selected_menu = Menu::Default;
             }

@@ -1,3 +1,4 @@
+use crate::structs::MadeFY;
 use crate::structs::UserSavedAlbums;
 use crate::enums::{InputMode, Library, Menu};
 use crate::handlers::key_event::handle_key_event;
@@ -79,24 +80,7 @@ pub struct App {
     pub user_artist_track_links: Vec<String>,
 
     // Handles Made For You
-    pub made_fy_playlist_names: Vec<String>,
-    pub made_fy_playlist_links: Vec<String>,
-    pub made_fy_selected: bool,
-    pub made_fy_display: bool,
-    pub made_fy_state: TableState,
-    pub made_fy_index: usize,
-    pub made_fy_playlist_track_total: Vec<i64>,
-    pub made_fy_track_links: Vec<String>,
-    pub made_fy_track_names: Vec<String>,
-    pub made_fy_track_duration: Vec<i64>,
-    pub made_fy_artist_names: Vec<String>,
-    pub made_fy_album_names: Vec<String>,
-    pub made_fy_track_display: bool,
-    pub made_fy_track_state: TableState,
-    pub made_fy_track_index: usize,
-    pub made_fy_track_selected: bool, // for a track list that is selected
-    pub made_fy_current_playlist_selected: bool, // for a playlist that is selected
-    pub enter_for_playback_in_made_fy: bool,
+    
 
     // Handles User's currently playing device
     pub current_device_name: String,
@@ -176,7 +160,8 @@ impl App {
         search: &mut Search,
         userplaylist: &mut UserPlaylist,
         likedsongs: &mut LikedSongs,
-        useralbum: &mut UserSavedAlbums,
+        useralbum: &mut UserSavedAlbums, 
+        madefy: &mut MadeFY
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -195,7 +180,8 @@ impl App {
                         search,
                         userplaylist,
                         likedsongs,
-                        useralbum
+                        useralbum,
+                        madefy
                     );
 
                     // In editing mode, handle search input
@@ -227,6 +213,7 @@ impl App {
                         userplaylist,
                         likedsongs,
                         useralbum,
+                        madefy
                     )
                 })?;
             }
@@ -318,23 +305,7 @@ impl Default for App {
 
             error_text: String::new(),
 
-            made_fy_playlist_names: Vec::new(),
-            made_fy_playlist_links: Vec::new(),
-            made_fy_selected: false,
-            made_fy_display: false,
-            made_fy_state: TableState::default(),
-            made_fy_index: 0,
-            made_fy_playlist_track_total: Vec::new(),
-            made_fy_track_links: Vec::new(),
-            made_fy_track_names: Vec::new(),
-            made_fy_track_duration: Vec::new(),
-            made_fy_artist_names: Vec::new(),
-            made_fy_album_names: Vec::new(),
-            made_fy_current_playlist_selected: false,
-            made_fy_track_display: false,
-            made_fy_track_state: TableState::default(),
-            made_fy_track_selected: false,
-            made_fy_track_index: 0,
+            
 
             user_artist_track_names: Vec::new(),
             user_artist_track_album: Vec::new(),
@@ -350,7 +321,7 @@ impl Default for App {
 
             enter_for_playback_in_recently_played: false,
             enter_for_playback_in_saved_artist: false,
-            enter_for_playback_in_made_fy: false,
+            
             enter_for_playback_in_new_release: false,
 
             is_only_id: false,

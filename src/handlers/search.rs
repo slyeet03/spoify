@@ -1,3 +1,4 @@
+use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
@@ -19,9 +20,9 @@ use crate::{
     },
 };
 
-pub fn go_to_search_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
+pub fn go_to_search_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
     app.selected_menu = Menu::Search;
-    default(app,search,userplaylist,likedsongs,useralbum);
+    default(app,search,userplaylist,likedsongs,useralbum,madefy);
     search.input_mode = InputMode::Editing;
 }
 

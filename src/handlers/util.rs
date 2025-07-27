@@ -1,3 +1,4 @@
+use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
@@ -85,7 +86,7 @@ pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, 
     (state, prev_index)
 }
 
-pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
+pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
     search.search_results_rendered = false;
     search.input_mode = InputMode::Normal;
     userplaylist.user_playlist_display = false;
@@ -99,17 +100,17 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     search.searched_album_selected = false;
     search.searched_artist_selected = false;
     search.searched_playlist_selected = false;
-    app.made_fy_display = false;
-    app.made_fy_track_display = false;
-    app.made_fy_track_selected = false;
-    app.made_fy_current_playlist_selected = false;
+    madefy.made_fy_display = false;
+    madefy.made_fy_track_display = false;
+    madefy.made_fy_track_selected = false;
+    madefy.made_fy_current_playlist_selected = false;
     useralbum.user_album_current_album_selected = false;
     useralbum.user_album_track_selected = false;
     useralbum.user_album_track_display = false;
     app.user_artist_current_artist_selected = false;
     app.user_artist_track_selected = false;
     app.user_artist_track_display = false;
-    app.enter_for_playback_in_made_fy = false;
+    madefy.enter_for_playback_in_made_fy = false;
     likedsongs.enter_for_playback_in_liked_song = false;
     useralbum.enter_for_playback_in_user_album = false;
     app.enter_for_playback_in_recently_played = false;
@@ -122,23 +123,23 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
+pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
     app.recently_played_display = false;
     app.podcast_display = false;
     app.user_artist_display = false;
-    app.made_fy_display = false;
-    app.made_fy_track_display = false;
-    app.made_fy_track_selected = false;
+    madefy.made_fy_display = false;
+    madefy.made_fy_track_display = false;
+    madefy.made_fy_track_selected = false;
     useralbum.user_album_current_album_selected = false;
     useralbum.user_album_track_selected = false;
     useralbum.user_album_track_display = false;
     app.user_artist_current_artist_selected = false;
     app.user_artist_track_selected = false;
     app.user_artist_track_display = false;
-    app.enter_for_playback_in_made_fy = false;
+    madefy.enter_for_playback_in_made_fy = false;
     likedsongs.enter_for_playback_in_liked_song = false;
     useralbum.enter_for_playback_in_user_album = false;
     app.enter_for_playback_in_recently_played = false;

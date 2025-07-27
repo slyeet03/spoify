@@ -1,3 +1,4 @@
+use crate::structs::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
@@ -52,6 +53,7 @@ pub fn handle_key_event(
     userplaylist: &mut UserPlaylist, 
     likedsongs: &mut LikedSongs,
     useralbum: &mut UserSavedAlbums,
+    madefy: &mut MadeFY
 ) {
     let go_to_search_key: char = key.go_to_search_key;
     let go_to_library_key: char = key.go_to_library_key;
@@ -88,7 +90,7 @@ pub fn handle_key_event(
             }
 
             KeyCode::Char('p') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
-                add_track_to_playlist_event(app,search,userplaylist,likedsongs,useralbum);
+                add_track_to_playlist_event(app,search,userplaylist,likedsongs,useralbum,madefy);
             }
 
             // Follow Playlist
@@ -105,7 +107,7 @@ pub fn handle_key_event(
             code if code == KeyCode::Char(exit_application_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                exit_event(app,useralbum);
+                exit_event(app,useralbum,madefy);
             }
 
             // Run the startup function again
@@ -119,21 +121,21 @@ pub fn handle_key_event(
             code if code == KeyCode::Char(go_to_library_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                go_to_library_event(app,search,userplaylist,likedsongs,useralbum);
+                go_to_library_event(app,search,userplaylist,likedsongs,useralbum,madefy);
             }
 
             // Go to user playlist menu
             code if code == KeyCode::Char(go_to_user_playlists_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                go_to_user_playlists_event(app,search,userplaylist,likedsongs,useralbum);
+                go_to_user_playlists_event(app,search,userplaylist,likedsongs,useralbum,madefy);
             }
 
             // Go to search menu
             code if code == KeyCode::Char(go_to_search_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                go_to_search_event(app,search,userplaylist,likedsongs,useralbum);
+                go_to_search_event(app,search,userplaylist,likedsongs,useralbum,madefy);
             }
 
             // Go to help menu
@@ -152,7 +154,7 @@ pub fn handle_key_event(
             code if code == KeyCode::Char(new_release_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                go_to_new_release_event(app,search,userplaylist,likedsongs,useralbum);
+                go_to_new_release_event(app,search,userplaylist,likedsongs,useralbum,madefy);
             }
 
             // Keys for Volume Control
@@ -193,7 +195,7 @@ pub fn handle_key_event(
 
             // Down keybinding for all the menus
             KeyCode::Down if search.input_mode != InputMode::Editing => {
-                library_down_event(app,likedsongs,useralbum);
+                library_down_event(app,likedsongs,useralbum,madefy);
                 new_release_down_event(app,search);
                 user_playlist_down_event(app,search,userplaylist);
                 search_down_event(app,search);
@@ -202,13 +204,13 @@ pub fn handle_key_event(
                 if app.can_navigate_menu {
                     let next_index: usize = app.library_state.selected().unwrap_or(0) + 1;
                     app.library_state.select(Some(next_index % 6)); //wrapping around the last option
-                    default_nav(app,search,userplaylist,likedsongs,useralbum);
+                    default_nav(app,search,userplaylist,likedsongs,useralbum,madefy);
                 }
             }
 
             // Up keybinding for all the menus
             KeyCode::Up if search.input_mode != InputMode::Editing => {
-                library_up_event(app,likedsongs,useralbum);
+                library_up_event(app,likedsongs,useralbum,madefy);
                 new_release_up_event(app,search);
                 user_playlist_up_event(app,search,userplaylist);
                 search_up_event(app,search);
@@ -221,7 +223,7 @@ pub fn handle_key_event(
                         app.library_state.selected().unwrap_or(0) - 1
                     };
                     app.library_state.select(Some(prev_index));
-                    default_nav(app,search,userplaylist,likedsongs,useralbum);
+                    default_nav(app,search,userplaylist,likedsongs,useralbum,madefy);
                 }
             }
 
@@ -229,7 +231,7 @@ pub fn handle_key_event(
             KeyCode::Enter if search.input_mode != InputMode::Editing => {
                 user_playlist_enter_event(app,search,userplaylist);
                 new_release_enter_event(app,search);
-                library_enter_event(app,search,likedsongs,useralbum);
+                library_enter_event(app,search,likedsongs,useralbum,madefy);
                 search_enter_event(app,search,likedsongs,useralbum);
                 add_track_to_playlist_enter_event(app,userplaylist);
             }
@@ -238,7 +240,7 @@ pub fn handle_key_event(
             KeyCode::Tab if search.input_mode != InputMode::Editing => {
                 user_playlist_tab_event(app,userplaylist);
                 new_release_tab_event(app);
-                library_tab_event(app,likedsongs,useralbum);
+                library_tab_event(app,likedsongs,useralbum,madefy);
                 search_tab_event(app,search);
             }
 
