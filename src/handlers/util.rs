@@ -1,3 +1,4 @@
+use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
 use crate::MadeFY;
 use crate::UserSavedAlbums;
@@ -12,17 +13,17 @@ use crate::{
 };
 
 // Helper functions for cursor movement and character deletion
-pub fn move_cursor_left(app: &mut App,search: &mut Search) {
+pub fn move_cursor_left(search: &mut Search) {
     let cursor_moved_left = search.cursor_position.saturating_sub(1);
-    search.cursor_position = clamp_cursor(app, cursor_moved_left,search);
+    search.cursor_position = clamp_cursor(cursor_moved_left,search);
 }
 
-pub fn move_cursor_right(app: &mut App, search: &mut Search) {
+pub fn move_cursor_right(search: &mut Search) {
     let cursor_moved_right = search.cursor_position.saturating_add(1);
-    search.cursor_position = clamp_cursor(app, cursor_moved_right,search);
+    search.cursor_position = clamp_cursor(cursor_moved_right,search);
 }
 
-pub fn delete_char(app: &mut App, search: &mut Search) {
+pub fn delete_char(search: &mut Search) {
     let is_not_cursor_leftmost = search.cursor_position != 0;
     if is_not_cursor_leftmost {
         let current_index = search.cursor_position;
@@ -36,14 +37,14 @@ pub fn delete_char(app: &mut App, search: &mut Search) {
         // Put all characters together except the selected one.
         // By leaving the selected one out, it is forgotten and therefore deleted.
         search.input = before_char_to_delete.chain(after_char_to_delete).collect();
-        move_cursor_left(app,search);
+        move_cursor_left(search);
     }
 }
 
-pub fn clamp_cursor(app: &mut App, new_cursor_pos: usize, search: &mut Search) -> usize {
+pub fn clamp_cursor(new_cursor_pos: usize, search: &mut Search) -> usize {
     new_cursor_pos.clamp(0, search.input.len())
 }
-pub fn reset_cursor(app: &mut App, search: &mut Search) {
+pub fn reset_cursor(search: &mut Search) {
     search.cursor_position = 0;
 }
 
@@ -87,14 +88,21 @@ pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, 
     (state, prev_index)
 }
 
-pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
+pub fn default(
+    app: &mut App, search: &mut Search,
+    userplaylist: &mut UserPlaylist,
+    likedsongs: &mut LikedSongs,
+    useralbum: &mut UserSavedAlbums,
+    madefy: &mut MadeFY,
+    podcast: &mut UserSavedPodcast,
+    recentlyplayed: &mut UserRecentlyPlayed) {
     search.search_results_rendered = false;
     search.input_mode = InputMode::Normal;
     userplaylist.user_playlist_display = false;
     likedsongs.liked_song_display = false;
     search.selected_search = false;
     useralbum.user_album_display = false;
-    app.recently_played_display = false;
+    recentlyplayed.recently_played_display = false;
     app.can_navigate_menu = true;
     podcast.podcast_display = false;
     app.user_artist_display = false;
@@ -114,7 +122,7 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     madefy.enter_for_playback_in_made_fy = false;
     likedsongs.enter_for_playback_in_liked_song = false;
     useralbum.enter_for_playback_in_user_album = false;
-    app.enter_for_playback_in_recently_played = false;
+    recentlyplayed.enter_for_playback_in_recently_played = false;
     app.enter_for_playback_in_saved_artist = false;
     userplaylist.enter_for_playback_in_user_playlist = false;
     app.enter_for_playback_in_new_release = false;
@@ -124,11 +132,11 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
+pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
-    app.recently_played_display = false;
+    recentlyplayed.recently_played_display = false;
     podcast.podcast_display = false;
     app.user_artist_display = false;
     madefy.made_fy_display = false;
@@ -143,7 +151,7 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     madefy.enter_for_playback_in_made_fy = false;
     likedsongs.enter_for_playback_in_liked_song = false;
     useralbum.enter_for_playback_in_user_album = false;
-    app.enter_for_playback_in_recently_played = false;
+    recentlyplayed.enter_for_playback_in_recently_played = false;
     app.enter_for_playback_in_saved_artist = false;
     userplaylist.enter_for_playback_in_user_playlist = false;
     app.enter_for_playback_in_new_release = false;
@@ -152,11 +160,11 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     app.is_in_track = false;
 }
 
-pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast) {
+pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
-    app.recently_played_display = false;
+    recentlyplayed.recently_played_display = false;
     app.can_navigate_menu = true;
     podcast.podcast_display = false;
     app.user_artist_display = false;

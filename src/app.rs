@@ -1,3 +1,4 @@
+use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
 use crate::structs::UserSavedAlbums;
@@ -44,16 +45,7 @@ pub struct App {
     
 
     // Handles User's Recently Played Songs
-    pub recently_played_names: Vec<String>,
-    pub recently_played_links: Vec<String>,
-    pub recently_played_duration: Vec<i64>,
-    pub recently_played_artist_names: Vec<String>,
-    pub recently_played_album_names: Vec<String>,
-    pub recently_played_selected: bool,
-    pub recently_played_display: bool,
-    pub recently_played_state: TableState,
-    pub recently_played_index: usize,
-    pub enter_for_playback_in_recently_played: bool,
+    
 
     // Handles User's Saved Artists
     pub user_artist_names: Vec<String>,
@@ -157,7 +149,8 @@ impl App {
         likedsongs: &mut LikedSongs,
         useralbum: &mut UserSavedAlbums, 
         madefy: &mut MadeFY,
-        podcast: &mut UserSavedPodcast
+        podcast: &mut UserSavedPodcast, 
+        recentlyplayed: &mut UserRecentlyPlayed
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -178,7 +171,8 @@ impl App {
                         likedsongs,
                         useralbum,
                         madefy,
-                        podcast
+                        podcast,
+                        recentlyplayed
                     );
 
                     // In editing mode, handle search input
@@ -211,7 +205,8 @@ impl App {
                         likedsongs,
                         useralbum,
                         madefy,
-                        podcast
+                        podcast,
+                        recentlyplayed
                     )
                 })?;
             }
@@ -237,15 +232,7 @@ impl Default for App {
 
             can_navigate_menu: true,
 
-            recently_played_names: Vec::new(),
-            recently_played_links: Vec::new(),
-            recently_played_duration: Vec::new(),
-            recently_played_artist_names: Vec::new(),
-            recently_played_album_names: Vec::new(),
-            recently_played_selected: false,
-            recently_played_display: false,
-            recently_played_state: TableState::default(),
-
+           
            
 
             user_artist_names: Vec::new(),
@@ -292,7 +279,7 @@ impl Default for App {
             client_secret: String::new(),
 
             
-            recently_played_index: 0,
+          
             user_artist_index: 0,
             new_release_index: 0,
 
@@ -312,7 +299,7 @@ impl Default for App {
 
             selected_link_for_playback: String::new(),
 
-            enter_for_playback_in_recently_played: false,
+            
             enter_for_playback_in_saved_artist: false,
             
             enter_for_playback_in_new_release: false,

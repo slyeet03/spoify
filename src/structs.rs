@@ -469,3 +469,34 @@ impl Default for UserSavedPodcast {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct UserRecentlyPlayed {
+    pub recently_played_names: Vec<String>,
+    pub recently_played_links: Vec<String>,
+    pub recently_played_duration: Vec<i64>,
+    pub recently_played_artist_names: Vec<String>,
+    pub recently_played_album_names: Vec<String>,
+    pub recently_played_selected: bool,
+    pub recently_played_display: bool,
+    pub recently_played_state: TableState,
+    pub recently_played_index: usize,
+    pub enter_for_playback_in_recently_played: bool,
+}
+
+impl Default for UserRecentlyPlayed {
+    fn default() -> Self {
+        Self {
+            recently_played_names: Vec::new(),
+            recently_played_links: Vec::new(),
+            recently_played_duration: Vec::new(),
+            recently_played_artist_names: Vec::new(),
+            recently_played_album_names: Vec::new(),
+            recently_played_selected: false,
+            recently_played_display: false,
+            recently_played_state: TableState::default(),
+            recently_played_index: 0,
+            enter_for_playback_in_recently_played: false,
+        }
+    }
+}

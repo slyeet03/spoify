@@ -1,3 +1,4 @@
+use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
 use crate::structs::LikedSongs;
@@ -26,7 +27,8 @@ pub fn render_library(
     likedsongs: &mut LikedSongs,
     useralbum: &mut UserSavedAlbums, 
     madefy: &mut MadeFY,
-    podcast: &mut UserSavedPodcast
+    podcast: &mut UserSavedPodcast, 
+    recentlyplayed: &mut UserRecentlyPlayed
 ) {
     let library_block = Block::default()
         .borders(Borders::ALL)
@@ -47,7 +49,7 @@ pub fn render_library(
     let recently_played_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Recently Played"))
-        .border_style(if app.recently_played_selected {
+        .border_style(if recentlyplayed.recently_played_selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -189,14 +191,14 @@ pub fn render_library(
         );
     }
 
-    if app.recently_played_display {
+    if recentlyplayed.recently_played_display {
         f.render_widget(Clear, content_chunk[1]);
 
         let recently_played_table = track_table_ui(
-            app.recently_played_names.clone(),
-            app.recently_played_artist_names.clone(),
-            app.recently_played_album_names.clone(),
-            app.recently_played_duration.clone(),
+            recentlyplayed.recently_played_names.clone(),
+            recentlyplayed.recently_played_artist_names.clone(),
+            recentlyplayed.recently_played_album_names.clone(),
+            recentlyplayed.recently_played_duration.clone(),
             recently_played_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -208,7 +210,7 @@ pub fn render_library(
         f.render_stateful_widget(
             recently_played_table,
             content_chunk[1],
-            &mut app.recently_played_state,
+            &mut recentlyplayed.recently_played_state,
         );
     }
 

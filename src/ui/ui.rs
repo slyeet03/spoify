@@ -1,3 +1,4 @@
+use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
 use crate::structs::UserSavedAlbums;
@@ -33,7 +34,8 @@ pub fn render_frame(
     likedsongs: &mut LikedSongs,
     useralbum: &mut UserSavedAlbums, 
     madefy: &mut MadeFY,
-    podcast: &mut UserSavedPodcast
+    podcast: &mut UserSavedPodcast, 
+    recentlyplayed: &mut UserRecentlyPlayed
 ) {
     // Calculate the layout constraints
     let size = f.size();
@@ -116,7 +118,7 @@ pub fn render_frame(
     // Render the default UI
     render_default_search(f, &header_chunk, theme);
     render_default_library(f, &content_sub_chunk, theme);
-    render_default_user_playlist(f, &content_chunk, app, theme,userplaylist);
+    render_default_user_playlist(f, &content_chunk, theme,userplaylist);
     render_player(f, &player_layout, app, theme);
     render_main_area(f, &content_chunk, &front_chunk, app, theme);
     render_default_help(f, &header_chunk, theme);
@@ -131,10 +133,10 @@ pub fn render_frame(
             render_main_area(f, &content_chunk, &front_chunk, app, theme);
         }
         Menu::Library => {
-            render_library(f, &content_sub_chunk, &content_chunk, app, theme,likedsongs,useralbum,madefy,podcast);
+            render_library(f, &content_sub_chunk, &content_chunk, app, theme,likedsongs,useralbum,madefy,podcast,recentlyplayed);
         }
         Menu::Playlists => {
-            render_user_playlist(f, &content_chunk, app, theme,userplaylist);
+            render_user_playlist(f, &content_chunk, theme,userplaylist);
         }
         Menu::Search => {
             render_search(

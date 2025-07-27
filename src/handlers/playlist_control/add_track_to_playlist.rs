@@ -1,3 +1,4 @@
+use crate::structs::UserRecentlyPlayed;
 use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
@@ -8,11 +9,11 @@ use crate::handlers::util::{down_key_for_list, up_key_for_list};
 use crate::spotify::playlist_control::add_track_to_playlist::add_track_to_playlist;
 use crate::structs::Search;
 
-pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY, recentlyplayed: &mut UserRecentlyPlayed) {
     if app.selected_menu == Menu::Library {
         if app.selected_library == Library::RecentlyPlayed {
             app.track_added_to_playlist_link =
-                app.recently_played_links[app.recently_played_index].clone();
+                recentlyplayed.recently_played_links[recentlyplayed.recently_played_index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
         } else if app.selected_library == Library::LikedSongs {
             app.track_added_to_playlist_link = likedsongs.liked_song_links[likedsongs.liked_songs_index].clone();

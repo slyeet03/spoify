@@ -14,7 +14,6 @@ use super::util::{convert_to_list, track_table_ui};
 pub fn render_user_playlist(
     f: &mut Frame,
     content_chunk: &[Rect],
-    app: &mut App,
     theme: &mut Themes,
     userplaylist: &mut UserPlaylist,
 ) {
@@ -83,7 +82,6 @@ pub fn render_user_playlist(
 pub fn render_default_user_playlist(
     f: &mut Frame,
     content_chunk: &[Rect],
-    app: &mut App,
     theme: &mut Themes,
     userplaylist: &mut UserPlaylist,
 ) {

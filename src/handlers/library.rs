@@ -1,3 +1,4 @@
+use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
 use crate::UserSavedAlbums;
@@ -24,13 +25,13 @@ use crate::{
     },
 };
 
-pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
+pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
     app.selected_menu = Menu::Library;
     app.library_state.select(Some(0)); //reseting the library state
-    default(app,search,userplaylist,likedsongs,useralbum,madefy,podcast);
+    default(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed);
 }
 
-pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
+pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
     if app.selected_menu == Menu::Library {
         if app.library_state.selected() == Some(0) {
             if madefy.made_fy_selected {
@@ -63,10 +64,10 @@ pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum:
                 );
             }
         } else if app.library_state.selected() == Some(1) {
-            if app.recently_played_selected {
-                (app.recently_played_state, app.recently_played_index) = down_key_for_table(
-                    app.recently_played_names.clone(),
-                    app.recently_played_state.clone(),
+            if recentlyplayed.recently_played_selected {
+                (recentlyplayed.recently_played_state, recentlyplayed.recently_played_index) = down_key_for_table(
+                    recentlyplayed.recently_played_names.clone(),
+                    recentlyplayed.recently_played_state.clone(),
                 );
             }
         } else if app.library_state.selected() == Some(5) {
@@ -91,7 +92,7 @@ pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum:
     }
 }
 
-pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
+pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
     if app.selected_menu == Menu::Library {
         if app.library_state.selected() == Some(0) {
             if madefy.made_fy_selected {
@@ -124,10 +125,10 @@ pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &
                 );
             }
         } else if app.library_state.selected() == Some(1) {
-            if app.recently_played_selected {
-                (app.recently_played_state, app.recently_played_index) = up_key_for_table(
-                    app.recently_played_names.clone(),
-                    app.recently_played_state.clone(),
+            if recentlyplayed.recently_played_selected {
+                (recentlyplayed.recently_played_state, recentlyplayed.recently_played_index) = up_key_for_table(
+                    recentlyplayed.recently_played_names.clone(),
+                    recentlyplayed.recently_played_state.clone(),
                 )
             }
         } else if app.library_state.selected() == Some(5) {
@@ -150,7 +151,7 @@ pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &
     }
 }
 
-pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
+pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
     if app.selected_menu == Menu::Library {
         search.searched_album_selected = false;
         search.searched_artist_selected = false;
@@ -229,9 +230,9 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             }
         } else if app.library_state.selected() == Some(1) {
             app.selected_library = Library::RecentlyPlayed;
-            if app.enter_for_playback_in_recently_played {
+            if recentlyplayed.enter_for_playback_in_recently_played {
                 app.selected_link_for_playback =
-                    app.recently_played_links[app.recently_played_index].clone();
+                    recentlyplayed.recently_played_links[recentlyplayed.recently_played_index].clone();
                 if let Err(e) = start_playback(app) {
                     println!("{}", e);
                 }
@@ -239,9 +240,9 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
                 if let Err(e) = recently_played(app) {
                     println!("{}", e);
                 }
-                process_recently_played(app);
-                app.recently_played_display = true;
-                app.enter_for_playback_in_recently_played = true;
+                process_recently_played(app,recentlyplayed);
+                recentlyplayed.recently_played_display = true;
+                recentlyplayed.enter_for_playback_in_recently_played = true;
             }
         } else if app.library_state.selected() == Some(5) {
             app.selected_library = Library::Podcasts;
@@ -282,7 +283,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
     }
 }
 
-pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
+pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
     if app.selected_menu == Menu::Library {
         app.can_navigate_menu = !app.can_navigate_menu;
         if app.library_state.selected() == Some(0) && madefy.made_fy_display {
@@ -294,9 +295,9 @@ pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: 
         } else if app.library_state.selected() == Some(3) && useralbum.user_album_display {
             useralbum.user_album_state.select(Some(0));
             useralbum.user_album_selected = !useralbum.user_album_selected;
-        } else if app.library_state.selected() == Some(1) && app.recently_played_display {
-            app.recently_played_state.select(Some(0));
-            app.recently_played_selected = !app.recently_played_selected;
+        } else if app.library_state.selected() == Some(1) && recentlyplayed.recently_played_display {
+            recentlyplayed.recently_played_state.select(Some(0));
+            recentlyplayed.recently_played_selected = !recentlyplayed.recently_played_selected;
         } else if app.library_state.selected() == Some(5) && podcast.podcast_display {
             podcast.podcast_state.select(Some(0));
             podcast.podcast_selected = !podcast.podcast_selected;
