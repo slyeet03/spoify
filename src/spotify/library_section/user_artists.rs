@@ -1,3 +1,4 @@
+use crate::structs::UserSavedArtist;
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
 use rspotify::model::FullArtist;
@@ -44,10 +45,10 @@ fn save_artist_to_json(app: &mut App, items: Vec<FullArtist>) {
 }
 
 /// Processes the followed artists data stored in the cache file and populates the app's data structures
-pub fn process_user_artists(app: &mut App) {
+pub fn process_user_artists(app: &mut App, userartist: &mut UserSavedArtist) {
     // Clear any existing user artist data in the app before processing
-    app.user_artist_names.clear();
-    app.user_artist_links.clear();
+    userartist.user_artist_names.clear();
+    userartist.user_artist_links.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -65,14 +66,14 @@ pub fn process_user_artists(app: &mut App) {
         for show in shows {
             if let Value::Object(show_obj) = show {
                 if let Some(show_name) = show_obj.get("name").and_then(Value::as_str) {
-                    app.user_artist_names.push(show_name.to_string());
+                    userartist.user_artist_names.push(show_name.to_string());
                 }
 
                 if let Some(external_urls) =
                     show_obj.get("external_urls").and_then(Value::as_object)
                 {
                     if let Some(show_link) = external_urls.get("spotify").and_then(Value::as_str) {
-                        app.user_artist_links.push(show_link.to_string());
+                        userartist.user_artist_links.push(show_link.to_string());
                     }
                 }
             }

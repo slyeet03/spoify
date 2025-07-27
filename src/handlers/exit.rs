@@ -1,3 +1,4 @@
+use crate::UserSavedArtist;
 use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::{
@@ -5,7 +6,7 @@ use crate::{
     enums::{Library, Menu},
 };
 
-pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY, userartist: &mut UserSavedArtist) {
     if app.selected_menu == Menu::Search {
         app.selected_menu = Menu::Default;
     } else if app.selected_menu == Menu::Library {
@@ -29,12 +30,12 @@ pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums, madefy: &mut M
                 app.selected_menu = Menu::Default;
             }
         } else if app.selected_library == Library::Artists {
-            if app.user_artist_track_selected {
-                app.user_artist_track_selected = false;
-                app.user_artist_track_display = false;
-                app.user_artist_current_artist_selected = true;
-                app.user_artist_display = true;
-                app.user_artist_selected = true;
+            if userartist.user_artist_track_selected {
+                userartist.user_artist_track_selected = false;
+                userartist.user_artist_track_display = false;
+                userartist.user_artist_current_artist_selected = true;
+                userartist.user_artist_display = true;
+                userartist.user_artist_selected = true;
             } else {
                 app.selected_menu = Menu::Default;
             }

@@ -500,3 +500,46 @@ impl Default for UserRecentlyPlayed {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct UserSavedArtist {
+    pub user_artist_names: Vec<String>,
+    pub user_artist_links: Vec<String>,
+    pub user_artist_selected: bool,
+    pub user_artist_display: bool,
+    pub user_artist_state: TableState,
+    pub user_artist_index: usize,
+    pub enter_for_playback_in_saved_artist: bool,
+    pub user_artist_track_names: Vec<String>,
+    pub user_artist_track_album: Vec<String>,
+    pub user_artist_track_duration: Vec<i64>,
+    pub user_artist_track_index: usize,
+    pub user_artist_track_state: TableState,
+    pub user_artist_track_display: bool,
+    pub user_artist_track_selected: bool,
+    pub user_artist_current_artist_selected: bool,
+    pub user_artist_track_links: Vec<String>,
+}
+
+impl Default for UserSavedArtist {
+    fn default() -> Self {
+        Self {
+            user_artist_index: 0,
+            user_artist_names: Vec::new(),
+            user_artist_links: Vec::new(),
+            user_artist_selected: false,
+            user_artist_display: false,
+            user_artist_state: TableState::default(),
+            user_artist_track_names: Vec::new(),
+            user_artist_track_album: Vec::new(),
+            user_artist_track_duration: Vec::new(),
+            user_artist_track_index: 0,
+            user_artist_track_state: TableState::default(),
+            user_artist_track_display: false,
+            user_artist_track_selected: false,
+            user_artist_current_artist_selected: false,
+            user_artist_track_links: Vec::new(),
+            enter_for_playback_in_saved_artist: false,
+        }
+    }
+}

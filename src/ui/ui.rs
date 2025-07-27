@@ -1,13 +1,16 @@
-use crate::structs::UserRecentlyPlayed;
-use crate::structs::UserSavedPodcast;
-use crate::structs::MadeFY;
-use crate::structs::UserSavedAlbums;
-use crate::structs::LikedSongs;
-use crate::UserPlaylist;
-use crate::structs::Search;
 use crate::app::App;
 use crate::enums::Menu;
-use crate::structs::{Key, Themes};
+use crate::structs::{
+    Key, 
+    Themes, 
+    UserPlaylist, 
+    UserSavedArtist, 
+    UserSavedPodcast, 
+    UserRecentlyPlayed, 
+    MadeFY, 
+    LikedSongs, 
+    Search, 
+    UserSavedAlbums};
 
 use ratatui::prelude::*;
 
@@ -35,7 +38,8 @@ pub fn render_frame(
     useralbum: &mut UserSavedAlbums, 
     madefy: &mut MadeFY,
     podcast: &mut UserSavedPodcast, 
-    recentlyplayed: &mut UserRecentlyPlayed
+    recentlyplayed: &mut UserRecentlyPlayed, 
+    userartist: &mut UserSavedArtist
 ) {
     // Calculate the layout constraints
     let size = f.size();
@@ -133,7 +137,7 @@ pub fn render_frame(
             render_main_area(f, &content_chunk, &front_chunk, app, theme);
         }
         Menu::Library => {
-            render_library(f, &content_sub_chunk, &content_chunk, app, theme,likedsongs,useralbum,madefy,podcast,recentlyplayed);
+            render_library(f, &content_sub_chunk, &content_chunk, app, theme,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
         }
         Menu::Playlists => {
             render_user_playlist(f, &content_chunk, theme,userplaylist);

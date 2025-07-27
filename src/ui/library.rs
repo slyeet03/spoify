@@ -1,3 +1,4 @@
+use crate::structs::UserSavedArtist;
 use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
@@ -28,7 +29,8 @@ pub fn render_library(
     useralbum: &mut UserSavedAlbums, 
     madefy: &mut MadeFY,
     podcast: &mut UserSavedPodcast, 
-    recentlyplayed: &mut UserRecentlyPlayed
+    recentlyplayed: &mut UserRecentlyPlayed,
+    userartist: &mut UserSavedArtist
 ) {
     let library_block = Block::default()
         .borders(Borders::ALL)
@@ -79,7 +81,7 @@ pub fn render_library(
     let user_artist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Artists"))
-        .border_style(if app.user_artist_selected {
+        .border_style(if userartist.user_artist_selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -231,11 +233,11 @@ pub fn render_library(
         f.render_stateful_widget(podcast_table, content_chunk[1], &mut podcast.podcast_state);
     }
 
-    if app.user_artist_display {
+    if userartist.user_artist_display {
         f.render_widget(Clear, content_chunk[1]);
 
         let artist_table = artist_table_ui(
-            app.user_artist_names.clone(),
+            userartist.user_artist_names.clone(),
             user_artist_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -244,7 +246,7 @@ pub fn render_library(
 
         f.render_widget(Clear, content_chunk[1]);
 
-        f.render_stateful_widget(artist_table, content_chunk[1], &mut app.user_artist_state);
+        f.render_stateful_widget(artist_table, content_chunk[1], &mut userartist.user_artist_state);
     }
 
     if useralbum.user_album_display {
@@ -301,13 +303,13 @@ pub fn render_library(
             &mut useralbum.user_album_track_state,
         );
     }
-    if app.user_artist_track_display {
-        let user_artist_track_label = app.user_artist_names[app.user_artist_index].to_string();
+    if userartist.user_artist_track_display {
+        let user_artist_track_label = userartist.user_artist_names[userartist.user_artist_index].to_string();
 
         let user_artist_track_block = Block::default()
             .borders(Borders::ALL)
             .title(Title::from(user_artist_track_label))
-            .border_style(if app.user_artist_track_selected {
+            .border_style(if userartist.user_artist_track_selected {
                 Style::default().fg(theme.main_border_color)
             } else {
                 Style::default().fg(theme.main_inactive_border_color)
@@ -317,9 +319,9 @@ pub fn render_library(
         f.render_widget(Clear, content_chunk[1]);
 
         let user_artist_track_table = searched_track_table_for_artist_ui(
-            app.user_artist_track_names.clone(),
-            app.user_artist_track_album.clone(),
-            app.user_artist_track_duration.clone(),
+            userartist.user_artist_track_names.clone(),
+            userartist.user_artist_track_album.clone(),
+            userartist.user_artist_track_duration.clone(),
             user_artist_track_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -331,7 +333,7 @@ pub fn render_library(
         f.render_stateful_widget(
             user_artist_track_table,
             content_chunk[1],
-            &mut app.user_artist_track_state,
+            &mut userartist.user_artist_track_state,
         );
     }
 }

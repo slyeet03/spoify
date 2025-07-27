@@ -1,3 +1,4 @@
+use crate::structs::UserSavedArtist;
 use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
@@ -48,23 +49,7 @@ pub struct App {
     
 
     // Handles User's Saved Artists
-    pub user_artist_names: Vec<String>,
-    pub user_artist_links: Vec<String>,
-    pub user_artist_selected: bool,
-    pub user_artist_display: bool,
-    pub user_artist_state: TableState,
-    pub user_artist_index: usize,
-    pub enter_for_playback_in_saved_artist: bool,
-
-    pub user_artist_track_names: Vec<String>,
-    pub user_artist_track_album: Vec<String>,
-    pub user_artist_track_duration: Vec<i64>,
-    pub user_artist_track_index: usize,
-    pub user_artist_track_state: TableState,
-    pub user_artist_track_display: bool,
-    pub user_artist_track_selected: bool,
-    pub user_artist_current_artist_selected: bool,
-    pub user_artist_track_links: Vec<String>,
+    
 
     // Handles Made For You
     
@@ -150,7 +135,8 @@ impl App {
         useralbum: &mut UserSavedAlbums, 
         madefy: &mut MadeFY,
         podcast: &mut UserSavedPodcast, 
-        recentlyplayed: &mut UserRecentlyPlayed
+        recentlyplayed: &mut UserRecentlyPlayed, 
+        userartist: &mut UserSavedArtist
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -172,7 +158,8 @@ impl App {
                         useralbum,
                         madefy,
                         podcast,
-                        recentlyplayed
+                        recentlyplayed,
+                        userartist
                     );
 
                     // In editing mode, handle search input
@@ -206,7 +193,8 @@ impl App {
                         useralbum,
                         madefy,
                         podcast,
-                        recentlyplayed
+                        recentlyplayed,
+                        userartist
                     )
                 })?;
             }
@@ -235,11 +223,6 @@ impl Default for App {
            
            
 
-            user_artist_names: Vec::new(),
-            user_artist_links: Vec::new(),
-            user_artist_selected: false,
-            user_artist_display: false,
-            user_artist_state: TableState::default(),
 
             current_device_name: String::new(),
             current_device_volume: String::new(),
@@ -280,27 +263,19 @@ impl Default for App {
 
             
           
-            user_artist_index: 0,
+            
             new_release_index: 0,
 
             error_text: String::new(),
 
             
 
-            user_artist_track_names: Vec::new(),
-            user_artist_track_album: Vec::new(),
-            user_artist_track_duration: Vec::new(),
-            user_artist_track_index: 0,
-            user_artist_track_state: TableState::default(),
-            user_artist_track_display: false,
-            user_artist_track_selected: false,
-            user_artist_current_artist_selected: false,
-            user_artist_track_links: Vec::new(),
+           
 
             selected_link_for_playback: String::new(),
 
             
-            enter_for_playback_in_saved_artist: false,
+            
             
             enter_for_playback_in_new_release: false,
 

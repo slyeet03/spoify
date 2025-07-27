@@ -1,3 +1,4 @@
+use crate::structs::UserSavedArtist;
 use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
 use crate::MadeFY;
@@ -95,7 +96,9 @@ pub fn default(
     useralbum: &mut UserSavedAlbums,
     madefy: &mut MadeFY,
     podcast: &mut UserSavedPodcast,
-    recentlyplayed: &mut UserRecentlyPlayed) {
+    recentlyplayed: &mut UserRecentlyPlayed, 
+    userartist: &mut UserSavedArtist
+    ) {
     search.search_results_rendered = false;
     search.input_mode = InputMode::Normal;
     userplaylist.user_playlist_display = false;
@@ -105,7 +108,7 @@ pub fn default(
     recentlyplayed.recently_played_display = false;
     app.can_navigate_menu = true;
     podcast.podcast_display = false;
-    app.user_artist_display = false;
+    userartist.user_artist_display = false;
     search.searched_album_selected = false;
     search.searched_artist_selected = false;
     search.searched_playlist_selected = false;
@@ -116,14 +119,14 @@ pub fn default(
     useralbum.user_album_current_album_selected = false;
     useralbum.user_album_track_selected = false;
     useralbum.user_album_track_display = false;
-    app.user_artist_current_artist_selected = false;
-    app.user_artist_track_selected = false;
-    app.user_artist_track_display = false;
+    userartist.user_artist_current_artist_selected = false;
+    userartist.user_artist_track_selected = false;
+    userartist.user_artist_track_display = false;
     madefy.enter_for_playback_in_made_fy = false;
     likedsongs.enter_for_playback_in_liked_song = false;
     useralbum.enter_for_playback_in_user_album = false;
     recentlyplayed.enter_for_playback_in_recently_played = false;
-    app.enter_for_playback_in_saved_artist = false;
+    userartist.enter_for_playback_in_saved_artist = false;
     userplaylist.enter_for_playback_in_user_playlist = false;
     app.enter_for_playback_in_new_release = false;
     app.is_only_id = false;
@@ -132,27 +135,27 @@ pub fn default(
     search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
+pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
     recentlyplayed.recently_played_display = false;
     podcast.podcast_display = false;
-    app.user_artist_display = false;
+    userartist.user_artist_display = false;
     madefy.made_fy_display = false;
     madefy.made_fy_track_display = false;
     madefy.made_fy_track_selected = false;
     useralbum.user_album_current_album_selected = false;
     useralbum.user_album_track_selected = false;
     useralbum.user_album_track_display = false;
-    app.user_artist_current_artist_selected = false;
-    app.user_artist_track_selected = false;
-    app.user_artist_track_display = false;
+    userartist.user_artist_current_artist_selected = false;
+    userartist.user_artist_track_selected = false;
+    userartist.user_artist_track_display = false;
     madefy.enter_for_playback_in_made_fy = false;
     likedsongs.enter_for_playback_in_liked_song = false;
     useralbum.enter_for_playback_in_user_album = false;
     recentlyplayed.enter_for_playback_in_recently_played = false;
-    app.enter_for_playback_in_saved_artist = false;
+    userartist.enter_for_playback_in_saved_artist = false;
     userplaylist.enter_for_playback_in_user_playlist = false;
     app.enter_for_playback_in_new_release = false;
     app.is_only_id = false;
@@ -160,14 +163,14 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     app.is_in_track = false;
 }
 
-pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed) {
+pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
     recentlyplayed.recently_played_display = false;
     app.can_navigate_menu = true;
     podcast.podcast_display = false;
-    app.user_artist_display = false;
+    userartist.user_artist_display = false;
     search.searched_album_selected = false;
     search.searched_artist_selected = false;
     search.searched_album_selected = false;
