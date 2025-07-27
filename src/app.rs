@@ -1,3 +1,4 @@
+use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
 use crate::structs::UserSavedAlbums;
 use crate::enums::{InputMode, Library, Menu};
@@ -40,13 +41,7 @@ pub struct App {
     // Handles User's Saved Albums
 
     // Handles User's Saved Podcasts
-    pub podcast_names: Vec<String>,
-    pub podcast_links: Vec<String>,
-    pub podcast_publisher: Vec<String>,
-    pub podcast_selected: bool,
-    pub podcast_display: bool,
-    pub podcast_state: TableState,
-    pub podcast_index: usize,
+    
 
     // Handles User's Recently Played Songs
     pub recently_played_names: Vec<String>,
@@ -161,7 +156,8 @@ impl App {
         userplaylist: &mut UserPlaylist,
         likedsongs: &mut LikedSongs,
         useralbum: &mut UserSavedAlbums, 
-        madefy: &mut MadeFY
+        madefy: &mut MadeFY,
+        podcast: &mut UserSavedPodcast
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -181,7 +177,8 @@ impl App {
                         userplaylist,
                         likedsongs,
                         useralbum,
-                        madefy
+                        madefy,
+                        podcast
                     );
 
                     // In editing mode, handle search input
@@ -213,7 +210,8 @@ impl App {
                         userplaylist,
                         likedsongs,
                         useralbum,
-                        madefy
+                        madefy,
+                        podcast
                     )
                 })?;
             }
@@ -248,12 +246,7 @@ impl Default for App {
             recently_played_display: false,
             recently_played_state: TableState::default(),
 
-            podcast_names: Vec::new(),
-            podcast_links: Vec::new(),
-            podcast_publisher: Vec::new(),
-            podcast_selected: false,
-            podcast_display: false,
-            podcast_state: TableState::default(),
+           
 
             user_artist_names: Vec::new(),
             user_artist_links: Vec::new(),
@@ -298,7 +291,7 @@ impl Default for App {
             client_id: String::new(),
             client_secret: String::new(),
 
-            podcast_index: 0,
+            
             recently_played_index: 0,
             user_artist_index: 0,
             new_release_index: 0,

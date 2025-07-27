@@ -1,3 +1,4 @@
+use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
@@ -23,13 +24,13 @@ use crate::{
     },
 };
 
-pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     app.selected_menu = Menu::Library;
     app.library_state.select(Some(0)); //reseting the library state
-    default(app,search,userplaylist,likedsongs,useralbum,madefy);
+    default(app,search,userplaylist,likedsongs,useralbum,madefy,podcast);
 }
 
-pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     if app.selected_menu == Menu::Library {
         if app.library_state.selected() == Some(0) {
             if madefy.made_fy_selected {
@@ -69,9 +70,9 @@ pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum:
                 );
             }
         } else if app.library_state.selected() == Some(5) {
-            if app.podcast_selected {
-                (app.podcast_state, app.podcast_index) =
-                    down_key_for_table(app.podcast_names.clone(), app.podcast_state.clone());
+            if podcast.podcast_selected {
+                (podcast.podcast_state, podcast.podcast_index) =
+                    down_key_for_table(podcast.podcast_names.clone(), podcast.podcast_state.clone());
             }
         } else if app.library_state.selected() == Some(4) {
             if app.user_artist_selected {
@@ -90,7 +91,7 @@ pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum:
     }
 }
 
-pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     if app.selected_menu == Menu::Library {
         if app.library_state.selected() == Some(0) {
             if madefy.made_fy_selected {
@@ -130,9 +131,9 @@ pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &
                 )
             }
         } else if app.library_state.selected() == Some(5) {
-            if app.podcast_selected {
-                (app.podcast_state, app.podcast_index) =
-                    up_key_for_table(app.podcast_names.clone(), app.podcast_state.clone());
+            if podcast.podcast_selected {
+                (podcast.podcast_state, podcast.podcast_index) =
+                    up_key_for_table(podcast.podcast_names.clone(), podcast.podcast_state.clone());
             }
         } else if app.library_state.selected() == Some(4) {
             if app.user_artist_selected {
@@ -149,7 +150,7 @@ pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &
     }
 }
 
-pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     if app.selected_menu == Menu::Library {
         search.searched_album_selected = false;
         search.searched_artist_selected = false;
@@ -247,8 +248,8 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             if let Err(e) = user_podcast(app) {
                 println!("{}", e);
             }
-            process_podcasts(app);
-            app.podcast_display = true;
+            process_podcasts(app,podcast);
+            podcast.podcast_display = true;
         } else if app.library_state.selected() == Some(4) {
             app.selected_library = Library::Artists;
             if app.user_artist_current_artist_selected {
@@ -281,7 +282,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
     }
 }
 
-pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     if app.selected_menu == Menu::Library {
         app.can_navigate_menu = !app.can_navigate_menu;
         if app.library_state.selected() == Some(0) && madefy.made_fy_display {
@@ -296,9 +297,9 @@ pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: 
         } else if app.library_state.selected() == Some(1) && app.recently_played_display {
             app.recently_played_state.select(Some(0));
             app.recently_played_selected = !app.recently_played_selected;
-        } else if app.library_state.selected() == Some(5) && app.podcast_display {
-            app.podcast_state.select(Some(0));
-            app.podcast_selected = !app.podcast_selected;
+        } else if app.library_state.selected() == Some(5) && podcast.podcast_display {
+            podcast.podcast_state.select(Some(0));
+            podcast.podcast_selected = !podcast.podcast_selected;
         } else if app.library_state.selected() == Some(4) && app.user_artist_display {
             app.user_artist_state.select(Some(0));
             app.user_artist_selected = !app.user_artist_selected;

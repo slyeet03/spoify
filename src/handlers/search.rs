@@ -1,3 +1,4 @@
+use crate::UserSavedPodcast;
 use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
@@ -20,9 +21,9 @@ use crate::{
     },
 };
 
-pub fn go_to_search_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn go_to_search_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     app.selected_menu = Menu::Search;
-    default(app,search,userplaylist,likedsongs,useralbum,madefy);
+    default(app,search,userplaylist,likedsongs,useralbum,madefy,podcast);
     search.input_mode = InputMode::Editing;
 }
 
@@ -124,7 +125,7 @@ pub fn search_up_event(app: &mut App, search: &mut Search) {
     }
 }
 
-pub fn search_enter_event(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
+pub fn search_enter_event(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast) {
     if app.selected_menu == Menu::Search {
         if app.is_in_track {
             app.is_only_id = true;
@@ -147,7 +148,7 @@ pub fn search_enter_event(app: &mut App, search: &mut Search, likedsongs: &mut L
                 println!("{}", e);
             }
             process_selected_album_tracks(app,search);
-            default_search(app,search,likedsongs,useralbum);
+            default_search(app,search,likedsongs,useralbum,podcast);
             search.search_menu = SearchMenu::SearchedAlbum;
             search.searched_album_selected = true;
         }
@@ -164,7 +165,7 @@ pub fn search_enter_event(app: &mut App, search: &mut Search, likedsongs: &mut L
                 println!("{}", e);
             }
             process_selected_artist_tracks(app,search);
-            default_search(app,search,likedsongs,useralbum);
+            default_search(app,search,likedsongs,useralbum,podcast);
             search.search_menu = SearchMenu::SearchedArtist;
             search.searched_artist_selected = true;
         }
@@ -181,7 +182,7 @@ pub fn search_enter_event(app: &mut App, search: &mut Search, likedsongs: &mut L
                 println!("{}", e);
             }
             process_selected_playlist_tracks(app,search);
-            default_search(app,search,likedsongs,useralbum);
+            default_search(app,search,likedsongs,useralbum,podcast);
             search.search_menu = SearchMenu::SearchedPlaylist;
             search.searched_playlist_selected = true;
         }

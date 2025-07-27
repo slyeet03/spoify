@@ -1,3 +1,4 @@
+use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
 use crate::structs::UserSavedAlbums;
 use crate::structs::LikedSongs;
@@ -32,6 +33,7 @@ fn main() -> io::Result<()> {
     let mut likedsongs: LikedSongs = LikedSongs::default();
     let mut useralbum: UserSavedAlbums = UserSavedAlbums::default();
     let mut madefy: MadeFY = MadeFY::default();
+    let mut podcast: UserSavedPodcast = UserSavedPodcast::default();
 
     app.file_name = "spoify".to_string(); //-0.2.12
 
@@ -69,7 +71,8 @@ fn main() -> io::Result<()> {
             &mut userplaylist,
             &mut likedsongs,
             &mut useralbum,
-            &mut madefy
+            &mut madefy,
+            &mut podcast
         )?;
 
         // Wait for the spawned threads to complete

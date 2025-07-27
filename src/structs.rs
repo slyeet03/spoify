@@ -444,3 +444,28 @@ impl Default for MadeFY {
         }
     }
 }
+
+#[derive(Clone, Debug)]
+pub struct UserSavedPodcast{
+    pub podcast_names: Vec<String>,
+    pub podcast_links: Vec<String>,
+    pub podcast_publisher: Vec<String>,
+    pub podcast_selected: bool,
+    pub podcast_display: bool,
+    pub podcast_state: TableState,
+    pub podcast_index: usize,
+}
+
+impl Default for UserSavedPodcast {
+    fn default() -> Self {
+        Self {
+            podcast_names: Vec::new(),
+            podcast_links: Vec::new(),
+            podcast_publisher: Vec::new(),
+            podcast_selected: false,
+            podcast_display: false,
+            podcast_state: TableState::default(),
+            podcast_index: 0,
+        }
+    }
+}

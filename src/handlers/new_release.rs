@@ -1,3 +1,4 @@
+use crate::UserSavedPodcast;
 use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
@@ -15,10 +16,10 @@ use crate::{
     },
 };
 
-pub fn go_to_new_release_event(app: &mut App, search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn go_to_new_release_event(app: &mut App, search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     app.selected_menu = Menu::NewRelease;
     app.new_release_state.select(Some(0));
-    default(app,search,userplaylist,likedsongs,useralbum,madefy);
+    default(app,search,userplaylist,likedsongs,useralbum,madefy,podcast);
 }
 
 pub fn new_release_down_event(app: &mut App, search: &mut Search) {

@@ -1,3 +1,4 @@
+use crate::structs::UserSavedPodcast;
 use crate::structs::MadeFY;
 use crate::structs::LikedSongs;
 use ratatui::{
@@ -24,7 +25,8 @@ pub fn render_library(
     theme: &mut Themes,
     likedsongs: &mut LikedSongs,
     useralbum: &mut UserSavedAlbums, 
-    madefy: &mut MadeFY
+    madefy: &mut MadeFY,
+    podcast: &mut UserSavedPodcast
 ) {
     let library_block = Block::default()
         .borders(Borders::ALL)
@@ -65,7 +67,7 @@ pub fn render_library(
     let podcast_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Podcasts"))
-        .border_style(if app.podcast_selected {
+        .border_style(if podcast.podcast_selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -210,12 +212,12 @@ pub fn render_library(
         );
     }
 
-    if app.podcast_display {
+    if podcast.podcast_display {
         f.render_widget(Clear, content_chunk[1]);
 
         let podcast_table = podcast_table_ui(
-            app.podcast_names.clone(),
-            app.podcast_publisher.clone(),
+            podcast.podcast_names.clone(),
+            podcast.podcast_publisher.clone(),
             podcast_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -224,7 +226,7 @@ pub fn render_library(
 
         f.render_widget(Clear, content_chunk[1]);
 
-        f.render_stateful_widget(podcast_table, content_chunk[1], &mut app.podcast_state);
+        f.render_stateful_widget(podcast_table, content_chunk[1], &mut podcast.podcast_state);
     }
 
     if app.user_artist_display {

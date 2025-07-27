@@ -1,3 +1,4 @@
+use crate::structs::UserSavedPodcast;
 use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
@@ -86,7 +87,7 @@ pub fn up_key_for_list(names: Vec<String>, mut state: ListState) -> (ListState, 
     (state, prev_index)
 }
 
-pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     search.search_results_rendered = false;
     search.input_mode = InputMode::Normal;
     userplaylist.user_playlist_display = false;
@@ -95,7 +96,7 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     useralbum.user_album_display = false;
     app.recently_played_display = false;
     app.can_navigate_menu = true;
-    app.podcast_display = false;
+    podcast.podcast_display = false;
     app.user_artist_display = false;
     search.searched_album_selected = false;
     search.searched_artist_selected = false;
@@ -123,12 +124,12 @@ pub fn default(app: &mut App, search: &mut Search, userplaylist: &mut UserPlayli
     search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY) {
+pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
     app.recently_played_display = false;
-    app.podcast_display = false;
+    podcast.podcast_display = false;
     app.user_artist_display = false;
     madefy.made_fy_display = false;
     madefy.made_fy_track_display = false;
@@ -151,13 +152,13 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     app.is_in_track = false;
 }
 
-pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums) {
+pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
     app.recently_played_display = false;
     app.can_navigate_menu = true;
-    app.podcast_display = false;
+    podcast.podcast_display = false;
     app.user_artist_display = false;
     search.searched_album_selected = false;
     search.searched_artist_selected = false;
