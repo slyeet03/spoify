@@ -1,3 +1,4 @@
+use crate::structs::NewRelease;
 use crate::structs::UserSavedArtist;
 use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
@@ -26,10 +27,10 @@ use crate::{
     },
 };
 
-pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
+pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist, newrelease: &mut NewRelease) {
     app.selected_menu = Menu::Library;
     app.library_state.select(Some(0)); //reseting the library state
-    default(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
+    default(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist, newrelease);
 }
 
 pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {

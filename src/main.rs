@@ -1,3 +1,4 @@
+use crate::structs::NewRelease;
 use crate::structs::UserSavedArtist;
 use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
@@ -38,6 +39,7 @@ fn main() -> io::Result<()> {
     let mut podcast: UserSavedPodcast = UserSavedPodcast::default();
     let mut recentlyplayed: UserRecentlyPlayed = UserRecentlyPlayed::default();
     let mut userartist: UserSavedArtist = UserSavedArtist::default();
+    let mut newrelease: NewRelease = NewRelease::default();
 
     app.file_name = "spoify".to_string(); //-0.2.12
 
@@ -50,7 +52,7 @@ fn main() -> io::Result<()> {
         save_creds_to_yml(&mut app);
     } else {
         // Fetch user's playlists, new releases, set keybinds and themes before the main app starts
-        startup(&mut app, &mut key, &mut theme, &mut settings,&mut userplaylist);
+        startup(&mut app, &mut key, &mut theme, &mut settings,&mut userplaylist, &mut newrelease);
 
         let mut terminal = tui::init()?;
 
@@ -78,7 +80,8 @@ fn main() -> io::Result<()> {
             &mut madefy,
             &mut podcast,
             &mut recentlyplayed,
-            &mut userartist
+            &mut userartist,
+            &mut newrelease
         )?;
 
         // Wait for the spawned threads to complete

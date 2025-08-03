@@ -1,3 +1,4 @@
+use crate::NewRelease;
 use crate::structs::UserSavedArtist;
 use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
@@ -13,7 +14,7 @@ use crate::ui::tui;
 use crate::ui::ui::render_frame;
 use crate::UserPlaylist;
 use crossterm::event::{self, Event};
-use ratatui::widgets::{ListState, TableState};
+use ratatui::widgets::{ListState};
 use std::io;
 use std::sync::mpsc::Receiver;
 use std::time::{Duration, Instant};
@@ -55,41 +56,10 @@ pub struct App {
     
 
     // Handles User's currently playing device
-    pub current_device_name: String,
-    pub current_device_volume: String,
-    pub playback_status: String,
-    pub current_device_id: Option<String>,
-    pub shuffle_status: String,
-    pub repeat_status: String,
-    pub is_shuffle: bool,
-    pub currrent_timestamp: f64,
-    pub ending_timestamp: f64,
-    pub currently_playing_artist: String,
-    pub current_playing_name: String,
-    pub current_playing_id: String,
-    pub current_playing_album: String,
-    pub is_playing: bool,
-    pub progress_bar_ratio: f64,
-    pub currently_playing_media_type: String,
+    
 
     // Handle New Release section
-    pub new_release_artist: Vec<String>,
-    pub new_release_name: Vec<String>,
-    pub new_release_state: ListState,
-    pub current_new_release: String,
-    pub new_release_display: bool,
-    pub new_release_album_selected: bool,
-    pub new_release_album_state: TableState,
-    pub new_release_album_links: Vec<String>,
-    pub current_new_release_album: String,
-    pub current_new_release_album_link: String,
-    pub new_release_index: usize,
-
-    pub new_release_track_names: Vec<String>,
-    pub new_release_artist_names: Vec<String>,
-    pub new_release_durations_ms: Vec<i64>,
-    pub new_release_spotify_urls: Vec<String>,
-    pub enter_for_playback_in_new_release: bool,
+    
 
     // Creds
     pub client_id: String,
@@ -102,7 +72,6 @@ pub struct App {
     pub selected_link_for_playback: String,
     pub is_only_id: bool,
     pub is_in_track: bool,
-
     // Top Tracks
     pub top_tracks_all_time_names: Vec<String>,
     pub top_tracks_6_months_names: Vec<String>,
@@ -136,7 +105,8 @@ impl App {
         madefy: &mut MadeFY,
         podcast: &mut UserSavedPodcast, 
         recentlyplayed: &mut UserRecentlyPlayed, 
-        userartist: &mut UserSavedArtist
+        userartist: &mut UserSavedArtist, 
+        newrelease: &mut NewRelease
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -159,7 +129,8 @@ impl App {
                         madefy,
                         podcast,
                         recentlyplayed,
-                        userartist
+                        userartist,
+                        newrelease
                     );
 
                     // In editing mode, handle search input
@@ -194,7 +165,8 @@ impl App {
                         madefy,
                         podcast,
                         recentlyplayed,
-                        userartist
+                        userartist,
+                        newrelease
                     )
                 })?;
             }
@@ -224,39 +196,11 @@ impl Default for App {
            
 
 
-            current_device_name: String::new(),
-            current_device_volume: String::new(),
-            playback_status: String::from("Playing"),
-            shuffle_status: String::from("Off"),
-            repeat_status: String::from("Off"),
-            is_shuffle: false,
-            current_device_id: Some(String::new()),
+        
             device_id_after_pause: Some(String::new()),
 
-            currrent_timestamp: f64::from(0),
-            ending_timestamp: f64::from(1),
-            currently_playing_artist: String::new(),
-            current_playing_name: String::new(),
-            current_playing_id: String::new(),
-            current_playing_album: String::new(),
-            is_playing: false,
-            progress_bar_ratio: 0.0,
-            currently_playing_media_type: String::new(),
-
-            new_release_artist: Vec::new(),
-            new_release_name: Vec::new(),
-            new_release_state: ListState::default(),
-            current_new_release: String::new(),
-            new_release_display: false,
-            new_release_album_selected: false,
-            new_release_album_state: TableState::default(),
-            new_release_album_links: Vec::new(),
-            current_new_release_album: String::new(),
-            current_new_release_album_link: String::new(),
-            new_release_track_names: Vec::new(),
-            new_release_artist_names: Vec::new(),
-            new_release_durations_ms: Vec::new(),
-            new_release_spotify_urls: Vec::new(),
+        
+           
 
             client_id: String::new(),
             client_secret: String::new(),
@@ -264,7 +208,7 @@ impl Default for App {
             
           
             
-            new_release_index: 0,
+           
 
             error_text: String::new(),
 
@@ -277,7 +221,7 @@ impl Default for App {
             
             
             
-            enter_for_playback_in_new_release: false,
+            
 
             is_only_id: false,
             is_in_track: false,

@@ -1,3 +1,4 @@
+use crate::structs::NewRelease;
 use crate::structs::UserSavedArtist;
 use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
@@ -59,7 +60,8 @@ pub fn handle_key_event(
     madefy: &mut MadeFY,
     podcast: &mut UserSavedPodcast, 
     recentlyplayed: &mut UserRecentlyPlayed, 
-    userartist: &mut UserSavedArtist
+    userartist: &mut UserSavedArtist, 
+    newrelease: &mut NewRelease
 ) {
     let go_to_search_key: char = key.go_to_search_key;
     let go_to_library_key: char = key.go_to_library_key;
@@ -96,7 +98,7 @@ pub fn handle_key_event(
             }
 
             KeyCode::Char('p') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
-                add_track_to_playlist_event(app,search,userplaylist,likedsongs,useralbum,madefy,recentlyplayed,userartist);
+                add_track_to_playlist_event(app,search,userplaylist,likedsongs,useralbum,madefy,recentlyplayed,userartist,newrelease);
             }
 
             // Follow Playlist
@@ -118,7 +120,7 @@ pub fn handle_key_event(
 
             // Run the startup function again
             code if code == KeyCode::Char(refresh_key) && search.input_mode != InputMode::Editing => {
-                refresh_event(app, key, theme, settings,userplaylist);
+                refresh_event(app, key, theme, settings,userplaylist,newrelease);
             }
 
             // Navigate to different menus (Library, Playlists, Search, New Releases) when 'l', 'p', 's' or 'n' is pressed
@@ -127,21 +129,21 @@ pub fn handle_key_event(
             code if code == KeyCode::Char(go_to_library_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                go_to_library_event(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
+                go_to_library_event(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist, newrelease);
             }
 
             // Go to user playlist menu
             code if code == KeyCode::Char(go_to_user_playlists_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                go_to_user_playlists_event(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
+                go_to_user_playlists_event(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist,newrelease);
             }
 
             // Go to search menu
             code if code == KeyCode::Char(go_to_search_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                go_to_search_event(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
+                go_to_search_event(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist, newrelease);
             }
 
             // Go to help menu
@@ -160,7 +162,7 @@ pub fn handle_key_event(
             code if code == KeyCode::Char(new_release_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                go_to_new_release_event(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
+                go_to_new_release_event(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist,newrelease);
             }
 
             // Keys for Volume Control
@@ -202,7 +204,7 @@ pub fn handle_key_event(
             // Down keybinding for all the menus
             KeyCode::Down if search.input_mode != InputMode::Editing => {
                 library_down_event(app,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
-                new_release_down_event(app,search);
+                new_release_down_event(app,search,newrelease);
                 user_playlist_down_event(app,search,userplaylist);
                 search_down_event(app,search);
                 add_track_to_playlist_down_event(app,userplaylist);
@@ -210,14 +212,14 @@ pub fn handle_key_event(
                 if app.can_navigate_menu {
                     let next_index: usize = app.library_state.selected().unwrap_or(0) + 1;
                     app.library_state.select(Some(next_index % 6)); //wrapping around the last option
-                    default_nav(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
+                    default_nav(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist,newrelease);
                 }
             }
 
             // Up keybinding for all the menus
             KeyCode::Up if search.input_mode != InputMode::Editing => {
                 library_up_event(app,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
-                new_release_up_event(app,search);
+                new_release_up_event(app,search,newrelease);
                 user_playlist_up_event(app,search,userplaylist);
                 search_up_event(app,search);
                 add_track_to_playlist_up_event(app,userplaylist);
@@ -229,14 +231,14 @@ pub fn handle_key_event(
                         app.library_state.selected().unwrap_or(0) - 1
                     };
                     app.library_state.select(Some(prev_index));
-                    default_nav(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
+                    default_nav(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist,newrelease);
                 }
             }
 
             // Enter keybinding for all the menus
             KeyCode::Enter if search.input_mode != InputMode::Editing => {
                 user_playlist_enter_event(app,search,userplaylist);
-                new_release_enter_event(app,search);
+                new_release_enter_event(app,search,newrelease);
                 library_enter_event(app,search,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
                 search_enter_event(app,search,likedsongs,useralbum,podcast,recentlyplayed,userartist);
                 add_track_to_playlist_enter_event(app,userplaylist);
@@ -245,7 +247,7 @@ pub fn handle_key_event(
             // Tab keybinding for all the menus
             KeyCode::Tab if search.input_mode != InputMode::Editing => {
                 user_playlist_tab_event(app,userplaylist);
-                new_release_tab_event(app);
+                new_release_tab_event(app,newrelease);
                 library_tab_event(app,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
                 search_tab_event(app,search);
             }

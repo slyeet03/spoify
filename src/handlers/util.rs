@@ -1,3 +1,4 @@
+use crate::structs::NewRelease;
 use crate::structs::UserSavedArtist;
 use crate::structs::UserRecentlyPlayed;
 use crate::structs::UserSavedPodcast;
@@ -97,7 +98,8 @@ pub fn default(
     madefy: &mut MadeFY,
     podcast: &mut UserSavedPodcast,
     recentlyplayed: &mut UserRecentlyPlayed, 
-    userartist: &mut UserSavedArtist
+    userartist: &mut UserSavedArtist, 
+    newrelease: &mut NewRelease
     ) {
     search.search_results_rendered = false;
     search.input_mode = InputMode::Normal;
@@ -128,14 +130,14 @@ pub fn default(
     recentlyplayed.enter_for_playback_in_recently_played = false;
     userartist.enter_for_playback_in_saved_artist = false;
     userplaylist.enter_for_playback_in_user_playlist = false;
-    app.enter_for_playback_in_new_release = false;
+    newrelease.enter_for_playback_in_new_release = false;
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
     app.is_in_track = false;
     search.search_menu = SearchMenu::Default;
 }
 
-pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
+pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist, newrelease: &mut NewRelease) {
     search.search_results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
@@ -157,7 +159,7 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     recentlyplayed.enter_for_playback_in_recently_played = false;
     userartist.enter_for_playback_in_saved_artist = false;
     userplaylist.enter_for_playback_in_user_playlist = false;
-    app.enter_for_playback_in_new_release = false;
+    newrelease.enter_for_playback_in_new_release = false;
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
     app.is_in_track = false;

@@ -1,6 +1,7 @@
 extern crate rspotify;
 extern crate serde_json;
 
+use crate::structs::NewRelease;
 use crate::app::App;
 use futures::{FutureExt, TryStreamExt};
 use rspotify::model::{AlbumId, SimplifiedTrack};
@@ -13,7 +14,7 @@ use std::path::PathBuf;
 
 /// Fetches the tracks from a new release album and stores them for later use
 #[tokio::main]
-pub async fn new_releases_tracks(app: &mut App) -> Result<(), ClientError> {
+pub async fn new_releases_tracks(app: &mut App, newrelease: &mut NewRelease) -> Result<(), ClientError> {
     let client_id = &app.client_id;
     let client_secret_id = &app.client_secret;
 
@@ -31,7 +32,7 @@ pub async fn new_releases_tracks(app: &mut App) -> Result<(), ClientError> {
 
     // Collect tracks from the new release album
     let mut new_releases_tracks = Vec::new();
-    let album_id: AlbumId = AlbumId::from_id(app.current_new_release_album_link.clone()).unwrap();
+    let album_id: AlbumId = AlbumId::from_id(newrelease.current_new_release_album_link.clone()).unwrap();
 
     // Stream the album tracks and collect them into a vector.
     let stream = spotify
@@ -65,11 +66,11 @@ fn save_new_releases_tracks_to_json(app: &mut App, items: Vec<SimplifiedTrack>) 
 }
 
 /// Processes the new releases tracks data stored in the cache file and populates the app's data structures
-pub fn process_new_releases_tracks(app: &mut App) {
-    app.new_release_track_names.clear();
-    app.new_release_artist_names.clear();
-    app.new_release_durations_ms.clear();
-    app.new_release_spotify_urls.clear();
+pub fn process_new_releases_tracks(app: &mut App, newrelease: &mut NewRelease) {
+    newrelease.new_release_track_names.clear();
+    newrelease.new_release_artist_names.clear();
+    newrelease.new_release_durations_ms.clear();
+    newrelease.new_release_spotify_urls.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -89,7 +90,7 @@ pub fn process_new_releases_tracks(app: &mut App) {
             if let Value::Object(track_obj) = track {
                 // Extract track name
                 if let Some(name) = track_obj.get("name").and_then(|v| v.as_str()) {
-                    app.new_release_track_names.push(name.to_owned());
+                    newrelease.new_release_track_names.push(name.to_owned());
                 }
 
                 // Extract first artist name
@@ -99,7 +100,7 @@ pub fn process_new_releases_tracks(app: &mut App) {
                             if let Some(artist_name) =
                                 first_artist.get("name").and_then(|v| v.as_str())
                             {
-                                app.new_release_artist_names.push(artist_name.to_owned());
+                                newrelease.new_release_artist_names.push(artist_name.to_owned());
                             }
                         }
                     }
@@ -107,7 +108,7 @@ pub fn process_new_releases_tracks(app: &mut App) {
 
                 // Extract duration in milliseconds
                 if let Some(duration) = track_obj.get("duration_ms").and_then(|v| v.as_i64()) {
-                    app.new_release_durations_ms.push(duration);
+                    newrelease.new_release_durations_ms.push(duration);
                 }
 
                 // Extract external Spotify URL
@@ -116,7 +117,7 @@ pub fn process_new_releases_tracks(app: &mut App) {
                     .and_then(|v| v.get("spotify"))
                     .and_then(|v| v.as_str())
                 {
-                    app.new_release_spotify_urls.push(url.to_owned());
+                    newrelease.new_release_spotify_urls.push(url.to_owned());
                 }
             }
         }

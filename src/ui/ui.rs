@@ -1,3 +1,4 @@
+use crate::NewRelease;
 use crate::app::App;
 use crate::enums::Menu;
 use crate::structs::{
@@ -39,7 +40,8 @@ pub fn render_frame(
     madefy: &mut MadeFY,
     podcast: &mut UserSavedPodcast, 
     recentlyplayed: &mut UserRecentlyPlayed, 
-    userartist: &mut UserSavedArtist
+    userartist: &mut UserSavedArtist, 
+    newrelease: &mut NewRelease
 ) {
     // Calculate the layout constraints
     let size = f.size();
@@ -126,7 +128,7 @@ pub fn render_frame(
     render_player(f, &player_layout, app, theme);
     render_main_area(f, &content_chunk, &front_chunk, app, theme);
     render_default_help(f, &header_chunk, theme);
-    render_default_new_releases(f, &content_sub_chunk, app, theme);
+    render_default_new_releases(f, &content_sub_chunk, theme, newrelease);
 
     // Render different sections based on the selected menu
     match selected_menu {
@@ -158,7 +160,7 @@ pub fn render_frame(
             render_help(f, key, theme);
         }
         Menu::NewRelease => {
-            render_new_releases(f, &content_sub_chunk, &content_chunk, app, theme);
+            render_new_releases(f, &content_sub_chunk, &content_chunk, theme,newrelease);
         }
         Menu::Error => {
             render_error(f, app, key, theme);
