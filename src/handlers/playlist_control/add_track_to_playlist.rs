@@ -27,9 +27,9 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplayl
                 app.selected_menu = Menu::AddTrackToPlaylist;
             }
         } else if app.selected_library == Library::Albums {
-            if useralbum.user_album_track_selected {
+            if useralbum.track_selected {
                 app.track_added_to_playlist_link =
-                    useralbum.user_album_track_links[useralbum.user_album_track_index].clone();
+                    useralbum.track_links[useralbum.track_index].clone();
                 app.selected_menu = Menu::AddTrackToPlaylist;
             }
         } else if app.selected_library == Library::Artists && userartist.user_artist_track_selected {

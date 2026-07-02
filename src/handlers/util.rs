@@ -106,7 +106,7 @@ pub fn default(
     userplaylist.display = false;
     likedsongs.display = false;
     search.selected_search = false;
-    useralbum.user_album_display = false;
+    useralbum.display = false;
     recentlyplayed.recently_played_display = false;
     app.can_navigate_menu = true;
     podcast.podcast_display = false;
@@ -118,9 +118,9 @@ pub fn default(
     madefy.made_fy_track_display = false;
     madefy.made_fy_track_selected = false;
     madefy.made_fy_current_playlist_selected = false;
-    useralbum.user_album_current_album_selected = false;
-    useralbum.user_album_track_selected = false;
-    useralbum.user_album_track_display = false;
+    useralbum.current_album_selected = false;
+    useralbum.track_selected = false;
+    useralbum.track_display = false;
     userartist.user_artist_current_artist_selected = false;
     userartist.user_artist_track_selected = false;
     userartist.user_artist_track_display = false;
@@ -140,16 +140,16 @@ pub fn default(
 pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist, newrelease: &mut NewRelease) {
     search.results_rendered = false;
     likedsongs.display = false;
-    useralbum.user_album_display = false;
+    useralbum.display = false;
     recentlyplayed.recently_played_display = false;
     podcast.podcast_display = false;
     userartist.user_artist_display = false;
     madefy.made_fy_display = false;
     madefy.made_fy_track_display = false;
     madefy.made_fy_track_selected = false;
-    useralbum.user_album_current_album_selected = false;
-    useralbum.user_album_track_selected = false;
-    useralbum.user_album_track_display = false;
+    useralbum.current_album_selected = false;
+    useralbum.track_selected = false;
+    useralbum.track_display = false;
     userartist.user_artist_current_artist_selected = false;
     userartist.user_artist_track_selected = false;
     userartist.user_artist_track_display = false;
@@ -168,7 +168,7 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
 pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
     search.results_rendered = false;
     likedsongs.display = false;
-    useralbum.user_album_display = false;
+    useralbum.display = false;
     recentlyplayed.recently_played_display = false;
     app.can_navigate_menu = true;
     podcast.podcast_display = false;

@@ -20,12 +20,12 @@ pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums, madefy: &mut M
                 app.selected_menu = Menu::Default;
             }
         } else if app.selected_library == Library::Albums {
-            if useralbum.user_album_track_selected {
-                useralbum.user_album_track_selected = false;
-                useralbum.user_album_track_display = false;
-                useralbum.user_album_current_album_selected = true;
-                useralbum.user_album_display = true;
-                useralbum.user_album_selected = true;
+            if useralbum.track_selected {
+                useralbum.track_selected = false;
+                useralbum.track_display = false;
+                useralbum.current_album_selected = true;
+                useralbum.display = true;
+                useralbum.selected = true;
             } else {
                 app.selected_menu = Menu::Default;
             }
