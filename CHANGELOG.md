@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.15] - 2026-07-02
+
+### Fixed
+
+- Spotify changed the oauth redirect uri
+
 ## [0.2.14] - 2026-07-02
 
 ### Fixed

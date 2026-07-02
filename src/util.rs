@@ -2,8 +2,6 @@ extern crate serde_json;
 extern crate serde_yaml;
 extern crate yaml_rust;
 
-use crate::NewRelease;
-use crate::UserPlaylist;
 use crate::app::App;
 use crate::settings::keybindings::{parse_keybindings, read_keybindings, set_keybindings};
 use crate::settings::settings::set_settings_values;
@@ -13,7 +11,9 @@ use crate::spotify::player::player::{currently_playing, process_currently_playin
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use crate::spotify::user_stats::top_tracks::top_tracks;
 use crate::structs::Themes;
-use crate::structs::{Key, Settings,UserCurrentlyPlaying};
+use crate::structs::{Key, Settings, UserCurrentlyPlaying};
+use crate::NewRelease;
+use crate::UserPlaylist;
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::PathBuf;
@@ -22,7 +22,12 @@ use std::thread;
 use std::time::Duration;
 
 /// Function to update the player information in a separate thread
-pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App, settings: &mut Settings, currentlyplaying: &mut UserCurrentlyPlaying) {
+pub fn update_player_info(
+    tx: mpsc::Sender<()>,
+    app: &mut App,
+    settings: &mut Settings,
+    currentlyplaying: &mut UserCurrentlyPlaying,
+) {
     loop {
         // Get the user's current playback
         currently_playing(app).unwrap();
@@ -39,7 +44,14 @@ pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App, settings: &mut Se
 }
 
 /// Function to run before starting the main app loop
-pub fn startup(app: &mut App, key: &mut Key, theme: &mut Themes, settings: &mut Settings, userplaylist: &mut UserPlaylist, newrelease: &mut NewRelease) {
+pub fn startup(
+    app: &mut App,
+    key: &mut Key,
+    theme: &mut Themes,
+    settings: &mut Settings,
+    userplaylist: &mut UserPlaylist,
+    newrelease: &mut NewRelease,
+) {
     key.tasks.clear();
     key.first_keys.clear();
 
@@ -57,11 +69,11 @@ pub fn startup(app: &mut App, key: &mut Key, theme: &mut Themes, settings: &mut 
 
     // Fetch the new released albums from spotify
     let _ = new_releases(app);
-    process_new_releases(app,newrelease);
+    process_new_releases(app, newrelease);
 
     // Fetch user playlists from spotify
     get_playlists(app);
-    process_user_playlists(app,userplaylist);
+    process_user_playlists(app, userplaylist);
 
     let _ = top_tracks(app);
 }
@@ -75,13 +87,13 @@ pub fn instruction() {
         2. Click 'Create an app'
             - You now can see your 'Client ID' and 'Client Secret'
         3. Now click 'Edit Settings'
-        4. Add 'http://localhost:8888/callback' to the Redirect URIs
+        4. Add 'http://127.0.0.1:8888/callback' to the Redirect URIs
         5. Scroll down and click 'Save'
         6. You are now ready to authenticate with Spotify!
         7. Enter you 'Client ID' and 'Client Secret'.
         8. Run spoify
         9. You will be redirected to an official Spotify webpage to ask you for permissions.
-        10. After accepting the permissions, you'll be redirected to localhost.
+        10. After accepting the permissions, you'll be redirected to 127.0.0.1.
             You'll be redirected to a blank webpage that might say something like 'Connection Refused' since no server is running. 
             Regardless, copy the URL and paste into the prompt in the terminal.
     ");

@@ -42,7 +42,7 @@ fn main() -> io::Result<()> {
     let mut newrelease: NewRelease = NewRelease::default();
     let mut currentlyplaying: UserCurrentlyPlaying = UserCurrentlyPlaying::default();
 
-    app.file_name = "spoify-0.2.14".to_string(); //-0.2.14
+    app.file_name = "spoify-0.2.15".to_string(); //-0.2.15
 
     // Set the creds from the configure files
     read_creds(&mut app);

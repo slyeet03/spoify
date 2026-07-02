@@ -1,4 +1,5 @@
 # Spoify
+
 This is a Rust project that implements a Spotify client within your terminal. It allows you to browse and interact with Spotify directly from the command line.
 ![](screenshots/idle_state_spoify.png)
 ![](screenshots/liked_song_spoify.png)
@@ -16,7 +17,7 @@ This is a Rust project that implements a Spotify client within your terminal. It
     - [Kanagawa Light](#kanagawa-light)
     - [Kanagawa Dark](#kanagawa-dark)
   - [Limitations](#limitations)
-  - [Libraries used](#libraries-used) 
+  - [Libraries used](#libraries-used)
 
 ## Connecting to Spotify's API
 
@@ -28,7 +29,7 @@ In order for `spoify` to work it needs to be connected to Spotify's API.
 2. Click `Create an app`
    - You now can see your `Client ID` and `Client Secret`
 3. Now click `Edit Settings`
-4. Add `http://localhost:8888/callback` to the Redirect URIs
+4. Add `http://127.0.0.1:8888/callback` to the Redirect URIs
 5. Scroll down and click `Save`
 6. You are now ready to authenticate with Spotify!
 7. Enter you `Client ID` and `Client Secret`.
