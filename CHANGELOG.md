@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.13] - 2026-07-02
+
+### Fixed
+
+- API changes by Spotify broke the application, fixed that
+- Cleaning the code
+
 ## [0.2.12] - 2025-04-22
 
 ### Fixed
