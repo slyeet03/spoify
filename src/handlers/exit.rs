@@ -11,11 +11,11 @@ pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums, madefy: &mut M
         app.selected_menu = Menu::Default;
     } else if app.selected_menu == Menu::Library {
         if app.selected_library == Library::MadeFY {
-            if madefy.made_fy_track_selected {
-                madefy.made_fy_track_selected = false;
-                madefy.made_fy_track_display = false;
-                madefy.made_fy_selected = true;
-                madefy.made_fy_display = true;
+            if madefy.track_selected {
+                madefy.track_selected = false;
+                madefy.track_display = false;
+                madefy.selected = true;
+                madefy.display = true;
             } else {
                 app.selected_menu = Menu::Default;
             }

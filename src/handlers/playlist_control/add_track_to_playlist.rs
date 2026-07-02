@@ -21,9 +21,9 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplayl
             app.track_added_to_playlist_link = likedsongs.links[likedsongs.index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
         } else if app.selected_library == Library::MadeFY {
-            if madefy.made_fy_track_selected {
+            if madefy.track_selected {
                 app.track_added_to_playlist_link =
-                    madefy.made_fy_track_links[madefy.made_fy_track_index].clone();
+                    madefy.track_links[madefy.track_index].clone();
                 app.selected_menu = Menu::AddTrackToPlaylist;
             }
         } else if app.selected_library == Library::Albums {

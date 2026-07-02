@@ -114,10 +114,10 @@ pub fn default(
     search.searched_album_selected = false;
     search.searched_artist_selected = false;
     search.searched_playlist_selected = false;
-    madefy.made_fy_display = false;
-    madefy.made_fy_track_display = false;
-    madefy.made_fy_track_selected = false;
-    madefy.made_fy_current_playlist_selected = false;
+    madefy.display = false;
+    madefy.track_display = false;
+    madefy.track_selected = false;
+    madefy.current_playlist_selected = false;
     useralbum.current_album_selected = false;
     useralbum.track_selected = false;
     useralbum.track_display = false;
@@ -144,9 +144,9 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     recentlyplayed.recently_played_display = false;
     podcast.podcast_display = false;
     userartist.user_artist_display = false;
-    madefy.made_fy_display = false;
-    madefy.made_fy_track_display = false;
-    madefy.made_fy_track_selected = false;
+    madefy.display = false;
+    madefy.track_display = false;
+    madefy.track_selected = false;
     useralbum.current_album_selected = false;
     useralbum.track_selected = false;
     useralbum.track_display = false;

@@ -37,16 +37,16 @@ pub fn go_to_library_event(app: &mut App,search:&mut Search, userplaylist: &mut 
 pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
     if app.selected_menu == Menu::Library {
         if app.library_state.selected() == Some(0) {
-            if madefy.made_fy_selected {
-                (madefy.made_fy_state, madefy.made_fy_index) = down_key_for_table(
-                    madefy.made_fy_playlist_names.clone(),
-                    madefy.made_fy_state.clone(),
+            if madefy.selected {
+                (madefy.state, madefy.index) = down_key_for_table(
+                    madefy.playlist_names.clone(),
+                    madefy.state.clone(),
                 );
             }
-            if madefy.made_fy_track_selected {
-                (madefy.made_fy_track_state, madefy.made_fy_track_index) = down_key_for_table(
-                    madefy.made_fy_track_names.clone(),
-                    madefy.made_fy_track_state.clone(),
+            if madefy.track_selected {
+                (madefy.track_state, madefy.track_index) = down_key_for_table(
+                    madefy.track_names.clone(),
+                    madefy.track_state.clone(),
                 );
             }
         }
@@ -98,16 +98,16 @@ pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum:
 pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
     if app.selected_menu == Menu::Library {
         if app.library_state.selected() == Some(0) {
-            if madefy.made_fy_selected {
-                (madefy.made_fy_state, madefy.made_fy_index) = up_key_for_table(
-                    madefy.made_fy_playlist_names.clone(),
-                    madefy.made_fy_state.clone(),
+            if madefy.selected {
+                (madefy.state, madefy.index) = up_key_for_table(
+                    madefy.playlist_names.clone(),
+                    madefy.state.clone(),
                 );
             }
-            if madefy.made_fy_track_selected {
-                (madefy.made_fy_track_state, madefy.made_fy_track_index) = up_key_for_table(
-                    madefy.made_fy_track_names.clone(),
-                    madefy.made_fy_track_state.clone(),
+            if madefy.track_selected {
+                (madefy.track_state, madefy.track_index) = up_key_for_table(
+                    madefy.track_names.clone(),
+                    madefy.track_state.clone(),
                 );
             }
         }
@@ -161,21 +161,21 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
         search.searched_playlist_selected = false;
         if app.library_state.selected() == Some(0) {
             app.selected_library = Library::MadeFY;
-            if madefy.made_fy_current_playlist_selected {
+            if madefy.current_playlist_selected {
                 if let Err(e) = fetch_made_fy_tracks(app,madefy) {
                     println!("{}", e);
                 }
                 process_made_fy_tracks(app,madefy);
-                madefy.made_fy_track_display = true;
-                madefy.made_fy_display = false;
-                madefy.made_fy_track_selected = true;
-                madefy.made_fy_current_playlist_selected = false;
-                madefy.made_fy_selected = false;
+                madefy.track_display = true;
+                madefy.display = false;
+                madefy.track_selected = true;
+                madefy.current_playlist_selected = false;
+                madefy.selected = false;
                 madefy.enter_for_playback_in_made_fy = true;
-                madefy.made_fy_track_state.select(Some(0));
+                madefy.track_state.select(Some(0));
             } else if madefy.enter_for_playback_in_made_fy {
                 app.selected_link_for_playback =
-                    madefy.made_fy_track_links[madefy.made_fy_track_index].clone();
+                    madefy.track_links[madefy.track_index].clone();
                 if let Err(e) = start_playback(app, currentlyplaying) {
                     println!("{}", e);
                 }
@@ -184,8 +184,8 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
                     println!("{}", e);
                 }
                 process_made_fy(app,madefy);
-                madefy.made_fy_display = true;
-                madefy.made_fy_current_playlist_selected = true;
+                madefy.display = true;
+                madefy.current_playlist_selected = true;
             }
         } else if app.library_state.selected() == Some(2) {
             app.selected_library = Library::LikedSongs;
@@ -289,9 +289,9 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
 pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
     if app.selected_menu == Menu::Library {
         app.can_navigate_menu = !app.can_navigate_menu;
-        if app.library_state.selected() == Some(0) && madefy.made_fy_display {
-            madefy.made_fy_state.select(Some(0));
-            madefy.made_fy_selected = !madefy.made_fy_selected;
+        if app.library_state.selected() == Some(0) && madefy.display {
+            madefy.state.select(Some(0));
+            madefy.selected = !madefy.selected;
         } else if app.library_state.selected() == Some(2) && likedsongs.display {
             likedsongs.state.select(Some(0));
             likedsongs.selected = !likedsongs.selected;

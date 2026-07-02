@@ -54,9 +54,9 @@ fn save_file_to_json(app: &mut App, made_fy_playlists: Vec<SimplifiedPlaylist>) 
 
 /// Processes the playlist data stored in the cache file and populates the app's data structures
 pub fn process_made_fy(app: &mut App, madefy: &mut MadeFY) {
-    madefy.made_fy_playlist_names.clear();
-    madefy.made_fy_playlist_links.clear();
-    madefy.made_fy_playlist_track_total.clear();
+    madefy.playlist_names.clear();
+    madefy.playlist_links.clear();
+    madefy.playlist_track_total.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -75,7 +75,7 @@ pub fn process_made_fy(app: &mut App, madefy: &mut MadeFY) {
         for playlist in playlists {
             if let Value::Object(playlist_obj) = playlist {
                 if let Some(name) = playlist_obj.get("name").and_then(Value::as_str) {
-                    madefy.made_fy_playlist_names.push(name.to_string());
+                    madefy.playlist_names.push(name.to_string());
                 }
 
                 if let Some(link) = playlist_obj
@@ -84,7 +84,7 @@ pub fn process_made_fy(app: &mut App, madefy: &mut MadeFY) {
                     .and_then(|urls| urls.get("spotify"))
                     .and_then(Value::as_str)
                 {
-                    madefy.made_fy_playlist_links.push(link.to_string());
+                    madefy.playlist_links.push(link.to_string());
                 }
 
                 if let Some(total_tracks) = playlist_obj
@@ -93,7 +93,7 @@ pub fn process_made_fy(app: &mut App, madefy: &mut MadeFY) {
                     .and_then(|tracks| tracks.get("total"))
                     .and_then(Value::as_i64)
                 {
-                    madefy.made_fy_playlist_track_total.push(total_tracks);
+                    madefy.playlist_track_total.push(total_tracks);
                 }
             }
         }

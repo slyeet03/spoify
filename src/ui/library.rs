@@ -91,7 +91,7 @@ pub fn render_library(
     let made_fy_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Made For You"))
-        .border_style(if madefy.made_fy_selected {
+        .border_style(if madefy.selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -114,12 +114,12 @@ pub fn render_library(
     f.render_stateful_widget(library_list, content_sub_chunk[0], &mut app.library_state);
 
     // Render content for the selected library section based on app state.
-    if madefy.made_fy_display {
+    if madefy.display {
         f.render_widget(Clear, content_chunk[1]);
 
         let made_fy_playlist_table = made_fy_table_ui(
-            madefy.made_fy_playlist_names.clone(),
-            madefy.made_fy_playlist_track_total.clone(),
+            madefy.playlist_names.clone(),
+            madefy.playlist_track_total.clone(),
             made_fy_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -131,17 +131,17 @@ pub fn render_library(
         f.render_stateful_widget(
             made_fy_playlist_table,
             content_chunk[1],
-            &mut madefy.made_fy_state,
+            &mut madefy.state,
         );
     }
 
-    if madefy.made_fy_track_display {
-        let made_fy_track_label = madefy.made_fy_playlist_names[madefy.made_fy_index].to_string();
+    if madefy.track_display {
+        let made_fy_track_label = madefy.playlist_names[madefy.index].to_string();
 
         let made_fy_track_block = Block::default()
             .borders(Borders::ALL)
             .title(Title::from(made_fy_track_label))
-            .border_style(if madefy.made_fy_track_selected {
+            .border_style(if madefy.track_selected {
                 Style::default().fg(theme.main_border_color)
             } else {
                 Style::default().fg(theme.main_inactive_border_color)
@@ -151,10 +151,10 @@ pub fn render_library(
         f.render_widget(Clear, content_chunk[1]);
 
         let made_fy_track_table = track_table_ui(
-            madefy.made_fy_track_names.clone(),
-            madefy.made_fy_artist_names.clone(),
-            madefy.made_fy_album_names.clone(),
-            madefy.made_fy_track_duration.clone(),
+            madefy.track_names.clone(),
+            madefy.artist_names.clone(),
+            madefy.album_names.clone(),
+            madefy.track_duration.clone(),
             made_fy_track_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -166,7 +166,7 @@ pub fn render_library(
         f.render_stateful_widget(
             made_fy_track_table,
             content_chunk[1],
-            &mut madefy.made_fy_track_state,
+            &mut madefy.track_state,
         );
     }
 

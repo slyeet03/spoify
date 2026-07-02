@@ -22,7 +22,7 @@ pub async fn fetch_made_fy_tracks(app: &mut App, madefy: &mut MadeFY) -> Result<
     let spotify = get_spotify_client(app).await?;
 
     // Extract the playlist URI from the app's selected playlist URL
-    let id = madefy.made_fy_playlist_links[madefy.made_fy_index].as_str();
+    let id = madefy.playlist_links[madefy.index].as_str();
     let re = Regex::new(r"/playlist/(.+)").unwrap();
     let captures = re.captures(id).unwrap();
     let playlist_uri = captures.get(1).unwrap().as_str();
@@ -64,11 +64,11 @@ fn save_file_to_json(app: &mut App, playlist_items: Vec<PlaylistItem>) {
 /// Processes the playlist tracks data stored in the cache file and populates the app's data structures
 pub fn process_made_fy_tracks(app: &mut App, madefy: &mut MadeFY) {
     // Clear any existing playlist tracks data in the app before processing new data
-    madefy.made_fy_track_links.clear();
-    madefy.made_fy_track_names.clear();
-    madefy.made_fy_track_duration.clear();
-    madefy.made_fy_artist_names.clear();
-    madefy.made_fy_album_names.clear();
+    madefy.track_links.clear();
+    madefy.track_names.clear();
+    madefy.track_duration.clear();
+    madefy.artist_names.clear();
+    madefy.album_names.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -87,13 +87,13 @@ pub fn process_made_fy_tracks(app: &mut App, madefy: &mut MadeFY) {
             if let Value::Object(track_obj) = track {
                 if let Some(track_info) = track_obj.get("track").and_then(Value::as_object) {
                     if let Some(track_name) = track_info.get("name").and_then(Value::as_str) {
-                        madefy.made_fy_track_names.push(track_name.to_string());
+                        madefy.track_names.push(track_name.to_string());
                     }
 
                     if let Some(track_duration) =
                         track_info.get("duration_ms").and_then(Value::as_u64)
                     {
-                        madefy.made_fy_track_duration.push(track_duration as i64);
+                        madefy.track_duration.push(track_duration as i64);
                     }
 
                     if let Some(artists) = track_info.get("artists").and_then(Value::as_array) {
@@ -101,13 +101,13 @@ pub fn process_made_fy_tracks(app: &mut App, madefy: &mut MadeFY) {
                             if let Some(artist_name) =
                                 first_artist.get("name").and_then(Value::as_str)
                             {
-                                madefy.made_fy_artist_names.push(artist_name.to_string());
+                                madefy.artist_names.push(artist_name.to_string());
                             }
                         }
                     }
                     if let Some(albums) = track_info.get("album").and_then(Value::as_object) {
                         if let Some(album_name) = albums.get("name").and_then(Value::as_str) {
-                            madefy.made_fy_album_names.push(album_name.to_string());
+                            madefy.album_names.push(album_name.to_string());
                         }
                     }
 
@@ -117,7 +117,7 @@ pub fn process_made_fy_tracks(app: &mut App, madefy: &mut MadeFY) {
                         if let Some(track_link) =
                             external_urls.get("spotify").and_then(Value::as_str)
                         {
-                            madefy.made_fy_track_links.push(track_link.to_string());
+                            madefy.track_links.push(track_link.to_string());
                         }
                     }
                 }
