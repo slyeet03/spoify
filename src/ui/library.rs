@@ -51,7 +51,7 @@ pub fn render_library(
     let recently_played_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Recently Played"))
-        .border_style(if recentlyplayed.recently_played_selected {
+        .border_style(if recentlyplayed.selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -193,14 +193,14 @@ pub fn render_library(
         );
     }
 
-    if recentlyplayed.recently_played_display {
+    if recentlyplayed.display {
         f.render_widget(Clear, content_chunk[1]);
 
         let recently_played_table = track_table_ui(
-            recentlyplayed.recently_played_names.clone(),
-            recentlyplayed.recently_played_artist_names.clone(),
-            recentlyplayed.recently_played_album_names.clone(),
-            recentlyplayed.recently_played_duration.clone(),
+            recentlyplayed.names.clone(),
+            recentlyplayed.artist_names.clone(),
+            recentlyplayed.album_names.clone(),
+            recentlyplayed.duration.clone(),
             recently_played_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -212,7 +212,7 @@ pub fn render_library(
         f.render_stateful_widget(
             recently_played_table,
             content_chunk[1],
-            &mut recentlyplayed.recently_played_state,
+            &mut recentlyplayed.state,
         );
     }
 

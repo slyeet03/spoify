@@ -473,30 +473,30 @@ impl Default for UserSavedPodcast {
 
 #[derive(Clone, Debug)]
 pub struct UserRecentlyPlayed {
-    pub recently_played_names: Vec<String>,
-    pub recently_played_links: Vec<String>,
-    pub recently_played_duration: Vec<i64>,
-    pub recently_played_artist_names: Vec<String>,
-    pub recently_played_album_names: Vec<String>,
-    pub recently_played_selected: bool,
-    pub recently_played_display: bool,
-    pub recently_played_state: TableState,
-    pub recently_played_index: usize,
+    pub names: Vec<String>,
+    pub links: Vec<String>,
+    pub duration: Vec<i64>,
+    pub artist_names: Vec<String>,
+    pub album_names: Vec<String>,
+    pub selected: bool,
+    pub display: bool,
+    pub state: TableState,
+    pub index: usize,
     pub enter_for_playback_in_recently_played: bool,
 }
 
 impl Default for UserRecentlyPlayed {
     fn default() -> Self {
         Self {
-            recently_played_names: Vec::new(),
-            recently_played_links: Vec::new(),
-            recently_played_duration: Vec::new(),
-            recently_played_artist_names: Vec::new(),
-            recently_played_album_names: Vec::new(),
-            recently_played_selected: false,
-            recently_played_display: false,
-            recently_played_state: TableState::default(),
-            recently_played_index: 0,
+            names: Vec::new(),
+            links: Vec::new(),
+            duration: Vec::new(),
+            artist_names: Vec::new(),
+            album_names: Vec::new(),
+            selected: false,
+            display: false,
+            state: TableState::default(),
+            index: 0,
             enter_for_playback_in_recently_played: false,
         }
     }

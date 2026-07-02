@@ -67,10 +67,10 @@ pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum:
                 );
             }
         } else if app.library_state.selected() == Some(1) {
-            if recentlyplayed.recently_played_selected {
-                (recentlyplayed.recently_played_state, recentlyplayed.recently_played_index) = down_key_for_table(
-                    recentlyplayed.recently_played_names.clone(),
-                    recentlyplayed.recently_played_state.clone(),
+            if recentlyplayed.selected {
+                (recentlyplayed.state, recentlyplayed.index) = down_key_for_table(
+                    recentlyplayed.names.clone(),
+                    recentlyplayed.state.clone(),
                 );
             }
         } else if app.library_state.selected() == Some(5) {
@@ -128,10 +128,10 @@ pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &
                 );
             }
         } else if app.library_state.selected() == Some(1) {
-            if recentlyplayed.recently_played_selected {
-                (recentlyplayed.recently_played_state, recentlyplayed.recently_played_index) = up_key_for_table(
-                    recentlyplayed.recently_played_names.clone(),
-                    recentlyplayed.recently_played_state.clone(),
+            if recentlyplayed.selected {
+                (recentlyplayed.state, recentlyplayed.index) = up_key_for_table(
+                    recentlyplayed.names.clone(),
+                    recentlyplayed.state.clone(),
                 )
             }
         } else if app.library_state.selected() == Some(5) {
@@ -235,7 +235,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             app.selected_library = Library::RecentlyPlayed;
             if recentlyplayed.enter_for_playback_in_recently_played {
                 app.selected_link_for_playback =
-                    recentlyplayed.recently_played_links[recentlyplayed.recently_played_index].clone();
+                    recentlyplayed.links[recentlyplayed.index].clone();
                 if let Err(e) = start_playback(app, currentlyplaying) {
                     println!("{}", e);
                 }
@@ -244,7 +244,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
                     println!("{}", e);
                 }
                 process_recently_played(app,recentlyplayed);
-                recentlyplayed.recently_played_display = true;
+                recentlyplayed.display = true;
                 recentlyplayed.enter_for_playback_in_recently_played = true;
             }
         } else if app.library_state.selected() == Some(5) {
@@ -298,9 +298,9 @@ pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: 
         } else if app.library_state.selected() == Some(3) && useralbum.display {
             useralbum.state.select(Some(0));
             useralbum.selected = !useralbum.selected;
-        } else if app.library_state.selected() == Some(1) && recentlyplayed.recently_played_display {
-            recentlyplayed.recently_played_state.select(Some(0));
-            recentlyplayed.recently_played_selected = !recentlyplayed.recently_played_selected;
+        } else if app.library_state.selected() == Some(1) && recentlyplayed.display {
+            recentlyplayed.state.select(Some(0));
+            recentlyplayed.selected = !recentlyplayed.selected;
         } else if app.library_state.selected() == Some(5) && podcast.display {
             podcast.state.select(Some(0));
             podcast.selected = !podcast.selected;

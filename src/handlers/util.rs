@@ -107,7 +107,7 @@ pub fn default(
     likedsongs.display = false;
     search.selected_search = false;
     useralbum.display = false;
-    recentlyplayed.recently_played_display = false;
+    recentlyplayed.display = false;
     app.can_navigate_menu = true;
     podcast.display = false;
     userartist.user_artist_display = false;
@@ -141,7 +141,7 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
     search.results_rendered = false;
     likedsongs.display = false;
     useralbum.display = false;
-    recentlyplayed.recently_played_display = false;
+    recentlyplayed.display = false;
     podcast.display = false;
     userartist.user_artist_display = false;
     madefy.display = false;
@@ -169,7 +169,7 @@ pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut Liked
     search.results_rendered = false;
     likedsongs.display = false;
     useralbum.display = false;
-    recentlyplayed.recently_played_display = false;
+    recentlyplayed.display = false;
     app.can_navigate_menu = true;
     podcast.display = false;
     userartist.user_artist_display = false;

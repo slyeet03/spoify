@@ -47,11 +47,11 @@ fn save_recently_played_to_json(app: &mut App, items: Vec<PlayHistory>) {
 /// Processes the recently played tracks data stored in the cache file and populates the app's data structures
 pub fn process_recently_played(app: &mut App, recentlyplayed: &mut UserRecentlyPlayed) {
     // Clear any existing recently played track data in the app before processing
-    recentlyplayed.recently_played_links.clear();
-    recentlyplayed.recently_played_names.clear();
-    recentlyplayed.recently_played_duration.clear();
-    recentlyplayed.recently_played_artist_names.clear();
-    recentlyplayed.recently_played_album_names.clear();
+    recentlyplayed.links.clear();
+    recentlyplayed.names.clear();
+    recentlyplayed.duration.clear();
+    recentlyplayed.artist_names.clear();
+    recentlyplayed.album_names.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -70,13 +70,13 @@ pub fn process_recently_played(app: &mut App, recentlyplayed: &mut UserRecentlyP
             if let Value::Object(track_obj) = track {
                 if let Some(track_info) = track_obj.get("track").and_then(Value::as_object) {
                     if let Some(track_name) = track_info.get("name").and_then(Value::as_str) {
-                        recentlyplayed.recently_played_names.push(track_name.to_string());
+                        recentlyplayed.names.push(track_name.to_string());
                     }
 
                     if let Some(track_duration) =
                         track_info.get("duration_ms").and_then(Value::as_u64)
                     {
-                        recentlyplayed.recently_played_duration.push(track_duration as i64);
+                        recentlyplayed.duration.push(track_duration as i64);
                     }
 
                     if let Some(artists) = track_info.get("artists").and_then(Value::as_array) {
@@ -84,14 +84,14 @@ pub fn process_recently_played(app: &mut App, recentlyplayed: &mut UserRecentlyP
                             if let Some(artist_name) =
                                 first_artist.get("name").and_then(Value::as_str)
                             {
-                                recentlyplayed.recently_played_artist_names
+                                recentlyplayed.artist_names
                                     .push(artist_name.to_string());
                             }
                         }
                     }
                     if let Some(albums) = track_info.get("album").and_then(Value::as_object) {
                         if let Some(album_name) = albums.get("name").and_then(Value::as_str) {
-                            recentlyplayed.recently_played_album_names.push(album_name.to_string());
+                            recentlyplayed.album_names.push(album_name.to_string());
                         }
                     }
                     if let Some(external_urls) =
@@ -100,7 +100,7 @@ pub fn process_recently_played(app: &mut App, recentlyplayed: &mut UserRecentlyP
                         if let Some(track_link) =
                             external_urls.get("spotify").and_then(Value::as_str)
                         {
-                            recentlyplayed.recently_played_links.push(track_link.to_string());
+                            recentlyplayed.links.push(track_link.to_string());
                         }
                     }
                 }
