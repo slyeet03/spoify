@@ -74,9 +74,9 @@ pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum:
                 );
             }
         } else if app.library_state.selected() == Some(5) {
-            if podcast.podcast_selected {
-                (podcast.podcast_state, podcast.podcast_index) =
-                    down_key_for_table(podcast.podcast_names.clone(), podcast.podcast_state.clone());
+            if podcast.selected {
+                (podcast.state, podcast.index) =
+                    down_key_for_table(podcast.names.clone(), podcast.state.clone());
             }
         } else if app.library_state.selected() == Some(4) {
             if userartist.user_artist_selected {
@@ -135,9 +135,9 @@ pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &
                 )
             }
         } else if app.library_state.selected() == Some(5) {
-            if podcast.podcast_selected {
-                (podcast.podcast_state, podcast.podcast_index) =
-                    up_key_for_table(podcast.podcast_names.clone(), podcast.podcast_state.clone());
+            if podcast.selected {
+                (podcast.state, podcast.index) =
+                    up_key_for_table(podcast.names.clone(), podcast.state.clone());
             }
         } else if app.library_state.selected() == Some(4) {
             if userartist.user_artist_selected {
@@ -253,7 +253,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
                 println!("{}", e);
             }
             process_podcasts(app,podcast);
-            podcast.podcast_display = true;
+            podcast.display = true;
         } else if app.library_state.selected() == Some(4) {
             app.selected_library = Library::Artists;
             if userartist.user_artist_current_artist_selected {
@@ -301,9 +301,9 @@ pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: 
         } else if app.library_state.selected() == Some(1) && recentlyplayed.recently_played_display {
             recentlyplayed.recently_played_state.select(Some(0));
             recentlyplayed.recently_played_selected = !recentlyplayed.recently_played_selected;
-        } else if app.library_state.selected() == Some(5) && podcast.podcast_display {
-            podcast.podcast_state.select(Some(0));
-            podcast.podcast_selected = !podcast.podcast_selected;
+        } else if app.library_state.selected() == Some(5) && podcast.display {
+            podcast.state.select(Some(0));
+            podcast.selected = !podcast.selected;
         } else if app.library_state.selected() == Some(4) && userartist.user_artist_display {
             userartist.user_artist_state.select(Some(0));
             userartist.user_artist_selected = !userartist.user_artist_selected;

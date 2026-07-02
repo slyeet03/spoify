@@ -71,7 +71,7 @@ pub fn render_library(
     let podcast_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Podcasts"))
-        .border_style(if podcast.podcast_selected {
+        .border_style(if podcast.selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -216,12 +216,12 @@ pub fn render_library(
         );
     }
 
-    if podcast.podcast_display {
+    if podcast.display {
         f.render_widget(Clear, content_chunk[1]);
 
         let podcast_table = podcast_table_ui(
-            podcast.podcast_names.clone(),
-            podcast.podcast_publisher.clone(),
+            podcast.names.clone(),
+            podcast.publisher.clone(),
             podcast_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -230,7 +230,7 @@ pub fn render_library(
 
         f.render_widget(Clear, content_chunk[1]);
 
-        f.render_stateful_widget(podcast_table, content_chunk[1], &mut podcast.podcast_state);
+        f.render_stateful_widget(podcast_table, content_chunk[1], &mut podcast.state);
     }
 
     if userartist.user_artist_display {
