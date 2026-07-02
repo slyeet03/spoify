@@ -41,7 +41,7 @@ pub fn render_library(
     let liked_song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Liked Songs"))
-        .border_style(if likedsongs.liked_songs_selected {
+        .border_style(if likedsongs.selected {
             Style::default().fg(theme.main_border_color)
         } else {
             Style::default().fg(theme.main_inactive_border_color)
@@ -170,14 +170,14 @@ pub fn render_library(
         );
     }
 
-    if likedsongs.liked_song_display {
+    if likedsongs.display {
         f.render_widget(Clear, content_chunk[1]);
 
         let liked_songs_table = track_table_ui(
-            likedsongs.liked_song_names.clone(),
-            likedsongs.liked_song_artist_names.clone(),
-            likedsongs.liked_song_album_names.clone(),
-            likedsongs.liked_song_duration.clone(),
+            likedsongs.names.clone(),
+            likedsongs.artist_names.clone(),
+            likedsongs.album_names.clone(),
+            likedsongs.duration.clone(),
             liked_song_block,
             theme.main_highlight_color,
             theme.main_background_color,
@@ -189,7 +189,7 @@ pub fn render_library(
         f.render_stateful_widget(
             liked_songs_table,
             content_chunk[1],
-            &mut likedsongs.liked_songs_state,
+            &mut likedsongs.state,
         );
     }
 

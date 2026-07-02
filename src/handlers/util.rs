@@ -104,7 +104,7 @@ pub fn default(
     search.results_rendered = false;
     search.input_mode = InputMode::Normal;
     userplaylist.display = false;
-    likedsongs.liked_song_display = false;
+    likedsongs.display = false;
     search.selected_search = false;
     useralbum.user_album_display = false;
     recentlyplayed.recently_played_display = false;
@@ -139,7 +139,7 @@ pub fn default(
 
 pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist, newrelease: &mut NewRelease) {
     search.results_rendered = false;
-    likedsongs.liked_song_display = false;
+    likedsongs.display = false;
     useralbum.user_album_display = false;
     recentlyplayed.recently_played_display = false;
     podcast.podcast_display = false;
@@ -167,7 +167,7 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
 
 pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
     search.results_rendered = false;
-    likedsongs.liked_song_display = false;
+    likedsongs.display = false;
     useralbum.user_album_display = false;
     recentlyplayed.recently_played_display = false;
     app.can_navigate_menu = true;

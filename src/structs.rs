@@ -289,7 +289,7 @@ pub struct UserPlaylist {
     pub links: Vec<String>,
     pub track_links: Vec<String>,
     pub track_duration: Vec<i64>,
-    pub current_user_playlist: String,
+    pub current: String,
     pub selected_playlist_uri: String,
     pub display: bool,
     pub tracks_selected: bool,
@@ -311,7 +311,7 @@ impl Default for UserPlaylist {
             track_links: Vec::new(),
             album_names: Vec::new(),
             selected_playlist_uri: String::new(),
-            current_user_playlist: String::new(),
+            current: String::new(),
             display: false,
             tracks_selected: false,
             tracks_state: TableState::default(),
@@ -323,30 +323,30 @@ impl Default for UserPlaylist {
 
 #[derive(Clone, Debug)]
 pub struct LikedSongs {
-    pub liked_song_names: Vec<String>,
-    pub liked_song_links: Vec<String>,
-    pub liked_song_duration: Vec<i64>,
-    pub liked_song_artist_names: Vec<String>,
-    pub liked_song_album_names: Vec<String>,
-    pub liked_songs_selected: bool,
-    pub liked_song_display: bool,
-    pub liked_songs_state: TableState,
-    pub liked_songs_index: usize,
+    pub names: Vec<String>,
+    pub links: Vec<String>,
+    pub duration: Vec<i64>,
+    pub artist_names: Vec<String>,
+    pub album_names: Vec<String>,
+    pub selected: bool,
+    pub display: bool,
+    pub state: TableState,
+    pub index: usize,
     pub enter_for_playback_in_liked_song: bool,
 }
 
 impl Default for LikedSongs {
     fn default() -> Self {
         Self {
-            liked_songs_state: TableState::default(),
-            liked_song_names: Vec::new(),
-            liked_song_links: Vec::new(),
-            liked_song_duration: Vec::new(),
-            liked_song_artist_names: Vec::new(),
-            liked_songs_selected: false,
-            liked_song_display: false,
-            liked_song_album_names: Vec::new(),
-            liked_songs_index: 0,
+            state: TableState::default(),
+            names: Vec::new(),
+            links: Vec::new(),
+            duration: Vec::new(),
+            artist_names: Vec::new(),
+            selected: false,
+            display: false,
+            album_names: Vec::new(),
+            index: 0,
             enter_for_playback_in_liked_song: false,
         }
     }

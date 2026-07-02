@@ -24,7 +24,7 @@ pub fn go_to_user_playlists_event(app: &mut App,search:&mut Search, userplaylist
         userplaylist.state.select(Some(0));
         default(app,search,userplaylist,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist, newrelease);
         userplaylist.selected_playlist_uri = userplaylist.links[0].clone();
-        userplaylist.current_user_playlist = userplaylist.names[0].clone();
+        userplaylist.current = userplaylist.names[0].clone();
     } else {
         app.error_text = "You don't have any playlist saved".to_string();
         app.selected_menu = Menu::Error;
@@ -46,7 +46,7 @@ pub fn user_playlist_down_event(app: &mut App, search: &mut Search, userplaylist
             if next_index >= length {
             } else {
                 userplaylist.selected_playlist_uri = userplaylist.links[next_index].clone();
-                userplaylist.current_user_playlist = userplaylist.names[next_index].clone();
+                userplaylist.current = userplaylist.names[next_index].clone();
             }
             userplaylist.display = false;
         }
@@ -70,7 +70,7 @@ pub fn user_playlist_up_event(app: &mut App,search: &mut Search, userplaylist: &
             userplaylist.state.select(Some(prev_index));
             search.results_rendered = false;
             userplaylist.selected_playlist_uri = userplaylist.links[prev_index].clone();
-            userplaylist.current_user_playlist = userplaylist.names[prev_index].clone();
+            userplaylist.current = userplaylist.names[prev_index].clone();
             userplaylist.display = false;
         }
     }

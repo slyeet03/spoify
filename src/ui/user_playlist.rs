@@ -17,7 +17,7 @@ pub fn render_user_playlist(
     theme: &mut Themes,
     userplaylist: &mut UserPlaylist,
 ) {
-    let current_playlist_name = (&userplaylist.current_user_playlist).to_string();
+    let current_playlist_name = (&userplaylist.current).to_string();
 
     let playlist_block_user = Block::default()
         .borders(Borders::ALL)
