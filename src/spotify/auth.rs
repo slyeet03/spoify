@@ -5,6 +5,8 @@ use rspotify::{scopes, AuthCodeSpotify, ClientError, Credentials, OAuth};
 use std::env;
 use std::fs;
 use std::io::stdin;
+use std::io::{BufRead, BufReader, Write};
+use std::net::TcpListener;
 use std::path::PathBuf;
 use url::Url;
 use webbrowser;
@@ -81,37 +83,43 @@ pub async fn get_spotify_client(app: &mut App) -> Result<AuthCodeSpotify, Client
 
 // Function to handle the authorization flow with Spotify
 async fn handle_authorization_flow(spotify: &mut AuthCodeSpotify) -> Result<(), ClientError> {
-    let auth_url = spotify.get_authorize_url(true).unwrap(); // Getting the authorization URL
+    let auth_url = spotify.get_authorize_url(true).unwrap();
 
     if webbrowser::open(&auth_url).is_err() {
-        // Attempting to open the authorization URL in the default browser
         println!(
             "Failed to open the authorization URL. Please visit the URL manually: {}",
             auth_url
         );
     }
 
-    // Prompting the user to enter the redirected URL after authorization
-    println!("Enter redirected url:");
-    let mut url_input = String::new();
-    stdin().read_line(&mut url_input).unwrap();
-    let url_string = &url_input.as_str();
+    println!("Waiting for Spotify to redirect to http://127.0.0.1:8888/callback ...");
 
-    // Parsing the redirected URL
-    let url = Url::parse(url_string).expect("Failed to parse URL");
-    let query_pairs = url.query_pairs();
+    let listener = TcpListener::bind("127.0.0.1:8888")
+        .expect("Could not bind 127.0.0.1:8888 — is another spoify instance already running?");
+    let (mut stream, _) = listener.accept().expect("Failed to accept connection");
+
+    let mut reader = BufReader::new(&stream);
+    let mut request_line = String::new();
+    reader
+        .read_line(&mut request_line)
+        .expect("Failed to read request");
+
+    // request_line looks like: "GET /callback?code=...&state=... HTTP/1.1"
+    let path = request_line.split_whitespace().nth(1).unwrap_or("");
+    let full_url = format!("http://127.0.0.1:8888{}", path);
+    let url = Url::parse(&full_url).expect("Failed to parse redirected URL");
 
     let mut code = String::new();
-    let mut _state = String::new();
-    for (key, value) in query_pairs {
+    for (key, value) in url.query_pairs() {
         if key == "code" {
             code = value.to_string();
-        } else if key == "state" {
-            _state = value.to_string();
         }
     }
 
-    // Requesting the access token using the authorization code
+    let response = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n\
+        <html><body><h2>spoify authenticated you can close this tab.</h2></body></html>";
+    let _ = stream.write_all(response.as_bytes());
+
     spotify.request_token(code.trim()).await?;
 
     Ok(())

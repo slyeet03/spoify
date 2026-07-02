@@ -33,9 +33,7 @@ In order for `spoify` to work it needs to be connected to Spotify's API.
 5. Scroll down and click `Save`
 6. You are now ready to authenticate with Spotify!
 7. Enter you `Client ID` and `Client Secret`.
-8. Run `spoify`
-9. You will be redirected to an official Spotify webpage to ask you for permissions.
-10. After accepting the permissions, you'll be redirected to localhost. You'll be redirected to a blank webpage that might say something like "Connection Refused" since no server is running. Regardless, copy the URL and paste into the prompt in the terminal.
+8. Run `spoify` again.
 
 There we go, now you can use `spoify`.
 

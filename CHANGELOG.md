@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.17] - 2026-07-02
+
+### Fixed
+
+- Added a TCP listener to the auth stuff gets automated
+
 ## [0.2.16] - 2026-07-02
 
 ### Fixed
