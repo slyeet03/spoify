@@ -39,7 +39,7 @@ pub fn render_search(
     let album_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Albums"))
-        .border_style(if search.selected_album_in_search_result {
+        .border_style(if search.selected_album {
             Style::default().fg(theme.search_border_color)
         } else {
             Style::default().fg(theme.search_inactive_border_color)
@@ -48,7 +48,7 @@ pub fn render_search(
     let artist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Artists"))
-        .border_style(if search.selected_artist_in_search_result {
+        .border_style(if search.selected_artist {
             Style::default().fg(theme.search_border_color)
         } else {
             Style::default().fg(theme.search_inactive_border_color)
@@ -57,7 +57,7 @@ pub fn render_search(
     let song_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Songs"))
-        .border_style(if search.selected_track_in_search_result {
+        .border_style(if search.selected_track {
             Style::default().fg(theme.search_border_color)
         } else {
             Style::default().fg(theme.search_inactive_border_color)
@@ -66,7 +66,7 @@ pub fn render_search(
     let playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from("Playlists"))
-        .border_style(if search.selected_playlist_in_search_result {
+        .border_style(if search.selected_playlist {
             Style::default().fg(theme.search_border_color)
         } else {
             Style::default().fg(theme.search_inactive_border_color)
@@ -100,14 +100,14 @@ pub fn render_search(
                 header_chunk[0].y + 1,
             );
         }
-        InputMode::SearchResults if search.search_results_rendered => {
+        InputMode::SearchResults if search.results_rendered => {
             f.render_widget(Clear, content_chunk[1]);
             f.render_widget(Clear, main_chunk_upper[0]);
 
-            let album_names_list = convert_to_list(&search.album_names_search_results);
-            let track_names_list = convert_to_list(&search.track_names_search_results);
-            let artist_names_list = convert_to_list(&search.artist_names_search_results);
-            let playlist_names_list = convert_to_list(&search.playlist_names_search_results);
+            let album_names_list = convert_to_list(&search.album_names);
+            let track_names_list = convert_to_list(&search.track_names);
+            let artist_names_list = convert_to_list(&search.artist_names);
+            let playlist_names_list = convert_to_list(&search.playlist_names);
 
             let album_list = List::new(album_names_list)
                 .block(album_block.clone())
@@ -128,27 +128,27 @@ pub fn render_search(
             f.render_stateful_widget(
                 song_list,
                 main_chunk_upper[0],
-                &mut search.track_state_in_search_result,
+                &mut search.track_state,
             );
             f.render_stateful_widget(
                 artist_list,
                 main_chunk_upper[1],
-                &mut search.artist_state_in_search_result,
+                &mut search.artist_state,
             );
             f.render_stateful_widget(
                 album_list,
                 main_chunk_lower[0],
-                &mut search.album_state_in_search_result,
+                &mut search.album_state,
             );
             f.render_stateful_widget(
                 playlist_list,
                 main_chunk_lower[1],
-                &mut search.playlist_state_in_search_result,
+                &mut search.playlist_state,
             );
         }
         _ => {}
     }
-    match search.search_menu {
+    match search.menu {
         SearchMenu::Default => {}
         SearchMenu::SearchedTrack => {}
         SearchMenu::SearchedAlbum => {

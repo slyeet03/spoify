@@ -31,7 +31,7 @@ pub async fn search_selected_album_tracks(app: &mut App, search: &mut Search) ->
 
     // Collect tracks from the selected album
     let mut tracks = Vec::new();
-    let id = search.album_links_search_results[search.album_index].as_str();
+    let id = search.album_links[search.album_index].as_str();
     let album_id: AlbumId = AlbumId::from_id(id).unwrap();
 
     // Stream the album tracks and collect them into a vector.

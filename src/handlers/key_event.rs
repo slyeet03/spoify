@@ -306,7 +306,7 @@ pub fn search_input(app: &mut App,search: &mut Search, key_event: KeyEvent) -> i
                 // Exit search mode when Esc is pressed
                 KeyCode::Esc => {
                     search.input_mode = InputMode::Normal;
-                    search.search_results_rendered = false;
+                    search.results_rendered = false;
                     std::io::sink().write_all(&[0])?;
                 }
                 _ => {}
@@ -331,7 +331,7 @@ fn submit_message(app: &mut App,search: &mut Search) {
     reset_cursor(search);
 
     search.input_mode = InputMode::SearchResults;
-    search.search_results_rendered = true;
+    search.results_rendered = true;
     search.selected_search = true;
-    search.search_state.select(Some(0));
+    search.state.select(Some(0));
 }

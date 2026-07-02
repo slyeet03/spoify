@@ -28,7 +28,7 @@ pub async fn search_selected_artist_tracks(app: &mut App, search: &mut Search) -
     // Request an access token from Spotify
     spotify.request_token().await.unwrap();
 
-    let id = search.artist_links_search_results[search.artist_index].as_str();
+    let id = search.artist_links[search.artist_index].as_str();
     let artist_id: ArtistId = ArtistId::from_id(id).unwrap();
 
     let tracks = match spotify.artist_top_tracks(artist_id, None).await {

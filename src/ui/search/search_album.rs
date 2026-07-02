@@ -18,7 +18,7 @@ pub fn render_searched_album(
     search: &mut Search
 ) {
     f.render_widget(Clear, content_chunk[1]);
-    let current_album = &search.album_names_search_results[search.album_index];
+    let current_album = &search.album_names[search.album_index];
 
     let album_block = Block::default()
         .borders(Borders::ALL)

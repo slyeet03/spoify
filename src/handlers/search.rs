@@ -34,44 +34,44 @@ pub fn go_to_search_event(app: &mut App, search: &mut Search, userplaylist: &mut
 pub fn search_down_event(app: &mut App, search: &mut Search) {
     if app.selected_menu == Menu::Search {
         if search.selected_search {
-            if search.selected_track_in_search_result {
-                (search.track_state_in_search_result, search.track_index) = down_key_for_list(
-                    search.track_names_search_results.clone(),
-                    search.track_state_in_search_result.clone(),
+            if search.selected_track {
+                (search.track_state, search.track_index) = down_key_for_list(
+                    search.track_names.clone(),
+                    search.track_state.clone(),
                 );
             }
-            if search.selected_album_in_search_result {
-                (search.album_state_in_search_result, search.album_index) = down_key_for_list(
-                    search.album_names_search_results.clone(),
-                    search.album_state_in_search_result.clone(),
+            if search.selected_album {
+                (search.album_state, search.album_index) = down_key_for_list(
+                    search.album_names.clone(),
+                    search.album_state.clone(),
                 );
             }
-            if search.selected_artist_in_search_result {
-                (search.artist_state_in_search_result, search.artist_index) = down_key_for_list(
-                    search.artist_names_search_results.clone(),
-                    search.artist_state_in_search_result.clone(),
+            if search.selected_artist {
+                (search.artist_state, search.artist_index) = down_key_for_list(
+                    search.artist_names.clone(),
+                    search.artist_state.clone(),
                 );
             }
-            if search.selected_playlist_in_search_result {
-                (search.playlist_state_in_search_result, search.playlist_index) = down_key_for_list(
-                    search.playlist_names_search_results.clone(),
-                    search.playlist_state_in_search_result.clone(),
+            if search.selected_playlist {
+                (search.playlist_state, search.playlist_index) = down_key_for_list(
+                    search.playlist_names.clone(),
+                    search.playlist_state.clone(),
                 );
             }
         }
-        if search.search_menu == SearchMenu::SearchedAlbum && search.searched_album_selected {
+        if search.menu == SearchMenu::SearchedAlbum && search.searched_album_selected {
             (search.searched_album_state, search.searched_album_index) = down_key_for_table(
                 search.selected_album_tracks_names.clone(),
                 search.searched_album_state.clone(),
             );
         }
-        if search.search_menu == SearchMenu::SearchedArtist && search.searched_artist_selected {
+        if search.menu == SearchMenu::SearchedArtist && search.searched_artist_selected {
             (search.searched_artist_state, search.searched_artist_index) = down_key_for_table(
                 search.selected_artist_tracks_names.clone(),
                 search.searched_artist_state.clone(),
             );
         }
-        if search.search_menu == SearchMenu::SearchedPlaylist && search.searched_playlist_selected {
+        if search.menu == SearchMenu::SearchedPlaylist && search.searched_playlist_selected {
             (search.searched_playlist_state, search.searched_playlist_index) = down_key_for_table(
                 search.selected_playlist_tracks_names.clone(),
                 search.searched_playlist_state.clone(),
@@ -83,44 +83,44 @@ pub fn search_down_event(app: &mut App, search: &mut Search) {
 pub fn search_up_event(app: &mut App, search: &mut Search) {
     if app.selected_menu == Menu::Search {
         if search.selected_search {
-            if search.selected_track_in_search_result {
-                (search.track_state_in_search_result, search.track_index) = up_key_for_list(
-                    search.track_names_search_results.clone(),
-                    search.track_state_in_search_result.clone(),
+            if search.selected_track {
+                (search.track_state, search.track_index) = up_key_for_list(
+                    search.track_names.clone(),
+                    search.track_state.clone(),
                 );
             }
-            if search.selected_album_in_search_result {
-                (search.album_state_in_search_result, search.album_index) = up_key_for_list(
-                    search.album_names_search_results.clone(),
-                    search.album_state_in_search_result.clone(),
+            if search.selected_album {
+                (search.album_state, search.album_index) = up_key_for_list(
+                    search.album_names.clone(),
+                    search.album_state.clone(),
                 );
             }
-            if search.selected_artist_in_search_result {
-                (search.artist_state_in_search_result, search.artist_index) = up_key_for_list(
-                    search.artist_names_search_results.clone(),
-                    search.artist_state_in_search_result.clone(),
+            if search.selected_artist {
+                (search.artist_state, search.artist_index) = up_key_for_list(
+                    search.artist_names.clone(),
+                    search.artist_state.clone(),
                 );
             }
-            if search.selected_playlist_in_search_result {
-                (search.playlist_state_in_search_result, search.playlist_index) = up_key_for_list(
-                    search.playlist_names_search_results.clone(),
-                    search.playlist_state_in_search_result.clone(),
+            if search.selected_playlist {
+                (search.playlist_state, search.playlist_index) = up_key_for_list(
+                    search.playlist_names.clone(),
+                    search.playlist_state.clone(),
                 );
             }
         }
-        if search.search_menu == SearchMenu::SearchedAlbum && search.searched_album_selected {
+        if search.menu == SearchMenu::SearchedAlbum && search.searched_album_selected {
             (search.searched_album_state, search.searched_album_index) = up_key_for_table(
                 search.selected_album_tracks_names.clone(),
                 search.searched_album_state.clone(),
             );
         }
-        if search.search_menu == SearchMenu::SearchedArtist && search.searched_artist_selected {
+        if search.menu == SearchMenu::SearchedArtist && search.searched_artist_selected {
             (search.searched_artist_state, search.searched_artist_index) = up_key_for_table(
                 search.selected_artist_tracks_names.clone(),
                 search.searched_artist_state.clone(),
             );
         }
-        if search.search_menu == SearchMenu::SearchedPlaylist && search.searched_playlist_selected {
+        if search.menu == SearchMenu::SearchedPlaylist && search.searched_playlist_selected {
             (search.searched_playlist_state, search.searched_playlist_index) = up_key_for_table(
                 search.selected_playlist_tracks_names.clone(),
                 search.searched_playlist_state.clone(),
@@ -134,60 +134,60 @@ pub fn search_enter_event(app: &mut App, search: &mut Search, likedsongs: &mut L
         if app.is_in_track {
             app.is_only_id = true;
             app.selected_link_for_playback =
-                search.track_links_search_results[search.track_index].clone();
+                search.track_links[search.track_index].clone();
             if let Err(e) = start_playback(app, currentlyplaying) {
                 println!("{}", e);
             }
         }
 
-        if search.search_menu == SearchMenu::SearchedAlbum {
+        if search.menu == SearchMenu::SearchedAlbum {
             app.is_only_id = false;
             app.selected_link_for_playback =
                 search.selected_album_tracks_links[search.searched_album_index].clone();
             if let Err(e) = start_playback(app, currentlyplaying) {
                 println!("{}", e);
             }
-        } else if search.selected_album_in_search_result {
+        } else if search.selected_album {
             if let Err(e) = search_selected_album_tracks(app,search) {
                 println!("{}", e);
             }
             process_selected_album_tracks(app,search);
             default_search(app,search,likedsongs,useralbum,podcast,recentlyplayed,userartist);
-            search.search_menu = SearchMenu::SearchedAlbum;
+            search.menu = SearchMenu::SearchedAlbum;
             search.searched_album_selected = true;
         }
 
-        if search.search_menu == SearchMenu::SearchedArtist {
+        if search.menu == SearchMenu::SearchedArtist {
             app.is_only_id = false;
             app.selected_link_for_playback =
                 search.selected_artist_tracks_links[search.searched_artist_index].clone();
             if let Err(e) = start_playback(app, currentlyplaying) {
                 println!("{}", e);
             }
-        } else if search.selected_artist_in_search_result {
+        } else if search.selected_artist {
             if let Err(e) = search_selected_artist_tracks(app,search) {
                 println!("{}", e);
             }
             process_selected_artist_tracks(app,search);
             default_search(app,search,likedsongs,useralbum,podcast,recentlyplayed,userartist);
-            search.search_menu = SearchMenu::SearchedArtist;
+            search.menu = SearchMenu::SearchedArtist;
             search.searched_artist_selected = true;
         }
 
-        if search.search_menu == SearchMenu::SearchedPlaylist {
+        if search.menu == SearchMenu::SearchedPlaylist {
             app.is_only_id = false;
             app.selected_link_for_playback =
                 search.selected_playlist_tracks_links[search.searched_playlist_index].clone();
             if let Err(e) = start_playback(app, currentlyplaying) {
                 println!("{}", e);
             }
-        } else if search.selected_playlist_in_search_result {
+        } else if search.selected_playlist {
             if let Err(e) = search_selected_playlist_tracks(app,search) {
                 println!("{}", e);
             }
             process_selected_playlist_tracks(app,search);
             default_search(app,search,likedsongs,useralbum,podcast,recentlyplayed,userartist);
-            search.search_menu = SearchMenu::SearchedPlaylist;
+            search.menu = SearchMenu::SearchedPlaylist;
             search.searched_playlist_selected = true;
         }
     }
@@ -196,42 +196,42 @@ pub fn search_enter_event(app: &mut App, search: &mut Search, likedsongs: &mut L
 pub fn search_tab_event(app: &mut App, search: &mut Search) {
     if search.selected_search {
         app.can_navigate_menu = false;
-        search.track_state_in_search_result.select(None);
-        search.artist_state_in_search_result.select(None);
-        search.album_state_in_search_result.select(None);
-        search.playlist_state_in_search_result.select(None);
+        search.track_state.select(None);
+        search.artist_state.select(None);
+        search.album_state.select(None);
+        search.playlist_state.select(None);
 
-        if search.search_state.selected() == Some(0) {
-            search.track_state_in_search_result.select(Some(0));
-            search.selected_track_in_search_result = !search.selected_track_in_search_result;
-            search.selected_artist_in_search_result = false;
-            search.selected_album_in_search_result = false;
-            search.selected_playlist_in_search_result = false;
+        if search.state.selected() == Some(0) {
+            search.track_state.select(Some(0));
+            search.selected_track = !search.selected_track;
+            search.selected_artist = false;
+            search.selected_album = false;
+            search.selected_playlist = false;
             app.is_in_track = true;
-        } else if search.search_state.selected() == Some(1) {
-            search.artist_state_in_search_result.select(Some(0));
-            search.selected_artist_in_search_result = !search.selected_artist_in_search_result;
-            search.selected_track_in_search_result = false;
-            search.selected_album_in_search_result = false;
-            search.selected_playlist_in_search_result = false;
+        } else if search.state.selected() == Some(1) {
+            search.artist_state.select(Some(0));
+            search.selected_artist = !search.selected_artist;
+            search.selected_track = false;
+            search.selected_album = false;
+            search.selected_playlist = false;
             app.is_in_track = false;
-        } else if search.search_state.selected() == Some(2) {
-            search.album_state_in_search_result.select(Some(0));
-            search.selected_album_in_search_result = !search.selected_album_in_search_result;
-            search.selected_track_in_search_result = false;
-            search.selected_artist_in_search_result = false;
-            search.selected_playlist_in_search_result = false;
+        } else if search.state.selected() == Some(2) {
+            search.album_state.select(Some(0));
+            search.selected_album = !search.selected_album;
+            search.selected_track = false;
+            search.selected_artist = false;
+            search.selected_playlist = false;
             app.is_in_track = false;
-        } else if search.search_state.selected() == Some(3) {
-            search.playlist_state_in_search_result.select(Some(0));
-            search.selected_playlist_in_search_result = !search.selected_playlist_in_search_result;
-            search.selected_track_in_search_result = false;
-            search.selected_artist_in_search_result = false;
-            search.selected_album_in_search_result = false;
+        } else if search.state.selected() == Some(3) {
+            search.playlist_state.select(Some(0));
+            search.selected_playlist = !search.selected_playlist;
+            search.selected_track = false;
+            search.selected_artist = false;
+            search.selected_album = false;
             app.is_in_track = false;
         }
         let length = 4;
-        let next_index = search.search_state.selected().unwrap_or(0) + 1;
-        search.search_state.select(Some(next_index % length));
+        let next_index = search.state.selected().unwrap_or(0) + 1;
+        search.state.select(Some(next_index % length));
     }
 }

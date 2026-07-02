@@ -37,7 +37,7 @@ pub fn new_release_down_event(app: &mut App, search: &mut Search, newrelease: &m
             let length: usize = newrelease.new_release_name.len();
             let next_index: usize = newrelease.new_release_state.selected().unwrap_or(0) + 1;
             newrelease.new_release_state.select(Some(next_index % length));
-            search.search_results_rendered = false;
+            search.results_rendered = false;
             if next_index >= length {
             } else {
                 newrelease.current_new_release = newrelease.new_release_name[next_index].clone();
@@ -64,7 +64,7 @@ pub fn new_release_up_event(app: &mut App, search: &mut Search, newrelease: &mut
                 newrelease.new_release_state.selected().unwrap_or(0) - 1
             };
             newrelease.new_release_state.select(Some(prev_index));
-            search.search_results_rendered = false;
+            search.results_rendered = false;
             newrelease.current_new_release = newrelease.new_release_name[prev_index].clone();
             newrelease.current_new_release_album_link = newrelease.new_release_album_links[prev_index].clone();
             newrelease.new_release_display = false;

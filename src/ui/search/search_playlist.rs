@@ -16,7 +16,7 @@ pub fn render_searched_playlist(
     search: &mut Search,
 ) {
     f.render_widget(Clear, content_chunk[1]);
-    let current_playlist = &search.playlist_names_search_results[search.playlist_index];
+    let current_playlist = &search.playlist_names[search.playlist_index];
 
     let playlist_block = Block::default()
         .borders(Borders::ALL)

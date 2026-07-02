@@ -17,7 +17,7 @@ pub fn render_searched_artist(
     search: &mut Search,
 ) {
     f.render_widget(Clear, content_chunk[1]);
-    let current_artist = &search.artist_names_search_results[search.artist_index];
+    let current_artist = &search.artist_names[search.artist_index];
 
     let artist_block = Block::default()
         .borders(Borders::ALL)

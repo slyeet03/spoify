@@ -113,15 +113,15 @@ pub async fn perform_search(user_query: &str, app: &mut App) -> Result<(), std::
 
 // Function to process the search results and store them in the application state
 pub fn process_search(app: &mut App, query: &str, search: &mut Search) -> io::Result<()> {
-    search.album_names_search_results.clear();
-    search.artist_names_search_results.clear();
-    search.track_names_search_results.clear();
-    search.playlist_names_search_results.clear();
+    search.album_names.clear();
+    search.artist_names.clear();
+    search.track_names.clear();
+    search.playlist_names.clear();
 
-    search.album_links_search_results.clear();
-    search.artist_links_search_results.clear();
-    search.track_links_search_results.clear();
-    search.playlist_links_search_results.clear();
+    search.album_links.clear();
+    search.artist_links.clear();
+    search.track_links.clear();
+    search.playlist_links.clear();
 
     let mut spotify_cache_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     spotify_cache_path.push("..");
@@ -130,8 +130,8 @@ pub fn process_search(app: &mut App, query: &str, search: &mut Search) -> io::Re
 
     if perform_search(query, app).is_ok() {
         (
-            search.album_names_search_results,
-            search.album_links_search_results,
+            search.album_names,
+            search.album_links,
         ) = match album_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
@@ -141,8 +141,8 @@ pub fn process_search(app: &mut App, query: &str, search: &mut Search) -> io::Re
         };
 
         (
-            search.track_names_search_results,
-            search.track_links_search_results,
+            search.track_names,
+            search.track_links,
         ) = match track_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
@@ -152,8 +152,8 @@ pub fn process_search(app: &mut App, query: &str, search: &mut Search) -> io::Re
         };
 
         (
-            search.artist_names_search_results,
-            search.artist_links_search_results,
+            search.artist_names,
+            search.artist_links,
         ) = match artist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {
@@ -163,8 +163,8 @@ pub fn process_search(app: &mut App, query: &str, search: &mut Search) -> io::Re
         };
 
         (
-            search.playlist_names_search_results,
-            search.playlist_links_search_results,
+            search.playlist_names,
+            search.playlist_links,
         ) = match playlist_storage(&spotify_cache_path) {
             Ok(result) => result,
             Err(err) => {

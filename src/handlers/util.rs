@@ -101,7 +101,7 @@ pub fn default(
     userartist: &mut UserSavedArtist, 
     newrelease: &mut NewRelease
     ) {
-    search.search_results_rendered = false;
+    search.results_rendered = false;
     search.input_mode = InputMode::Normal;
     userplaylist.user_playlist_display = false;
     likedsongs.liked_song_display = false;
@@ -134,11 +134,11 @@ pub fn default(
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
     app.is_in_track = false;
-    search.search_menu = SearchMenu::Default;
+    search.menu = SearchMenu::Default;
 }
 
 pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist, newrelease: &mut NewRelease) {
-    search.search_results_rendered = false;
+    search.results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
     recentlyplayed.recently_played_display = false;
@@ -166,7 +166,7 @@ pub fn default_nav(app: &mut App, search: &mut Search, userplaylist: &mut UserPl
 }
 
 pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
-    search.search_results_rendered = false;
+    search.results_rendered = false;
     likedsongs.liked_song_display = false;
     useralbum.user_album_display = false;
     recentlyplayed.recently_played_display = false;
@@ -181,5 +181,5 @@ pub fn default_search(app: &mut App, search: &mut Search, likedsongs: &mut Liked
     app.is_only_id = false;
     app.selected_link_for_playback.clear();
     app.is_in_track = false;
-    search.search_menu = SearchMenu::Default;
+    search.menu = SearchMenu::Default;
 }

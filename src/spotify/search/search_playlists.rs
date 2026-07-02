@@ -30,7 +30,7 @@ pub async fn search_selected_playlist_tracks(app: &mut App, search: &mut Search)
     spotify.request_token().await.unwrap();
 
     // Extract the playlist URI from the app's selected playlist URL
-    let playlist_url = search.playlist_links_search_results[search.playlist_index].as_str();
+    let playlist_url = search.playlist_links[search.playlist_index].as_str();
     let playlist_id = PlaylistId::from_id(playlist_url).unwrap();
 
     // Collect information about the playlist items (tracks)

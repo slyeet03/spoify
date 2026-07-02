@@ -42,7 +42,7 @@ pub fn user_playlist_down_event(app: &mut App, search: &mut Search, userplaylist
             let length: usize = userplaylist.user_playlist_names.len();
             let next_index: usize = userplaylist.user_playlist_state.selected().unwrap_or(0) + 1;
             userplaylist.user_playlist_state.select(Some(next_index % length));
-            search.search_results_rendered = false;
+            search.results_rendered = false;
             if next_index >= length {
             } else {
                 userplaylist.selected_playlist_uri = userplaylist.user_playlist_links[next_index].clone();
@@ -68,7 +68,7 @@ pub fn user_playlist_up_event(app: &mut App,search: &mut Search, userplaylist: &
                 userplaylist.user_playlist_state.selected().unwrap_or(0) - 1
             };
             userplaylist.user_playlist_state.select(Some(prev_index));
-            search.search_results_rendered = false;
+            search.results_rendered = false;
             userplaylist.selected_playlist_uri = userplaylist.user_playlist_links[prev_index].clone();
             userplaylist.current_user_playlist = userplaylist.user_playlist_names[prev_index].clone();
             userplaylist.user_playlist_display = false;
