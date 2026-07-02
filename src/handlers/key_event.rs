@@ -6,6 +6,7 @@ use crate::structs::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
+use crate::UserCurrentlyPlaying;
 use super::change_keybindings::change_keybindings;
 use super::error_screen::go_to_error_event;
 use super::exit::exit_event;
@@ -61,7 +62,8 @@ pub fn handle_key_event(
     podcast: &mut UserSavedPodcast, 
     recentlyplayed: &mut UserRecentlyPlayed, 
     userartist: &mut UserSavedArtist, 
-    newrelease: &mut NewRelease
+    newrelease: &mut NewRelease,
+    currentlyplaying: &mut UserCurrentlyPlaying,
 ) {
     let go_to_search_key: char = key.go_to_search_key;
     let go_to_library_key: char = key.go_to_library_key;
@@ -83,7 +85,7 @@ pub fn handle_key_event(
         match key_event.code {
             // Toggle shuffle mode when Ctrl+S is pressed
             KeyCode::Char('s') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
-                shuffle_event(app);
+                shuffle_event(app,currentlyplaying);
             }
             // Open the configuration folder
             code if code == KeyCode::Char(open_config_fold_key)
@@ -94,7 +96,7 @@ pub fn handle_key_event(
 
             // Cycle through repeat options when Ctrl+R is pressed
             KeyCode::Char('r') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
-                repeat_event(app);
+                repeat_event(app,currentlyplaying);
             }
 
             KeyCode::Char('p') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
@@ -182,12 +184,12 @@ pub fn handle_key_event(
             code if code == KeyCode::Char(next_track_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                next_track_event(app);
+                next_track_event(app,currentlyplaying);
             }
             code if code == KeyCode::Char(previous_track_key)
                 && search.input_mode != InputMode::Editing =>
             {
-                previous_track_event(app);
+                previous_track_event(app, currentlyplaying);
             }
 
             // Key for Error Screen
@@ -237,10 +239,10 @@ pub fn handle_key_event(
 
             // Enter keybinding for all the menus
             KeyCode::Enter if search.input_mode != InputMode::Editing => {
-                user_playlist_enter_event(app,search,userplaylist);
-                new_release_enter_event(app,search,newrelease);
-                library_enter_event(app,search,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist);
-                search_enter_event(app,search,likedsongs,useralbum,podcast,recentlyplayed,userartist);
+                user_playlist_enter_event(app,search,userplaylist, currentlyplaying);
+                new_release_enter_event(app,search,newrelease, currentlyplaying);
+                library_enter_event(app,search,likedsongs,useralbum,madefy,podcast,recentlyplayed,userartist, currentlyplaying);
+                search_enter_event(app,search,likedsongs,useralbum,podcast,recentlyplayed,userartist,currentlyplaying);
                 add_track_to_playlist_enter_event(app,userplaylist);
             }
 
@@ -254,7 +256,7 @@ pub fn handle_key_event(
 
             // Pause/Play using Spacebar
             KeyCode::Char(' ') if search.input_mode != InputMode::Editing => {
-                play_pause_event(app);
+                play_pause_event(app, currentlyplaying);
             }
 
             // Just exit from Search Menu

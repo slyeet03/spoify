@@ -1,20 +1,20 @@
-use crate::NewRelease;
-use crate::structs::UserSavedArtist;
-use crate::structs::UserRecentlyPlayed;
-use crate::structs::UserSavedPodcast;
-use crate::structs::MadeFY;
-use crate::structs::UserSavedAlbums;
 use crate::enums::{InputMode, Library, Menu};
 use crate::handlers::key_event::handle_key_event;
 use crate::handlers::key_event::search_input;
 use crate::spotify::player::player::process_currently_playing;
 use crate::structs::LikedSongs;
-use crate::structs::{Key, Search, Settings, Themes};
+use crate::structs::MadeFY;
+use crate::structs::UserRecentlyPlayed;
+use crate::structs::UserSavedAlbums;
+use crate::structs::UserSavedArtist;
+use crate::structs::UserSavedPodcast;
+use crate::structs::{Key, Search, Settings, Themes, UserCurrentlyPlaying};
 use crate::ui::tui;
 use crate::ui::ui::render_frame;
+use crate::NewRelease;
 use crate::UserPlaylist;
 use crossterm::event::{self, Event};
-use ratatui::widgets::{ListState};
+use ratatui::widgets::ListState;
 use std::io;
 use std::sync::mpsc::Receiver;
 use std::time::{Duration, Instant};
@@ -36,31 +36,6 @@ pub struct App {
     pub selected_library: Library,
     pub library_state: ListState,
 
-    // Handles Search function
-    // Handles User's playlists
-
-    // Handles User's Liked Songs
-
-    // Handles User's Saved Albums
-
-    // Handles User's Saved Podcasts
-    
-
-    // Handles User's Recently Played Songs
-    
-
-    // Handles User's Saved Artists
-    
-
-    // Handles Made For You
-    
-
-    // Handles User's currently playing device
-    
-
-    // Handle New Release section
-    
-
     // Creds
     pub client_id: String,
     pub client_secret: String,
@@ -72,6 +47,7 @@ pub struct App {
     pub selected_link_for_playback: String,
     pub is_only_id: bool,
     pub is_in_track: bool,
+
     // Top Tracks
     pub top_tracks_all_time_names: Vec<String>,
     pub top_tracks_6_months_names: Vec<String>,
@@ -101,12 +77,13 @@ impl App {
         search: &mut Search,
         userplaylist: &mut UserPlaylist,
         likedsongs: &mut LikedSongs,
-        useralbum: &mut UserSavedAlbums, 
+        useralbum: &mut UserSavedAlbums,
         madefy: &mut MadeFY,
-        podcast: &mut UserSavedPodcast, 
-        recentlyplayed: &mut UserRecentlyPlayed, 
-        userartist: &mut UserSavedArtist, 
-        newrelease: &mut NewRelease
+        podcast: &mut UserSavedPodcast,
+        recentlyplayed: &mut UserRecentlyPlayed,
+        userartist: &mut UserSavedArtist,
+        newrelease: &mut NewRelease,
+        currentlyplaying: &mut UserCurrentlyPlaying
     ) -> io::Result<()> {
         let mut last_tick: Instant = Instant::now();
         // Set the duration for refreshing UI
@@ -130,7 +107,8 @@ impl App {
                         podcast,
                         recentlyplayed,
                         userartist,
-                        newrelease
+                        newrelease,
+                        currentlyplaying
                     );
 
                     // In editing mode, handle search input
@@ -147,7 +125,7 @@ impl App {
 
                 // Check if a message has been received from the player info update thread
                 if rx1.try_recv().is_ok() {
-                    process_currently_playing(self, settings);
+                    process_currently_playing(self, settings, currentlyplaying);
                 }
 
                 // Draw the UI
@@ -166,7 +144,8 @@ impl App {
                         podcast,
                         recentlyplayed,
                         userartist,
-                        newrelease
+                        newrelease,
+                        currentlyplaying,
                     )
                 })?;
             }
@@ -192,36 +171,14 @@ impl Default for App {
 
             can_navigate_menu: true,
 
-           
-           
-
-
-        
             device_id_after_pause: Some(String::new()),
-
-        
-           
 
             client_id: String::new(),
             client_secret: String::new(),
 
-            
-          
-            
-           
-
             error_text: String::new(),
 
-            
-
-           
-
             selected_link_for_playback: String::new(),
-
-            
-            
-            
-            
 
             is_only_id: false,
             is_in_track: false,

@@ -6,7 +6,7 @@ use crate::{
         previous_track::previous_track, repeat::cycle_repeat, shuffle::toogle_shuffle,
         volume_decrease::volume_decreament, volume_increase::volume_increment,
     },
-    structs::Settings,
+    structs::{Settings,UserCurrentlyPlaying},
 };
 
 pub fn fullscreen_player_event(app: &mut App) {
@@ -17,15 +17,15 @@ pub fn fullscreen_player_event(app: &mut App) {
     }
 }
 
-pub fn repeat_event(app: &mut App) {
-    if let Err(e) = cycle_repeat(app) {
+pub fn repeat_event(app: &mut App, currentlyplaying: &mut UserCurrentlyPlaying) {
+    if let Err(e) = cycle_repeat(app, currentlyplaying) {
         println!("{}", e);
     }
 }
 
-pub fn shuffle_event(app: &mut App) {
-    app.is_shuffle = !app.is_shuffle;
-    if let Err(e) = toogle_shuffle(app) {
+pub fn shuffle_event(app: &mut App, currentlyplaying: &mut UserCurrentlyPlaying) {
+    currentlyplaying.is_shuffle = !currentlyplaying.is_shuffle;
+    if let Err(e) = toogle_shuffle(app, currentlyplaying) {
         println!("{}", e);
     }
 }
@@ -42,25 +42,25 @@ pub fn volume_increment_event(app: &mut App, settings: &mut Settings) {
     }
 }
 
-pub fn next_track_event(app: &mut App) {
-    if let Err(e) = next_track(app) {
+pub fn next_track_event(app: &mut App, currentlyplaying: &mut UserCurrentlyPlaying) {
+    if let Err(e) = next_track(app, currentlyplaying) {
         println!("{}", e);
     }
 }
 
-pub fn previous_track_event(app: &mut App) {
-    if let Err(e) = previous_track(app) {
+pub fn previous_track_event(app: &mut App, currentlyplaying: &mut UserCurrentlyPlaying) {
+    if let Err(e) = previous_track(app, currentlyplaying) {
         println!("{}", e);
     }
 }
 
-pub fn play_pause_event(app: &mut App) {
-    if app.playback_status == "Paused" {
-        if let Err(e) = play(app) {
+pub fn play_pause_event(app: &mut App, currentlyplaying: &mut UserCurrentlyPlaying) {
+    if currentlyplaying.playback_status == "Paused" {
+        if let Err(e) = play(app, currentlyplaying) {
             println!("{}", e);
         }
-    } else if app.playback_status == "Playing" {
-        if let Err(e) = pause(app) {
+    } else if currentlyplaying.playback_status == "Playing" {
+        if let Err(e) = pause(app, currentlyplaying) {
             println!("{}", e);
         }
     }

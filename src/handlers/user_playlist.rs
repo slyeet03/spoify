@@ -6,6 +6,7 @@ use crate::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
+use crate::UserCurrentlyPlaying;
 use super::util::{default, down_key_for_table, up_key_for_table};
 use crate::{
     app::App,
@@ -75,12 +76,12 @@ pub fn user_playlist_up_event(app: &mut App,search: &mut Search, userplaylist: &
     }
 }
 
-pub fn user_playlist_enter_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist) {
+pub fn user_playlist_enter_event(app: &mut App, search: &mut Search, userplaylist: &mut UserPlaylist, currentlyplaying: &mut UserCurrentlyPlaying) {
     if app.selected_menu == Menu::Playlists {
         if userplaylist.enter_for_playback_in_user_playlist {
             app.selected_link_for_playback =
                 userplaylist.user_playlist_track_links[userplaylist.user_playlist_index].clone();
-            if let Err(e) = start_playback(app) {
+            if let Err(e) = start_playback(app, currentlyplaying) {
                 println!("{}", e);
             }
         } else {

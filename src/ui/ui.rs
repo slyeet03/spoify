@@ -11,7 +11,8 @@ use crate::structs::{
     MadeFY, 
     LikedSongs, 
     Search, 
-    UserSavedAlbums};
+    UserSavedAlbums,
+    UserCurrentlyPlaying};
 
 use ratatui::prelude::*;
 
@@ -41,7 +42,8 @@ pub fn render_frame(
     podcast: &mut UserSavedPodcast, 
     recentlyplayed: &mut UserRecentlyPlayed, 
     userartist: &mut UserSavedArtist, 
-    newrelease: &mut NewRelease
+    newrelease: &mut NewRelease,
+    currentlyplaying: &mut UserCurrentlyPlaying,
 ) {
     // Calculate the layout constraints
     let size = f.size();
@@ -125,7 +127,7 @@ pub fn render_frame(
     render_default_search(f, &header_chunk, theme);
     render_default_library(f, &content_sub_chunk, theme);
     render_default_user_playlist(f, &content_chunk, theme,userplaylist);
-    render_player(f, &player_layout, app, theme);
+    render_player(f, &player_layout, app, theme, currentlyplaying);
     render_main_area(f, &content_chunk, &front_chunk, app, theme);
     render_default_help(f, &header_chunk, theme);
     render_default_new_releases(f, &content_sub_chunk, theme, newrelease);
@@ -172,6 +174,7 @@ pub fn render_frame(
                 &player_fullscreen_vertical_chunk,
                 app,
                 theme,
+                currentlyplaying,
             );
         }
         Menu::AddTrackToPlaylist => {

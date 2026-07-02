@@ -1,3 +1,4 @@
+use crate::structs::UserCurrentlyPlaying;
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
 use crate::structs::Settings;
@@ -94,16 +95,16 @@ fn save_data_to_json(app: &mut App, items: CurrentPlaybackContext) {
 }
 
 // Function to process the currently playing track information and update the application state
-pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
+pub fn process_currently_playing(app: &mut App, settings: &mut Settings, currentlyplaying: &mut UserCurrentlyPlaying) {
     // Clear any existing currently playing data in the app before processing new data
-    app.currrent_timestamp = 0.0;
-    app.ending_timestamp = 0.0;
-    app.currently_playing_artist.clear();
-    app.current_playing_name.clear();
-    app.current_playing_album.clear();
-    app.current_device_name.clear();
-    app.current_device_volume.clear();
-    app.current_device_id = Some("".to_string());
+    currentlyplaying.current_timestamp = 0.0;
+    currentlyplaying.ending_timestamp = 0.0;
+    currentlyplaying.currently_playing_artist.clear();
+    currentlyplaying.current_playing_name.clear();
+    currentlyplaying.current_playing_album.clear();
+    currentlyplaying.current_device_name.clear();
+    currentlyplaying.current_device_volume.clear();
+    currentlyplaying.current_device_id = Some("".to_string());
 
     let mut repeat_state = String::new();
 
@@ -124,13 +125,13 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
             .get("currently_playing_type")
             .and_then(Value::as_str)
         {
-            app.currently_playing_media_type = currently_playing_type.to_string();
+            currentlyplaying.currently_playing_media_type = currently_playing_type.to_string();
         }
         if let Some(progress_ms) = currently_playing.get("progress_ms").and_then(Value::as_i64) {
-            app.currrent_timestamp = progress_ms as f64;
+            currentlyplaying.current_timestamp = progress_ms as f64;
         }
         if let Some(is_playing) = currently_playing.get("is_playing").and_then(Value::as_bool) {
-            app.is_playing = is_playing;
+            currentlyplaying.is_playing = is_playing;
         }
         if let Some(repeat) = currently_playing
             .get("repeat_state")
@@ -140,13 +141,13 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
         }
         if let Some(device) = currently_playing.get("device").and_then(Value::as_object) {
             if let Some(device_name) = device.get("name").and_then(Value::as_str) {
-                app.current_device_name = device_name.to_string();
+                currentlyplaying.current_device_name = device_name.to_string();
             }
             if let Some(device_id) = device.get("id").and_then(Value::as_str) {
-                app.current_device_id = Some(device_id.to_string());
+                currentlyplaying.current_device_id = Some(device_id.to_string());
             }
             if let Some(device_volume) = device.get("volume_percent").and_then(Value::as_u64) {
-                app.current_device_volume = device_volume.to_string();
+                currentlyplaying.current_device_volume = device_volume.to_string();
                 settings.volume_percent = device_volume as u8;
             }
         }
@@ -154,23 +155,23 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
             .get("shuffle_state")
             .and_then(Value::as_bool)
         {
-            app.is_shuffle = shuffle;
+            currentlyplaying.is_shuffle = shuffle;
         }
 
         if let Some(item) = currently_playing.get("item").and_then(Value::as_object) {
             if let Some(duration_ms) = item.get("duration_ms").and_then(Value::as_i64) {
-                app.ending_timestamp = duration_ms as f64;
+                currentlyplaying.ending_timestamp = duration_ms as f64;
             }
-            if app.currently_playing_media_type == "episode" {
+            if currentlyplaying.currently_playing_media_type == "episode" {
                 if let Some(show) = item.get("show").and_then(Value::as_object) {
                     if let Some(show_name) = show.get("name").and_then(Value::as_str) {
-                        app.current_playing_album = show_name.to_string();
+                        currentlyplaying.current_playing_album = show_name.to_string();
                     }
                 }
             } else {
                 if let Some(album) = item.get("album").and_then(Value::as_object) {
                     if let Some(album_name) = album.get("name").and_then(Value::as_str) {
-                        app.current_playing_album = album_name.to_string();
+                        currentlyplaying.current_playing_album = album_name.to_string();
                     }
                 }
 
@@ -178,37 +179,37 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings) {
                     if let Some(first_artist) = artist_section.first().and_then(Value::as_object) {
                         if let Some(artist_name) = first_artist.get("name").and_then(Value::as_str)
                         {
-                            app.currently_playing_artist = artist_name.to_string();
+                            currentlyplaying.currently_playing_artist = artist_name.to_string();
                         }
                     }
                 }
             }
 
             if let Some(name) = item.get("name").and_then(Value::as_str) {
-                app.current_playing_name = name.to_string();
+                currentlyplaying.current_playing_name = name.to_string();
             }
             if let Some(id) = item.get("id").and_then(Value::as_str) {
-                app.current_playing_id = id.to_string();
+                currentlyplaying.current_playing_id = id.to_string();
             }
         }
     }
 
     // Update the playback status based on the current state
-    if app.is_playing {
-        app.playback_status = "Playing".to_owned();
+    if currentlyplaying.is_playing {
+        currentlyplaying.playback_status = "Playing".to_owned();
     } else {
-        app.playback_status = "Paused".to_owned();
+        currentlyplaying.playback_status = "Paused".to_owned();
     }
-    if app.is_shuffle {
-        app.shuffle_status = "On".to_string();
-    } else if !app.is_shuffle {
-        app.shuffle_status = "Off".to_string();
+    if currentlyplaying.is_shuffle {
+        currentlyplaying.shuffle_status = "On".to_string();
+    } else if !currentlyplaying.is_shuffle {
+        currentlyplaying.shuffle_status = "Off".to_string();
     }
     if repeat_state == "track" {
-        app.repeat_status = "Track".to_string();
+        currentlyplaying.repeat_status = "Track".to_string();
     } else if repeat_state == "context" {
-        app.repeat_status = "Album/Playlist".to_string();
+        currentlyplaying.repeat_status = "Album/Playlist".to_string();
     } else {
-        app.repeat_status = "Off".to_string();
+        currentlyplaying.repeat_status = "Off".to_string();
     }
 }

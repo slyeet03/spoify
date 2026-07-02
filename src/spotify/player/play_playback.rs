@@ -1,3 +1,4 @@
+use crate::structs::UserCurrentlyPlaying;
 use super::util::f64_to_duration;
 use crate::app::App;
 use crate::spotify::auth::get_spotify_client;
@@ -7,7 +8,7 @@ use rspotify::ClientError;
 
 // Main function to toggle the shuffle mode
 #[tokio::main]
-pub async fn play(app: &mut App) -> Result<(), ClientError> {
+pub async fn play(app: &mut App, currentlyplaying: &mut UserCurrentlyPlaying) -> Result<(), ClientError> {
     // Get a Spotify client using an existing access token (if available).
     let spotify = get_spotify_client(app).await?;
 
@@ -15,7 +16,7 @@ pub async fn play(app: &mut App) -> Result<(), ClientError> {
     let device_id: Option<&str> = app.device_id_after_pause.as_deref();
 
     let duration_result: Result<TimeDelta, chrono::OutOfRangeError> =
-        f64_to_duration(app.currrent_timestamp);
+        f64_to_duration(currentlyplaying.current_timestamp);
 
     // try start uri playback while taking track id using now playing from startplayback.rs
     //

@@ -5,17 +5,18 @@ use regex::Regex;
 use rspotify::clients::OAuthClient;
 use rspotify::model::{PlayableId, TrackId};
 use rspotify::ClientError;
+use crate::structs::UserCurrentlyPlaying;
 
 #[tokio::main]
-pub async fn start_playback(app: &mut App) -> Result<(), ClientError> {
+pub async fn start_playback(app: &mut App,currentlyplaying: &mut UserCurrentlyPlaying) -> Result<(), ClientError> {
     let spotify = get_spotify_client(app).await?;
     let device_id;
     let track_uri;
 
-    if app.current_device_id == Some("".to_string()) {
+    if currentlyplaying.current_device_id == Some("".to_string()) {
         device_id = app.device_id_after_pause.as_deref();
     } else {
-        device_id = app.current_device_id.as_deref();
+        device_id = currentlyplaying.current_device_id.as_deref();
     }
 
     if app.is_only_id {

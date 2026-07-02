@@ -13,7 +13,7 @@ use crate::spotify::player::player::{currently_playing, process_currently_playin
 use crate::spotify::user_playlist::user_playlist::{get_playlists, process_user_playlists};
 use crate::spotify::user_stats::top_tracks::top_tracks;
 use crate::structs::Themes;
-use crate::structs::{Key, Settings};
+use crate::structs::{Key, Settings,UserCurrentlyPlaying};
 use std::fs::File;
 use std::io::{BufWriter, Write};
 use std::path::PathBuf;
@@ -22,11 +22,11 @@ use std::thread;
 use std::time::Duration;
 
 /// Function to update the player information in a separate thread
-pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App, settings: &mut Settings) {
+pub fn update_player_info(tx: mpsc::Sender<()>, app: &mut App, settings: &mut Settings, currentlyplaying: &mut UserCurrentlyPlaying) {
     loop {
         // Get the user's current playback
         currently_playing(app).unwrap();
-        process_currently_playing(app, settings);
+        process_currently_playing(app, settings, currentlyplaying);
 
         // Send a message to the main thread to update the UI
         if tx.send(()).is_err() {

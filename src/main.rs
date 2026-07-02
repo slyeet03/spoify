@@ -11,7 +11,7 @@ use std::sync::mpsc;
 use std::thread;
 
 use settings::creds::{read_creds, set_creds};
-use structs::{Key, Settings, Themes, UserPlaylist};
+use structs::{Key, Settings, Themes, UserPlaylist,UserCurrentlyPlaying};
 use ui::tui;
 use util::{instruction, save_creds_to_yml, startup, update_player_info};
 
@@ -40,6 +40,7 @@ fn main() -> io::Result<()> {
     let mut recentlyplayed: UserRecentlyPlayed = UserRecentlyPlayed::default();
     let mut userartist: UserSavedArtist = UserSavedArtist::default();
     let mut newrelease: NewRelease = NewRelease::default();
+    let mut currentlyplaying: UserCurrentlyPlaying = UserCurrentlyPlaying::default();
 
     app.file_name = "spoify".to_string(); //-0.2.12
 
@@ -60,10 +61,11 @@ fn main() -> io::Result<()> {
 
         let mut player_info_app: App = app.clone();
         let mut player_info_settings: Settings = settings.clone();
+        let mut currentlyplaying_clone = currentlyplaying.clone();
 
         // Spawn a new thread to update player's current playback
         let player_info_thread = thread::spawn(move || {
-            update_player_info(tx1, &mut player_info_app, &mut player_info_settings)
+            update_player_info(tx1, &mut player_info_app, &mut player_info_settings, &mut currentlyplaying_clone)
         });
 
         // Run the main app loop
@@ -81,7 +83,8 @@ fn main() -> io::Result<()> {
             &mut podcast,
             &mut recentlyplayed,
             &mut userartist,
-            &mut newrelease
+            &mut newrelease,
+            &mut currentlyplaying,
         )?;
 
         // Wait for the spawned threads to complete

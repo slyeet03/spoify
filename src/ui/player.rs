@@ -6,21 +6,21 @@ use ratatui::{
     Frame,
 };
 
-use crate::{app::App, structs::Themes};
+use crate::{app::App, structs::{Themes, UserCurrentlyPlaying}};
 
 use super::util::format_duration;
 
 /// Renders the player UI section, including playback info, progress bar, and current media details
-pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App, theme: &mut Themes) {
+pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App, theme: &mut Themes, currentlyplaying: &mut UserCurrentlyPlaying) {
     let player_info_block = Block::default()
         .borders(Borders::TOP | Borders::RIGHT | Borders::LEFT)
         .title(format!(
             "{} ({} | Shuffle: {} | Repeat: {} | Volume: {}%)",
-            app.playback_status,
-            app.current_device_name,
-            app.shuffle_status,
-            app.repeat_status,
-            app.current_device_volume
+            currentlyplaying.playback_status,
+            currentlyplaying.current_device_name,
+            currentlyplaying.shuffle_status,
+            currentlyplaying.repeat_status,
+            currentlyplaying.current_device_volume
         ))
         .style(
             Style::default()
@@ -32,39 +32,39 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App, theme
     let _var = player_info_vec;
 
     // Collect player information lines based on the media type (episode or song)
-    if app.currently_playing_media_type == "episode" {
+    if currentlyplaying.currently_playing_media_type == "episode" {
         player_info_vec = vec![Line::from(vec![
             Span::styled(
-                app.current_playing_name.clone(),
+                currentlyplaying.current_playing_name.clone(),
                 Style::default().fg(theme.player_highlight_color),
             ),
             Span::raw(", "),
-            Span::styled(app.current_playing_album.clone(), Style::default()),
+            Span::styled(currentlyplaying.current_playing_album.clone(), Style::default()),
         ])];
     } else {
         player_info_vec = vec![Line::from(vec![
             Span::styled(
-                app.current_playing_name.clone(),
+                currentlyplaying.current_playing_name.clone(),
                 Style::default().fg(theme.player_highlight_color),
             ),
             Span::raw(", "),
-            Span::styled(app.currently_playing_artist.clone(), Style::default()),
+            Span::styled(currentlyplaying.currently_playing_artist.clone(), Style::default()),
             Span::raw(" ("),
-            Span::styled(app.current_playing_album.clone(), Style::default()),
+            Span::styled(currentlyplaying.current_playing_album.clone(), Style::default()),
             Span::raw(")"),
         ])];
     }
 
-    let current_timestamp = format_duration(app.currrent_timestamp.round() as i64);
-    let ending_timestamp = format_duration(app.ending_timestamp.round() as i64);
+    let current_timestamp = format_duration(currentlyplaying.current_timestamp.round() as i64);
+    let ending_timestamp = format_duration(currentlyplaying.ending_timestamp.round() as i64);
 
     let label = &format!("{}/{}", current_timestamp, ending_timestamp);
 
-    if app.ending_timestamp == 0.0 {
-        app.ending_timestamp = 1.0;
+    if currentlyplaying.ending_timestamp == 0.0 {
+        currentlyplaying.ending_timestamp = 1.0;
     }
 
-    app.progress_bar_ratio = app.currrent_timestamp / app.ending_timestamp;
+    currentlyplaying.progress_bar_ratio = currentlyplaying.current_timestamp / currentlyplaying.ending_timestamp;
 
     let player_info = Paragraph::new(player_info_vec).wrap(Wrap { trim: true });
 
@@ -80,7 +80,7 @@ pub fn render_player(f: &mut Frame, player_layout: &[Rect], app: &mut App, theme
                 .bg(theme.player_background_color),
         )
         .label(label)
-        .ratio(app.progress_bar_ratio);
+        .ratio(currentlyplaying.progress_bar_ratio);
 
     f.render_widget(player_info_block.clone(), player_layout[0]);
     f.render_widget(

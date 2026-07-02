@@ -6,6 +6,7 @@ use crate::structs::MadeFY;
 use crate::UserSavedAlbums;
 use crate::LikedSongs;
 use crate::UserPlaylist;
+use crate::structs::UserCurrentlyPlaying;
 use super::util::{default, down_key_for_table, up_key_for_table};
 use crate::{
     app::App,
@@ -153,7 +154,7 @@ pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &
     }
 }
 
-pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist) {
+pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut LikedSongs, useralbum: &mut UserSavedAlbums, madefy: &mut MadeFY,podcast: &mut UserSavedPodcast, recentlyplayed: &mut UserRecentlyPlayed, userartist: &mut UserSavedArtist, currentlyplaying: &mut UserCurrentlyPlaying) {
     if app.selected_menu == Menu::Library {
         search.searched_album_selected = false;
         search.searched_artist_selected = false;
@@ -175,7 +176,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             } else if madefy.enter_for_playback_in_made_fy {
                 app.selected_link_for_playback =
                     madefy.made_fy_track_links[madefy.made_fy_track_index].clone();
-                if let Err(e) = start_playback(app) {
+                if let Err(e) = start_playback(app, currentlyplaying) {
                     println!("{}", e);
                 }
             } else {
@@ -191,7 +192,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             if likedsongs.enter_for_playback_in_liked_song {
                 app.selected_link_for_playback =
                     likedsongs.liked_song_links[likedsongs.liked_songs_index].clone();
-                if let Err(e) = start_playback(app) {
+                if let Err(e) = start_playback(app, currentlyplaying) {
                     println!("{}", e);
                 }
             } else {
@@ -218,7 +219,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             } else if useralbum.enter_for_playback_in_user_album {
                 app.selected_link_for_playback =
                     useralbum.user_album_track_links[useralbum.user_album_track_index].clone();
-                if let Err(e) = start_playback(app) {
+                if let Err(e) = start_playback(app, currentlyplaying) {
                     println!("{}", e);
                 }
             } else {
@@ -235,7 +236,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             if recentlyplayed.enter_for_playback_in_recently_played {
                 app.selected_link_for_playback =
                     recentlyplayed.recently_played_links[recentlyplayed.recently_played_index].clone();
-                if let Err(e) = start_playback(app) {
+                if let Err(e) = start_playback(app, currentlyplaying) {
                     println!("{}", e);
                 }
             } else {
@@ -269,7 +270,7 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             } else if userartist.enter_for_playback_in_saved_artist {
                 app.selected_link_for_playback =
                     userartist.user_artist_track_links[userartist.user_artist_track_index].clone();
-                if let Err(e) = start_playback(app) {
+                if let Err(e) = start_playback(app, currentlyplaying) {
                     println!("{}", e);
                 }
             } else {
