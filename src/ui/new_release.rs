@@ -26,7 +26,7 @@ pub fn render_default_new_releases(
                 .fg(theme.new_release_inactive_border_color),
         );
 
-    let new_releases_name = convert_to_list(&newrelease.new_release_name);
+    let new_releases_name = convert_to_list(&newrelease.name);
     let new_releases_list = List::new(new_releases_name)
         .block(new_release_block.clone())
         .highlight_style(Style::default().fg(theme.new_release_highlight_color));
@@ -42,7 +42,7 @@ pub fn render_new_releases(
     theme: &mut Themes, 
     newrelease: &mut NewRelease
 ) {
-    let current_new_release_name = (&newrelease.current_new_release_album).to_string();
+    let current_new_release_name = (&newrelease.current_album).to_string();
 
     let new_release_block = Block::default()
         .borders(Borders::ALL)
@@ -57,14 +57,14 @@ pub fn render_new_releases(
     let current_new_release_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(current_new_release_name))
-        .border_style(if newrelease.new_release_album_selected {
+        .border_style(if newrelease.album_selected {
             Style::default().fg(theme.new_release_border_color)
         } else {
             Style::default().fg(theme.new_release_inactive_border_color)
         })
         .style(Style::default().bg(theme.new_release_background_color));
 
-    let new_releases_name = convert_to_list(&newrelease.new_release_name);
+    let new_releases_name = convert_to_list(&newrelease.name);
     let new_releases_list = List::new(new_releases_name)
         .block(new_release_block.clone())
         .highlight_style(Style::default().fg(theme.new_release_highlight_color));
@@ -73,17 +73,17 @@ pub fn render_new_releases(
     f.render_stateful_widget(
         new_releases_list,
         content_sub_chunk[1],
-        &mut newrelease.new_release_state,
+        &mut newrelease.state,
     );
 
     // Conditionally render details for the selected new release album.
-    if newrelease.new_release_display {
+    if newrelease.display {
         f.render_widget(Clear, content_chunk[1]);
 
         let new_release_tracks_table = new_release_table_ui(
-            newrelease.new_release_track_names.clone(),
-            newrelease.new_release_artist_names.clone(),
-            newrelease.new_release_durations_ms.clone(),
+            newrelease.track_names.clone(),
+            newrelease.artist_names.clone(),
+            newrelease.durations_ms.clone(),
             current_new_release_block,
             theme.new_release_highlight_color.clone(),
             theme.new_release_background_color.clone(),
@@ -94,7 +94,7 @@ pub fn render_new_releases(
         f.render_stateful_widget(
             new_release_tracks_table,
             content_chunk[1],
-            &mut newrelease.new_release_album_state,
+            &mut newrelease.album_state,
         );
     }
 }

@@ -40,7 +40,7 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplayl
     } else if app.selected_menu == Menu::NewRelease {
         if newrelease.enter_for_playback_in_new_release {
             app.track_added_to_playlist_link =
-                newrelease.new_release_spotify_urls[newrelease.new_release_index].clone();
+                newrelease.spotify_urls[newrelease.index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
         }
     } else if app.selected_menu == Menu::Playlists {

@@ -64,8 +64,8 @@ fn save_new_releases_to_json(app: &mut App, items: Vec<SimplifiedAlbum>) {
 
 /// Processes the new releases data stored in the cache file and populates the app's data structures
 pub fn process_new_releases(app: &mut App, newrelease: &mut NewRelease) {
-    newrelease.new_release_artist.clear();
-    newrelease.new_release_name.clear();
+    newrelease.artist.clear();
+    newrelease.name.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     path.push(".."); // Move up to the root of the Git repository
@@ -88,7 +88,7 @@ pub fn process_new_releases(app: &mut App, newrelease: &mut NewRelease) {
                             if let Value::Object(artist_obj) = first_artist {
                                 if let Some(artist_name) = artist_obj.get("name") {
                                     if let Value::String(name) = artist_name {
-                                        newrelease.new_release_artist.push(name.clone());
+                                        newrelease.artist.push(name.clone());
                                     }
                                 }
                             }
@@ -96,11 +96,11 @@ pub fn process_new_releases(app: &mut App, newrelease: &mut NewRelease) {
                     }
                 }
                 if let Some(id) = album_obj.get("id").and_then(Value::as_str) {
-                    newrelease.new_release_album_links.push(id.to_string());
+                    newrelease.album_links.push(id.to_string());
                 }
                 if let Some(name) = album_obj.get("name") {
                     if let Value::String(album_name) = name {
-                        newrelease.new_release_name.push(album_name.clone());
+                        newrelease.name.push(album_name.clone());
                     }
                 }
             }
