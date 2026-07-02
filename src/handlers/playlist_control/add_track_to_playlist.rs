@@ -32,9 +32,9 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplayl
                     useralbum.track_links[useralbum.track_index].clone();
                 app.selected_menu = Menu::AddTrackToPlaylist;
             }
-        } else if app.selected_library == Library::Artists && userartist.user_artist_track_selected {
+        } else if app.selected_library == Library::Artists && userartist.track_selected {
             app.track_added_to_playlist_link =
-                userartist.user_artist_track_links[userartist.user_artist_track_index].clone();
+                userartist.track_links[userartist.track_index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
         }
     } else if app.selected_menu == Menu::NewRelease {

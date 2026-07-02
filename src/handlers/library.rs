@@ -79,16 +79,16 @@ pub fn library_down_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum:
                     down_key_for_table(podcast.names.clone(), podcast.state.clone());
             }
         } else if app.library_state.selected() == Some(4) {
-            if userartist.user_artist_selected {
-                (userartist.user_artist_state, userartist.user_artist_index) = down_key_for_table(
-                    userartist.user_artist_names.clone(),
-                    userartist.user_artist_state.clone(),
+            if userartist.selected {
+                (userartist.state, userartist.index) = down_key_for_table(
+                    userartist.names.clone(),
+                    userartist.state.clone(),
                 );
             }
-            if userartist.user_artist_track_selected {
-                (userartist.user_artist_track_state, userartist.user_artist_track_index) = down_key_for_table(
-                    userartist.user_artist_track_names.clone(),
-                    userartist.user_artist_track_state.clone(),
+            if userartist.track_selected {
+                (userartist.track_state, userartist.track_index) = down_key_for_table(
+                    userartist.track_names.clone(),
+                    userartist.track_state.clone(),
                 );
             }
         }
@@ -140,14 +140,14 @@ pub fn library_up_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: &
                     up_key_for_table(podcast.names.clone(), podcast.state.clone());
             }
         } else if app.library_state.selected() == Some(4) {
-            if userartist.user_artist_selected {
-                (userartist.user_artist_state, userartist.user_artist_index) =
-                    up_key_for_table(userartist.user_artist_names.clone(), userartist.user_artist_state.clone());
+            if userartist.selected {
+                (userartist.state, userartist.index) =
+                    up_key_for_table(userartist.names.clone(), userartist.state.clone());
             }
-            if userartist.user_artist_track_selected {
-                (userartist.user_artist_track_state, userartist.user_artist_track_index) = up_key_for_table(
-                    userartist.user_artist_track_names.clone(),
-                    userartist.user_artist_track_state.clone(),
+            if userartist.track_selected {
+                (userartist.track_state, userartist.track_index) = up_key_for_table(
+                    userartist.track_names.clone(),
+                    userartist.track_state.clone(),
                 );
             }
         }
@@ -256,20 +256,20 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
             podcast.display = true;
         } else if app.library_state.selected() == Some(4) {
             app.selected_library = Library::Artists;
-            if userartist.user_artist_current_artist_selected {
+            if userartist.current_artist_selected {
                 if let Err(e) = user_artist_tracks(app,userartist) {
                     println!("{}", e);
                 }
                 process_user_artist_tracks(app,search,userartist);
-                userartist.user_artist_track_display = true;
-                userartist.user_artist_display = false;
-                userartist.user_artist_track_selected = true;
-                userartist.user_artist_current_artist_selected = false;
-                userartist.user_artist_selected = false;
-                userartist.user_artist_track_state.select(Some(0));
+                userartist.track_display = true;
+                userartist.display = false;
+                userartist.track_selected = true;
+                userartist.current_artist_selected = false;
+                userartist.selected = false;
+                userartist.track_state.select(Some(0));
             } else if userartist.enter_for_playback_in_saved_artist {
                 app.selected_link_for_playback =
-                    userartist.user_artist_track_links[userartist.user_artist_track_index].clone();
+                    userartist.track_links[userartist.track_index].clone();
                 if let Err(e) = start_playback(app, currentlyplaying) {
                     println!("{}", e);
                 }
@@ -278,8 +278,8 @@ pub fn library_enter_event(app: &mut App,search: &mut Search, likedsongs: &mut L
                     println!("{}", e);
                 }
                 process_user_artists(app,userartist);
-                userartist.user_artist_display = true;
-                userartist.user_artist_current_artist_selected = true;
+                userartist.display = true;
+                userartist.current_artist_selected = true;
                 userartist.enter_for_playback_in_saved_artist = true;
             }
         }
@@ -304,9 +304,9 @@ pub fn library_tab_event(app: &mut App, likedsongs: &mut LikedSongs, useralbum: 
         } else if app.library_state.selected() == Some(5) && podcast.display {
             podcast.state.select(Some(0));
             podcast.selected = !podcast.selected;
-        } else if app.library_state.selected() == Some(4) && userartist.user_artist_display {
-            userartist.user_artist_state.select(Some(0));
-            userartist.user_artist_selected = !userartist.user_artist_selected;
+        } else if app.library_state.selected() == Some(4) && userartist.display {
+            userartist.state.select(Some(0));
+            userartist.selected = !userartist.selected;
         }
     }
 }

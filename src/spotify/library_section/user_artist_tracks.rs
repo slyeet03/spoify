@@ -30,7 +30,7 @@ pub async fn user_artist_tracks(app: &mut App, userartist: &mut UserSavedArtist)
     // Request an access token from Spotify
     spotify.request_token().await.unwrap();
 
-    let id = userartist.user_artist_links[userartist.user_artist_index].as_str();
+    let id = userartist.links[userartist.index].as_str();
     let re = Regex::new(r"/artist/(.+)").unwrap();
     let captures = re.captures(id).unwrap();
     let artist_uri = captures.get(1).unwrap().as_str();
@@ -66,9 +66,9 @@ fn save_tracks_to_json(app: &mut App, items: Vec<FullTrack>) {
 
 pub fn process_user_artist_tracks(app: &mut App, search: &mut Search, userartist: &mut UserSavedArtist) {
     // Clear any existing user track data in the app before processing
-    userartist.user_artist_track_names.clear();
-    userartist.user_artist_track_album.clear();
-    userartist.user_artist_track_duration.clear();
+    userartist.track_names.clear();
+    userartist.track_album.clear();
+    userartist.track_duration.clear();
     search.selected_artist_tracks_links.clear();
 
     let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -86,22 +86,22 @@ pub fn process_user_artist_tracks(app: &mut App, search: &mut Search, userartist
     for track_data in json_data {
         if let Value::Object(track_obj) = track_data {
             if let Some(track_name) = track_obj.get("name").and_then(Value::as_str) {
-                userartist.user_artist_track_names.push(track_name.to_string());
+                userartist.track_names.push(track_name.to_string());
             }
 
             if let Some(album_info) = track_obj.get("album").and_then(Value::as_object) {
                 if let Some(album_name) = album_info.get("name").and_then(Value::as_str) {
-                    userartist.user_artist_track_album.push(album_name.to_string());
+                    userartist.track_album.push(album_name.to_string());
                 }
             }
 
             if let Some(duration_ms) = track_obj.get("duration_ms").and_then(Value::as_i64) {
-                userartist.user_artist_track_duration.push(duration_ms);
+                userartist.track_duration.push(duration_ms);
             }
 
             if let Some(external_urls) = track_obj.get("external_urls").and_then(Value::as_object) {
                 if let Some(track_link) = external_urls.get("spotify").and_then(Value::as_str) {
-                    userartist.user_artist_track_links.push(track_link.to_string());
+                    userartist.track_links.push(track_link.to_string());
                 }
             }
         }

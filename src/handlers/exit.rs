@@ -30,12 +30,12 @@ pub fn exit_event(app: &mut App, useralbum: &mut UserSavedAlbums, madefy: &mut M
                 app.selected_menu = Menu::Default;
             }
         } else if app.selected_library == Library::Artists {
-            if userartist.user_artist_track_selected {
-                userartist.user_artist_track_selected = false;
-                userartist.user_artist_track_display = false;
-                userartist.user_artist_current_artist_selected = true;
-                userartist.user_artist_display = true;
-                userartist.user_artist_selected = true;
+            if userartist.track_selected {
+                userartist.track_selected = false;
+                userartist.track_display = false;
+                userartist.current_artist_selected = true;
+                userartist.display = true;
+                userartist.selected = true;
             } else {
                 app.selected_menu = Menu::Default;
             }
