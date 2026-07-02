@@ -599,13 +599,13 @@ pub struct UserCurrentlyPlaying {
     pub is_shuffle: bool,
     pub current_timestamp: f64,
     pub ending_timestamp: f64,
-    pub currently_playing_artist: String,
-    pub current_playing_name: String,
-    pub current_playing_id: String,
-    pub current_playing_album: String,
+    pub artist: String,
+    pub name: String,
+    pub id: String,
+    pub album: String,
     pub is_playing: bool,
     pub progress_bar_ratio: f64,
-    pub currently_playing_media_type: String,
+    pub media_type: String,
 }
 
 impl Default for UserCurrentlyPlaying {
@@ -620,13 +620,13 @@ impl Default for UserCurrentlyPlaying {
             current_device_id: Some(String::new()),
             current_timestamp: f64::from(0),
             ending_timestamp: f64::from(1),
-            currently_playing_artist: String::new(),
-            current_playing_name: String::new(),
-            current_playing_id: String::new(),
-            current_playing_album: String::new(),
+            artist: String::new(),
+            name: String::new(),
+            id: String::new(),
+            album: String::new(),
             is_playing: false,
             progress_bar_ratio: 0.0,
-            currently_playing_media_type: String::new(),
+            media_type: String::new(),
         }
     }
 }

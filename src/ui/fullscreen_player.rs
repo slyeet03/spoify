@@ -41,25 +41,25 @@ pub fn render_player_in_fullscreen(
     let _var = player_info_vec;
 
     // Collect player information lines based on the media type (episode or song)
-    if currentlyplaying.currently_playing_media_type == "episode" {
+    if currentlyplaying.media_type == "episode" {
         player_info_vec = vec![Line::from(vec![
             Span::styled(
-                currentlyplaying.current_playing_name.clone(),
+                currentlyplaying.name.clone(),
                 Style::default().fg(theme.player_highlight_color),
             ),
             Span::raw(", "),
-            Span::styled(currentlyplaying.current_playing_album.clone(), Style::default()),
+            Span::styled(currentlyplaying.album.clone(), Style::default()),
         ])];
     } else {
         player_info_vec = vec![Line::from(vec![
             Span::styled(
-                currentlyplaying.current_playing_name.clone(),
+                currentlyplaying.name.clone(),
                 Style::default().fg(theme.player_highlight_color),
             ),
             Span::raw(", "),
-            Span::styled(currentlyplaying.currently_playing_artist.clone(), Style::default()),
+            Span::styled(currentlyplaying.artist.clone(), Style::default()),
             Span::raw(" ("),
-            Span::styled(currentlyplaying.current_playing_album.clone(), Style::default()),
+            Span::styled(currentlyplaying.album.clone(), Style::default()),
             Span::raw(")"),
         ])];
     }

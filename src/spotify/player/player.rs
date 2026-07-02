@@ -99,9 +99,9 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings, current
     // Clear any existing currently playing data in the app before processing new data
     currentlyplaying.current_timestamp = 0.0;
     currentlyplaying.ending_timestamp = 0.0;
-    currentlyplaying.currently_playing_artist.clear();
-    currentlyplaying.current_playing_name.clear();
-    currentlyplaying.current_playing_album.clear();
+    currentlyplaying.artist.clear();
+    currentlyplaying.name.clear();
+    currentlyplaying.album.clear();
     currentlyplaying.current_device_name.clear();
     currentlyplaying.current_device_volume.clear();
     currentlyplaying.current_device_id = Some("".to_string());
@@ -125,7 +125,7 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings, current
             .get("currently_playing_type")
             .and_then(Value::as_str)
         {
-            currentlyplaying.currently_playing_media_type = currently_playing_type.to_string();
+            currentlyplaying.media_type = currently_playing_type.to_string();
         }
         if let Some(progress_ms) = currently_playing.get("progress_ms").and_then(Value::as_i64) {
             currentlyplaying.current_timestamp = progress_ms as f64;
@@ -162,16 +162,16 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings, current
             if let Some(duration_ms) = item.get("duration_ms").and_then(Value::as_i64) {
                 currentlyplaying.ending_timestamp = duration_ms as f64;
             }
-            if currentlyplaying.currently_playing_media_type == "episode" {
+            if currentlyplaying.media_type == "episode" {
                 if let Some(show) = item.get("show").and_then(Value::as_object) {
                     if let Some(show_name) = show.get("name").and_then(Value::as_str) {
-                        currentlyplaying.current_playing_album = show_name.to_string();
+                        currentlyplaying.album = show_name.to_string();
                     }
                 }
             } else {
                 if let Some(album) = item.get("album").and_then(Value::as_object) {
                     if let Some(album_name) = album.get("name").and_then(Value::as_str) {
-                        currentlyplaying.current_playing_album = album_name.to_string();
+                        currentlyplaying.album = album_name.to_string();
                     }
                 }
 
@@ -179,17 +179,17 @@ pub fn process_currently_playing(app: &mut App, settings: &mut Settings, current
                     if let Some(first_artist) = artist_section.first().and_then(Value::as_object) {
                         if let Some(artist_name) = first_artist.get("name").and_then(Value::as_str)
                         {
-                            currentlyplaying.currently_playing_artist = artist_name.to_string();
+                            currentlyplaying.artist = artist_name.to_string();
                         }
                     }
                 }
             }
 
             if let Some(name) = item.get("name").and_then(Value::as_str) {
-                currentlyplaying.current_playing_name = name.to_string();
+                currentlyplaying.name = name.to_string();
             }
             if let Some(id) = item.get("id").and_then(Value::as_str) {
-                currentlyplaying.current_playing_id = id.to_string();
+                currentlyplaying.id = id.to_string();
             }
         }
     }
