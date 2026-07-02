@@ -46,7 +46,7 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplayl
     } else if app.selected_menu == Menu::Playlists {
         if userplaylist.enter_for_playback_in_user_playlist {
             app.track_added_to_playlist_link =
-                userplaylist.user_playlist_track_links[userplaylist.user_playlist_index].clone();
+                userplaylist.track_links[userplaylist.index].clone();
             app.selected_menu = Menu::AddTrackToPlaylist;
         }
     } else if app.selected_menu == Menu::Search {
@@ -73,7 +73,7 @@ pub fn add_track_to_playlist_event(app: &mut App, search: &mut Search, userplayl
 pub fn add_track_to_playlist_enter_event(app: &mut App, userplaylist: &mut UserPlaylist) {
     if app.selected_menu == Menu::AddTrackToPlaylist {
         app.playlist_link_for_track_addition =
-            userplaylist.user_playlist_links[app.playlist_index_for_track_addition].clone();
+            userplaylist.links[app.playlist_index_for_track_addition].clone();
         if let Err(e) = add_track_to_playlist(app) {
             println!("{}", e);
         }
@@ -87,7 +87,7 @@ pub fn add_track_to_playlist_up_event(app: &mut App, userplaylist: &mut UserPlay
             app.add_track_to_playlist_state,
             app.playlist_index_for_track_addition,
         ) = up_key_for_list(
-            userplaylist.user_playlist_names.clone(),
+            userplaylist.names.clone(),
             app.add_track_to_playlist_state.clone(),
         );
     }
@@ -99,7 +99,7 @@ pub fn add_track_to_playlist_down_event(app: &mut App, userplaylist: &mut UserPl
             app.add_track_to_playlist_state,
             app.playlist_index_for_track_addition,
         ) = down_key_for_list(
-            userplaylist.user_playlist_names.clone(),
+            userplaylist.names.clone(),
             app.add_track_to_playlist_state.clone(),
         );
     }

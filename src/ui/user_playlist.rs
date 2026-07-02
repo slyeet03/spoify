@@ -32,7 +32,7 @@ pub fn render_user_playlist(
     let user_playlist_block = Block::default()
         .borders(Borders::ALL)
         .title(Title::from(current_playlist_name))
-        .border_style(if userplaylist.user_playlist_tracks_selected {
+        .border_style(if userplaylist.tracks_selected {
             Style::default().fg(theme.playlist_border_color)
         } else {
             Style::default().fg(theme.playlist_inactive_border_color)
@@ -40,7 +40,7 @@ pub fn render_user_playlist(
         .style(Style::default().bg(theme.playlist_background_color));
 
     // Convert app data (user playlist names) to a List widget
-    let user_playlist_names = convert_to_list(&userplaylist.user_playlist_names);
+    let user_playlist_names = convert_to_list(&userplaylist.names);
     let user_playlist_list = List::new(user_playlist_names)
         .block(playlist_block_user.clone())
         .highlight_style(Style::default().fg(theme.playlist_highlight_color));
@@ -50,18 +50,18 @@ pub fn render_user_playlist(
     f.render_stateful_widget(
         user_playlist_list,
         content_chunk[2],
-        &mut userplaylist.user_playlist_state,
+        &mut userplaylist.state,
     );
 
     // Conditionally render the user playlist track table
-    if userplaylist.user_playlist_display {
+    if userplaylist.display {
         f.render_widget(Clear, content_chunk[1]);
 
         let user_playlist_tracks_table = track_table_ui(
-            userplaylist.user_playlist_track_names.clone(),
-            userplaylist.user_playlist_artist_names.clone(),
-            userplaylist.user_playlist_album_names.clone(),
-            userplaylist.user_playlist_track_duration.clone(),
+            userplaylist.track_names.clone(),
+            userplaylist.artist_names.clone(),
+            userplaylist.album_names.clone(),
+            userplaylist.track_duration.clone(),
             user_playlist_block,
             theme.playlist_highlight_color.clone(),
             theme.playlist_background_color.clone(),
@@ -73,7 +73,7 @@ pub fn render_user_playlist(
         f.render_stateful_widget(
             user_playlist_tracks_table,
             content_chunk[1],
-            &mut userplaylist.user_playlist_tracks_state,
+            &mut userplaylist.tracks_state,
         );
     }
 }
@@ -95,7 +95,7 @@ pub fn render_default_user_playlist(
         );
 
     // Convert app data (user playlist names) to a List widget
-    let user_playlist_names = convert_to_list(&userplaylist.user_playlist_names);
+    let user_playlist_names = convert_to_list(&userplaylist.names);
     let user_playlist_list = List::new(user_playlist_names).block(playlist_block_user.clone());
 
     f.render_widget(user_playlist_list, content_chunk[2]);

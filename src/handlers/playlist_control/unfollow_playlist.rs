@@ -11,7 +11,7 @@ use crate::{
 pub fn unfollow_playlist_event(app: &mut App, userplaylist: &mut UserPlaylist) {
     app.playlist_link_to_follow.clear();
     if app.selected_menu == Menu::Playlists && !userplaylist.enter_for_playback_in_user_playlist {
-        app.playlist_link_to_follow = userplaylist.user_playlist_links[userplaylist.user_playlist_index].clone();
+        app.playlist_link_to_follow = userplaylist.links[userplaylist.index].clone();
         if let Err(e) = unfollow_playlist(app) {
             println!("{}", e);
         }

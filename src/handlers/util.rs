@@ -103,7 +103,7 @@ pub fn default(
     ) {
     search.results_rendered = false;
     search.input_mode = InputMode::Normal;
-    userplaylist.user_playlist_display = false;
+    userplaylist.display = false;
     likedsongs.liked_song_display = false;
     search.selected_search = false;
     useralbum.user_album_display = false;
