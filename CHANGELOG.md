@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.14] - 2026-07-02
+
+### Fixed
+
+- Fucked up the version in cargo
+
 ## [0.2.13] - 2026-07-02
 
 ### Fixed
