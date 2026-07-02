@@ -1,17 +1,17 @@
-use crate::structs::NewRelease;
-use crate::structs::UserSavedArtist;
-use crate::structs::UserRecentlyPlayed;
-use crate::structs::UserSavedPodcast;
-use crate::structs::MadeFY;
-use crate::structs::UserSavedAlbums;
 use crate::structs::LikedSongs;
+use crate::structs::MadeFY;
+use crate::structs::NewRelease;
 use crate::structs::Search;
+use crate::structs::UserRecentlyPlayed;
+use crate::structs::UserSavedAlbums;
+use crate::structs::UserSavedArtist;
+use crate::structs::UserSavedPodcast;
 use std::io;
 use std::sync::mpsc;
 use std::thread;
 
 use settings::creds::{read_creds, set_creds};
-use structs::{Key, Settings, Themes, UserPlaylist,UserCurrentlyPlaying};
+use structs::{Key, Settings, Themes, UserCurrentlyPlaying, UserPlaylist};
 use ui::tui;
 use util::{instruction, save_creds_to_yml, startup, update_player_info};
 
@@ -42,7 +42,7 @@ fn main() -> io::Result<()> {
     let mut newrelease: NewRelease = NewRelease::default();
     let mut currentlyplaying: UserCurrentlyPlaying = UserCurrentlyPlaying::default();
 
-    app.file_name = "spoify".to_string(); //-0.2.12
+    app.file_name = "spoify-0.2.13".to_string(); //-0.2.12
 
     // Set the creds from the configure files
     read_creds(&mut app);
@@ -53,7 +53,14 @@ fn main() -> io::Result<()> {
         save_creds_to_yml(&mut app);
     } else {
         // Fetch user's playlists, new releases, set keybinds and themes before the main app starts
-        startup(&mut app, &mut key, &mut theme, &mut settings,&mut userplaylist, &mut newrelease);
+        startup(
+            &mut app,
+            &mut key,
+            &mut theme,
+            &mut settings,
+            &mut userplaylist,
+            &mut newrelease,
+        );
 
         let mut terminal = tui::init()?;
 
@@ -65,7 +72,12 @@ fn main() -> io::Result<()> {
 
         // Spawn a new thread to update player's current playback
         let player_info_thread = thread::spawn(move || {
-            update_player_info(tx1, &mut player_info_app, &mut player_info_settings, &mut currentlyplaying_clone)
+            update_player_info(
+                tx1,
+                &mut player_info_app,
+                &mut player_info_settings,
+                &mut currentlyplaying_clone,
+            )
         });
 
         // Run the main app loop
