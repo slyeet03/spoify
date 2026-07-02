@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.16] - 2026-07-02
+
+### Fixed
+
+- Ratatui was breaking terminal so it wasn't able to paste the auth link
+
 ## [0.2.15] - 2026-07-02
 
 ### Fixed
